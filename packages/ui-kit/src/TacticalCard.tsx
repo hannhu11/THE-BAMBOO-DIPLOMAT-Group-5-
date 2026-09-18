@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { audioEngine } from './AudioEngine';
 import { CardAnchorArt, CardAllianceArt, CardChallengeArt } from './Sigils';
 
@@ -214,13 +215,18 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
           </div>
         </div>
 
-        {/* Modal Xem Cận Cảnh & Kích Hoạt Thẻ (Khắc phục triệt để lỗi che thẻ, hỗ trợ lật 2 mặt) */}
-        {isModalOpen && (
+        {/* Modal Xem Cận Cảnh & Kích Hoạt Thẻ (Render qua Portal để gắn vào document.body tránh lỗi backdrop-filter) */}
+        {isModalOpen && typeof document !== 'undefined' && createPortal(
           <div
             style={{
               position: 'fixed',
-              inset: 0,
-              zIndex: 9999,
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: '100vw',
+              height: '100vh',
+              zIndex: 99999,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -228,7 +234,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
               background: 'rgba(3, 8, 6, 0.88)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
-              overflowY: 'auto',
+              boxSizing: 'border-box',
             }}
             onClick={() => setIsModalOpen(false)}
           >
@@ -474,7 +480,8 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
                 )}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </>
     );
