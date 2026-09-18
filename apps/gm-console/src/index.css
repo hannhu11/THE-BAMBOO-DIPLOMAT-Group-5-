@@ -1,0 +1,196 @@
+@import '@bamboo/design-tokens/tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #030706;
+  color: #FFFFFF;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.stage {
+  width: 100vw;
+  min-height: 100vh;
+  padding: 20px;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(16, 185, 129, 0.12), transparent 60%),
+    radial-gradient(1000px 500px at 85% 10%, rgba(243, 202, 104, 0.08), transparent 60%),
+    linear-gradient(180deg, #070E0B, #030605);
+  display: grid;
+  grid-template-columns: 240px 1fr 340px;
+  gap: 20px;
+}
+
+@media (max-width: 1200px) {
+  .stage {
+    grid-template-columns: 220px 1fr;
+  }
+  .right-col {
+    grid-column: span 2;
+  }
+}
+
+.side {
+  background: linear-gradient(180deg, rgba(22, 38, 31, 0.85), rgba(11, 20, 16, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-m {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #10B981, #064E3B);
+  border: 1.5px solid #F3CA68;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+}
+
+.brand-h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #FFFFFF;
+}
+
+.brand-s {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--color-gold-300);
+  font-weight: 700;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: #CBD5E1;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 160ms ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+}
+
+.nav-item.on {
+  color: #FFFFFF;
+  background: linear-gradient(180deg, rgba(32, 54, 44, 0.9), rgba(16, 28, 23, 0.95));
+  border-color: rgba(243, 202, 104, 0.35);
+  box-shadow: 0 0 14px rgba(243, 202, 104, 0.15);
+}
+
+.main-col {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 18px;
+}
+
+.gm-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: linear-gradient(180deg, rgba(22, 38, 31, 0.85), rgba(11, 20, 16, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.group-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.group-table th {
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-gold-300);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.group-table td {
+  padding: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #E2E8F0;
+}
+
+.group-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.event-box {
+  background: linear-gradient(180deg, rgba(46, 20, 24, 0.92), rgba(22, 9, 12, 0.96));
+  border: 1.5px solid rgba(239, 68, 68, 0.5);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.audit-box {
+  background: linear-gradient(180deg, rgba(16, 28, 23, 0.9), rgba(8, 16, 13, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #CBD5E1;
+  max-height: 280px;
+  overflow-y: auto;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  scrollbar-width: thin;
+}
+

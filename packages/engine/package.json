@@ -1,0 +1,26 @@
+{
+  "name": "@bamboo/engine",
+  "version": "1.0.0",
+  "description": "Deterministic game resolution engine for The Bamboo Diplomat",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bamboo/content-schema": "workspace:*",
+    "@bamboo/domain-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

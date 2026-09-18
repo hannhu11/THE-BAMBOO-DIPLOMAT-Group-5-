@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 480" role="img" aria-label="Black Swan Event banner">
+  <defs>
+    <linearGradient id="bs-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050807"/><stop offset=".5" stop-color="#160B0D"/><stop offset="1" stop-color="#050807"/>
+    </linearGradient>
+    <linearGradient id="bs-line" x1="0" x2="1"><stop offset="0" stop-color="#8A2F37" stop-opacity="0"/><stop offset=".5" stop-color="#E8C2A6"/><stop offset="1" stop-color="#8A2F37" stop-opacity="0"/></linearGradient>
+    <radialGradient id="bs-glow" cx=".5" cy=".5" r=".7">
+      <stop offset="0" stop-color="#8A2F37" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#050807" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="bs-noise" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#050807"/>
+      <circle cx="1" cy="1" r=".4" fill="#E8C2A6" opacity=".05"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="480" fill="url(#bs-bg)"/>
+  <rect width="1600" height="480" fill="url(#bs-noise)"/>
+  <ellipse cx="800" cy="240" rx="900" ry="220" fill="url(#bs-glow)"/>
+
+  <!-- swan silhouette (abstract, editorial) -->
+  <g transform="translate(220 130)" fill="#0B0808" stroke="#E8C2A6" stroke-width="1.4">
+    <path d="M0 180 C 40 120 120 100 180 130 C 210 110 240 92 270 96 C 260 106 244 112 236 116 C 260 120 280 132 290 152 C 260 148 232 152 210 168 C 180 190 130 200 90 194 C 60 190 30 190 0 180 Z"/>
+    <circle cx="272" cy="98" r="3" fill="#E8C2A6"/>
+    <path d="M262 108 L272 108" stroke="#8A2F37"/>
+  </g>
+
+  <!-- headline -->
+  <g font-family="Be Vietnam Pro, sans-serif" fill="#F3EEDC">
+    <text x="600" y="180" font-size="18" letter-spacing="6" fill="#E8C2A6">BLACK SWAN EVENT · THIÊN NGA ĐEN</text>
+    <text x="600" y="252" font-size="66" font-weight="700" letter-spacing="1">ĐỨT GÃY CHUỖI CUNG ỨNG TOÀN CẦU</text>
+    <line x1="600" y1="278" x2="1400" y2="278" stroke="url(#bs-line)" stroke-width="1"/>
+    <text x="600" y="316" font-family="Inter, sans-serif" font-size="18" fill="#A8B3AF">Thuế quan tăng 50%. Các nhóm phụ thuộc ngoại lực chịu thiệt hại nặng.</text>
+    <text x="600" y="356" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="3" fill="#D8B46D">IF autonomy &lt; 40 → economy −20   ·   IF autonomy ≥ 70 → economy +10</text>
+  </g>
+
+  <!-- corner marks -->
+  <g stroke="#8A2F37" stroke-width="1" fill="none">
+    <path d="M20 20 L60 20 M20 20 L20 60"/>
+    <path d="M1580 20 L1540 20 M1580 20 L1580 60"/>
+    <path d="M20 460 L60 460 M20 460 L20 420"/>
+    <path d="M1580 460 L1540 460 M1580 460 L1580 420"/>
+  </g>
+</svg>

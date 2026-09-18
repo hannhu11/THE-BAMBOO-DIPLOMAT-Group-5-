@@ -1,0 +1,17 @@
+[Unit]
+Description=Bamboo Diplomat (Docker Compose)
+After=docker.service network-online.target
+Wants=docker.service network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=bamboo
+WorkingDirectory=/opt/bamboo-diplomat
+ExecStart=/usr/bin/docker compose -f infra/docker-compose.yml up -d
+ExecStop=/usr/bin/docker compose -f infra/docker-compose.yml down
+TimeoutStartSec=120
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

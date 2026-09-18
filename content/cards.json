@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "cards": [
+    {
+      "id": "anchor",
+      "name": "Dĩ Bất Biến",
+      "subtitle": "Anchor of Sovereignty",
+      "description": "Vô hiệu hoá mọi điểm trừ về TỰ CHỦ do các Tác nhân quốc tế gây ra trong lượt hiện tại.",
+      "principle": "Độc lập, tự chủ, tự lực cánh sinh (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "rank>=4",
+      "activation": "before_lock"
+    },
+    {
+      "id": "alliance",
+      "name": "Cầu Đồng Tồn Dị",
+      "subtitle": "Alliance Form",
+      "description": "Đề xuất liên minh với 1 nhóm đối tác. Nếu cả 2 cùng chọn phương án cân bằng → cả hai nhận thưởng +50% delta; nếu lệch phương án → trừ 10 điểm Uy Tín.",
+      "principle": "Đoàn kết trên cơ sở thống nhất mục tiêu chung (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "rank>=4",
+      "activation": "before_vote"
+    },
+    {
+      "id": "challenge",
+      "name": "Chất Vấn Đa Phương",
+      "subtitle": "Multilateral Challenge",
+      "description": "Buộc nhóm đối thủ đứng lên giải trình 45s trước hội đồng lớp học về tính độc lập, tự chủ trong lựa chọn. Ban giám khảo GM chấm 0–5 sao.",
+      "principle": "Tính thượng tôn pháp luật và đối thoại đa phương",
+      "maxUsesPerGame": 1,
+      "eligibility": "rank>=4",
+      "activation": "after_reveal"
+    }
+  ]
+}

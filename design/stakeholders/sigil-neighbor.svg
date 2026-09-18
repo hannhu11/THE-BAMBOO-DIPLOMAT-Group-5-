@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Neighboring Power Bloc sigil">
+  <defs>
+    <linearGradient id="ng" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E8C2A6"/><stop offset="1" stop-color="#7A2A2E"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="94" fill="#0D1815" stroke="url(#ng)" stroke-width="1.2"/>
+  <!-- pressure arcs -->
+  <g stroke="#E8C2A6" fill="none" opacity=".9">
+    <path d="M20 100 A80 80 0 0 1 180 100" stroke-width="1.4"/>
+    <path d="M32 100 A68 68 0 0 1 168 100" stroke-width="1.0" opacity=".7"/>
+    <path d="M46 100 A54 54 0 0 1 154 100" stroke-width=".8" opacity=".55"/>
+  </g>
+  <!-- compressed core -->
+  <g fill="none" stroke="#7A2A2E" stroke-width="1.6">
+    <polygon points="100,66 132,100 100,134 68,100"/>
+  </g>
+  <g fill="#E8C2A6">
+    <circle cx="100" cy="100" r="3.4"/>
+  </g>
+  <!-- radial tension ticks -->
+  <g stroke="#E8C2A6" stroke-width="1">
+    <line x1="100" y1="26" x2="100" y2="38"/>
+    <line x1="26"  y1="100" x2="38" y2="100"/>
+    <line x1="174" y1="100" x2="162" y2="100"/>
+    <line x1="100" y1="174" x2="100" y2="162"/>
+  </g>
+  <text x="100" y="182" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="3" fill="#E8C2A6">NEIGHBORING · SECURITY</text>
+</svg>

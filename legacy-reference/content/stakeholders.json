@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "stakeholders": {
+    "west": {
+      "id": "west",
+      "name": "Phương Tây & Tư bản Quốc tế",
+      "shortName": "Phương Tây",
+      "color": "#3D7EA6",
+      "icon": "globe",
+      "concerns": ["Minh bạch", "Sở hữu trí tuệ", "Chuẩn mực ESG"],
+      "description": "Nhạy cảm với tính minh bạch, bảo vệ tài sản, sở hữu trí tuệ và các chuẩn mực quản trị quốc tế."
+    },
+    "neighbor": {
+      "id": "neighbor",
+      "name": "Cường quốc Láng giềng",
+      "shortName": "Láng giềng",
+      "color": "#B23A48",
+      "icon": "shield-alert",
+      "concerns": ["An ninh biên giới", "Cân bằng khu vực", "Không gian sinh tồn"],
+      "description": "Cực kỳ nhạy cảm về cân bằng an ninh chiến lược khu vực, không muốn bị siết vòng vây."
+    },
+    "un": {
+      "id": "un",
+      "name": "Luật pháp Quốc tế & LHQ",
+      "shortName": "LHQ",
+      "color": "#C79B3A",
+      "icon": "scale",
+      "concerns": ["Hiến chương LHQ", "UNCLOS 1982", "Hòa bình bền vững"],
+      "description": "Đề cao Hiến chương LHQ, các công ước quốc tế và tính thượng tôn pháp luật."
+    },
+    "vn_people": {
+      "id": "vn_people",
+      "name": "Nhân dân & Doanh nghiệp Việt Nam",
+      "shortName": "Nhân dân VN",
+      "color": "#1E7A5A",
+      "icon": "users",
+      "concerns": ["Việc làm", "Tự chủ kinh tế", "Chủ quyền quốc gia"],
+      "description": "Đòi hỏi việc làm, tăng trưởng kinh tế, ổn định đời sống và giữ vững chủ quyền lãnh thổ."
+    }
+  }
+}

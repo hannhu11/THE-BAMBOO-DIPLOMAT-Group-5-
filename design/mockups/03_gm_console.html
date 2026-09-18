@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1440,initial-scale=1"/>
+<title>Bamboo Diplomat · GM Console</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07110E;--panel:#0D1815;--panel2:#11211C;--elev:#162A23;
+  --b700:#1C5C47;--b500:#2F7D62;--b300:#68A98F;--b100:#B5D6C6;
+  --g700:#8E6A24;--g500:#B88A33;--g300:#D8B46D;--g100:#F0DFB6;
+  --paper:#F3EEDC;--slate3:#A8B3AF;--slate5:#6D7C77;
+  --danger:#A9474F;--warn:#C08A2E;--info:#4E7EA7;
+  --f-display:"Be Vietnam Pro",system-ui,sans-serif;
+  --f-ui:"Inter",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--paper);font-family:var(--f-ui)}
+.stage{width:1440px;height:860px;padding:20px;background:
+  radial-gradient(1000px 500px at 10% -10%, rgba(184,138,51,.10), transparent 60%),
+  linear-gradient(180deg,#07110E,#050807);display:grid;grid-template-columns:260px 1fr 340px;gap:16px}
+
+.side{background:linear-gradient(180deg,#0D1815,#0B1512);border:1px solid rgba(230,223,202,.08);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .m{width:36px;height:36px;border-radius:10px;background:linear-gradient(180deg,#1C5C47,#0F3628);border:1px solid #8E6A24;display:grid;place-items:center}
+.brand .m::before{content:"";width:4px;height:18px;background:#B5D6C6;border-radius:2px;box-shadow:6px 0 0 #68A98F,-6px 0 0 #2F7D62}
+.brand h1{margin:0;font-family:var(--f-display);font-size:14px;letter-spacing:.5px}
+.brand .s{font-family:var(--f-mono);font-size:9.5px;letter-spacing:2px;color:var(--g300)}
+
+.nav{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:var(--slate3);text-decoration:none;font-size:13.5px;font-family:var(--f-ui);border:1px solid transparent}
+.nav a .d{width:6px;height:6px;border-radius:2px;background:#33413D}
+.nav a.on{color:var(--paper);background:linear-gradient(180deg,#152922,#101C18);border-color:rgba(216,180,109,.35)}
+.nav a.on .d{background:var(--g300)}
+
+.session{margin-top:auto;border-top:1px solid rgba(230,223,202,.08);padding-top:14px;font-family:var(--f-mono);font-size:11px;color:var(--slate3);letter-spacing:1.4px;line-height:1.6}
+.session b{color:var(--paper);font-weight:600}
+
+.main{display:grid;grid-template-rows:auto auto 1fr;gap:16px}
+.hdr{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:16px 20px;background:linear-gradient(180deg,#11211C,#0D1815);border:1px solid rgba(230,223,202,.08);border-radius:20px}
+.hdr h2{margin:0;font-family:var(--f-display);font-size:20px}
+.hdr .sub{font-family:var(--f-mono);font-size:11px;color:var(--slate3);letter-spacing:2px;margin-top:2px}
+.btn{border:none;cursor:pointer;font-family:var(--f-display);font-weight:600;letter-spacing:.3px;border-radius:12px;padding:12px 16px;font-size:13.5px;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:linear-gradient(180deg,#2F7D62,#1C5C47);color:#F3EEDC;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.btn.ghost{background:transparent;color:var(--paper);border:1px solid #33413D}
+.btn.danger{background:linear-gradient(180deg,#A9474F,#5F1F24);color:#F3EEDC}
+.btn.warn{background:linear-gradient(180deg,#C08A2E,#6B4B15);color:#F3EEDC}
+
+.round{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 40%), linear-gradient(180deg,#11211C,#0D1815);border:1px solid rgba(230,223,202,.08);border-radius:20px;padding:20px;position:relative}
+.panel .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:2px;color:var(--g300)}
+.panel h3{margin:8px 0 6px;font-family:var(--f-display);font-size:20px}
+.panel p{margin:0;color:var(--slate3);font-size:13px;line-height:1.5}
+
+.timer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px}
+.timer .big{font-family:var(--f-mono);font-size:56px;color:var(--paper);letter-spacing:2px}
+.timer .ctrls{display:flex;gap:8px}
+.groupTable{display:grid;grid-template-columns:100px 90px 1fr 120px;gap:0;border:1px solid rgba(230,223,202,.06);border-radius:14px;overflow:hidden}
+.groupTable .h{padding:10px 12px;background:rgba(0,0,0,.2);font-family:var(--f-mono);font-size:10.5px;color:var(--slate3);letter-spacing:1.6px}
+.groupTable .c{padding:12px;border-top:1px solid rgba(230,223,202,.06);font-size:13.5px;display:flex;align-items:center;gap:8px}
+.groupTable .c{flex-direction:column;align-items:flex-start;gap:2px}
+.groupTable .c small{color:var(--slate5);font-family:var(--f-mono);font-size:10px;letter-spacing:1.5px;display:block}
+.st{font-family:var(--f-mono);font-size:11px;letter-spacing:1.4px;padding:4px 8px;border-radius:999px;border:1px solid #33413D;background:rgba(255,255,255,.02);color:var(--slate3)}
+.st.lock{color:#B5D6C6;border-color:rgba(104,169,143,.5)}
+.st.draft{color:#D8B46D;border-color:rgba(216,180,109,.5)}
+.st.none{color:#E8C2A6;border-color:rgba(169,71,79,.5)}
+.pick{font-family:var(--f-mono);font-size:12px;color:var(--paper)}
+
+.right{display:grid;grid-template-rows:auto auto 1fr;gap:16px}
+.event{background:linear-gradient(180deg,#241417,#150708);border:1px solid rgba(169,71,79,.45);border-radius:20px;padding:18px;position:relative;overflow:hidden}
+.event .kick{font-family:var(--f-mono);font-size:10.5px;letter-spacing:3px;color:#E8C2A6}
+.event h4{margin:6px 0;font-family:var(--f-display);font-size:18px}
+.event .btn{margin-top:10px}
+.audit{background:linear-gradient(180deg,#0D1815,#0B1512);border:1px solid rgba(230,223,202,.08);border-radius:20px;padding:18px;font-family:var(--f-mono);font-size:11.5px;color:var(--slate3);letter-spacing:.4px;line-height:1.65;overflow:hidden}
+.audit h4{margin:0 0 8px;font-family:var(--f-display);font-size:14px;letter-spacing:.4px;color:var(--paper)}
+.audit .l{display:grid;grid-template-columns:70px 1fr auto;gap:8px;padding:6px 0;border-bottom:1px dashed rgba(230,223,202,.08)}
+.audit .l:last-child{border-bottom:0}
+.audit .l .t{color:var(--g300)}
+.audit .l .e{color:var(--paper)}
+.audit .l .g{color:var(--slate5)}
+
+.allInModal{background:linear-gradient(180deg,#0D1815,#0B1512);border:1px solid rgba(216,180,109,.35);border-radius:20px;padding:18px}
+.allInModal h4{margin:0 0 8px;font-family:var(--f-display);font-size:15px;letter-spacing:.4px;color:var(--paper)}
+.stars{display:flex;gap:6px;margin-top:8px}
+.star{width:28px;height:28px;border-radius:8px;border:1px solid #33413D;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;color:var(--slate3)}
+.star.on{background:linear-gradient(180deg,#B88A33,#5C4416);color:#0D1815;border-color:transparent}
+.mono{font-family:var(--f-mono);font-size:11px;color:var(--slate3);letter-spacing:1.4px}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="side" aria-label="GM navigation">
+    <div class="brand">
+      <div class="m" aria-hidden="true"></div>
+      <div>
+        <h1>GM CONSOLE</h1>
+        <div class="s">SITUATION ROOM · v1.0</div>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Sections">
+      <a href="#"><span class="d"></span>Session overview</a>
+      <a class="on" href="#"><span class="d"></span>Round control</a>
+      <a href="#"><span class="d"></span>All-in grading</a>
+      <a href="#"><span class="d"></span>Multilateral Challenge</a>
+      <a href="#"><span class="d"></span>Black Swan events</a>
+      <a href="#"><span class="d"></span>Audit ledger</a>
+      <a href="#"><span class="d"></span>Report export</a>
+    </nav>
+    <div class="session">
+      <div>SESSION · <b>BAM-2026-09-16-01</b></div>
+      <div>SEATS · <b>34/34</b></div>
+      <div>CONTENT · <b>v1.0.3</b></div>
+      <div>ENGINE · <b>deterministic</b></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="hdr">
+      <div>
+        <h2>Round Control · Scenario 02 · UN GENERAL ASSEMBLY</h2>
+        <div class="sub">STATE · ROUND_OPEN · LOCKED 5/7 · SERVER-AUTHORITATIVE</div>
+      </div>
+      <button class="btn ghost">Xem preview trên máy chiếu</button>
+      <button class="btn danger">KHÓA VÒNG</button>
+    </div>
+
+    <div class="round">
+      <section class="panel">
+        <span class="k">SCENARIO · SC-002</span>
+        <h3>Lá phiếu tại Đại hội đồng LHQ</h3>
+        <p>Nghị quyết trừng phạt Quốc gia K sắp biểu quyết. Nhóm phải chọn A / B / C. Captain-lock, không đổi sau khóa.</p>
+        <div class="timer">
+          <div class="big">00:38</div>
+          <div class="ctrls">
+            <button class="btn ghost">+30s</button>
+            <button class="btn ghost">Pause</button>
+            <button class="btn warn">Force reveal</button>
+          </div>
+        </div>
+
+        <div class="groupTable" role="table" aria-label="Vote progress per group" style="margin-top:16px">
+          <div class="h">GROUP</div><div class="h">CAPTAIN</div><div class="h">DRAFT</div><div class="h">LOCK</div>
+          <div class="c">Nhóm 01<small>SE1802-01</small></div><div class="c">Khoa</div><div class="c pick">C · Ngoại giao Cây Tre</div><div class="c"><span class="st lock">LOCKED</span></div>
+          <div class="c">Nhóm 02<small>SE1802-02</small></div><div class="c">Hân</div><div class="c pick">A · Thuận</div><div class="c"><span class="st lock">LOCKED</span></div>
+          <div class="c">Nhóm 03<small>SE1802-03</small></div><div class="c">Mai</div><div class="c pick">C · Trắng + tuyên bố</div><div class="c"><span class="st lock">LOCKED</span></div>
+          <div class="c">Nhóm 04<small>SE1802-04</small></div><div class="c">Duy</div><div class="c pick">B · Chống</div><div class="c"><span class="st draft">DRAFT</span></div>
+          <div class="c">Nhóm 05<small>SE1802-05</small></div><div class="c">Linh</div><div class="c pick">C · Trắng + tuyên bố</div><div class="c"><span class="st lock">LOCKED</span></div>
+          <div class="c">Nhóm 06<small>SE1802-06</small></div><div class="c">Minh</div><div class="c pick">— chưa chọn —</div><div class="c"><span class="st none">NONE</span></div>
+          <div class="c">Nhóm 07<small>SE1802-07</small></div><div class="c">Ngọc</div><div class="c pick">C · Trắng + tuyên bố</div><div class="c"><span class="st lock">LOCKED</span></div>
+        </div>
+      </section>
+
+      <section class="panel allInModal" aria-label="All-in grading">
+        <h4>All-in Grading · Nhóm 05</h4>
+        <p class="mono">Chấm biện luận 45s. Multiplier = f(stars).</p>
+        <div class="stars" role="radiogroup" aria-label="Stars">
+          <div class="star">0</div>
+          <div class="star">1</div>
+          <div class="star">2</div>
+          <div class="star on">3</div>
+          <div class="star on">4</div>
+          <div class="star on">5</div>
+        </div>
+        <p style="margin-top:12px;color:var(--slate3);font-size:12.5px">Đang chọn: <b style="color:var(--g300)">5 sao → ×2.2</b>. Ghi chú: dẫn nguyên tắc 5.2.3 chính xác, phản biện tự chủ mạch lạc.</p>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn ghost">Hủy</button>
+          <button class="btn primary">Áp dụng &amp; Rescore</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <aside class="right" aria-label="Events and audit">
+    <section class="event" aria-label="Black Swan trigger">
+      <div class="kick">CRISIS EVENT · TIER I</div>
+      <h4>Đứt gãy chuỗi cung ứng toàn cầu</h4>
+      <p style="margin:6px 0 0;color:#E8C2A6;font-size:12.5px;line-height:1.5">Kích hoạt sau vòng 3. Nhóm autonomy &lt; 40 mất 20 KT · autonomy ≥ 70 nhận +10 KT.</p>
+      <button class="btn danger">KÍCH HOẠT BLACK SWAN</button>
+    </section>
+
+    <section class="audit" aria-label="Live audit ledger">
+      <h4>AUDIT LEDGER · LIVE</h4>
+      <div class="l"><span class="t">00:14:22</span><span class="e">round.opened <b>SC-002</b></span><span class="g">GM</span></div>
+      <div class="l"><span class="t">00:14:41</span><span class="e">vote.draft.select <b>G05→C</b></span><span class="g">seat #12</span></div>
+      <div class="l"><span class="t">00:15:02</span><span class="e">vote.lock <b>G01→C</b></span><span class="g">captain</span></div>
+      <div class="l"><span class="t">00:15:09</span><span class="e">allin.arm <b>G05</b></span><span class="g">captain</span></div>
+      <div class="l"><span class="t">00:15:22</span><span class="e">card.arm <b>G06 → challenge</b></span><span class="g">captain</span></div>
+      <div class="l"><span class="t">00:15:41</span><span class="e">vote.lock <b>G03→C</b></span><span class="g">captain</span></div>
+      <div class="l"><span class="t">00:15:58</span><span class="e">presence.updated <b>34/34</b></span><span class="g">system</span></div>
+    </section>
+
+    <section class="panel" aria-label="Reconnect fallback">
+      <span class="k">FAILSAFE</span>
+      <h3 style="font-size:16px">Kịch bản offline sẵn sàng</h3>
+      <p style="font-size:12.5px">Nếu socket rớt &gt; 8s: chuyển sang chế độ phiếu giấy nhanh, đồng bộ lại khi hồi phục.</p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn ghost">In phiếu giấy</button>
+        <button class="btn warn">Chế độ Offline</button>
+      </div>
+    </section>
+  </aside>
+</div>
+</body>
+</html>

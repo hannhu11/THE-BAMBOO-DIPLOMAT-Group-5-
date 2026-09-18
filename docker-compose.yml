@@ -1,0 +1,56 @@
+# ==============================================================================
+# THE BAMBOO DIPLOMAT — Docker Compose Deployment Configuration
+# Reference: 06_SERVER_DEPLOYMENT_SECURITY_GUIDE.md §5.1
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    networks:
+      - bamboo-internal
+    environment:
+      POSTGRES_DB: bamboo_diplomat
+      POSTGRES_USER: bamboo_app
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-bamboo_secure_pg_pass_2026}
+    volumes:
+      - bamboo_pg_data:/var/lib/postgresql/data
+      - ./apps/api/src/db/schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:-bamboo_secure_redis_pass_2026} --appendonly yes
+    networks:
+      - bamboo-internal
+    volumes:
+      - bamboo_redis_data:/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://bamboo_app:${DB_PASSWORD:-bamboo_secure_pg_pass_2026}@postgres:5432/bamboo_diplomat
+      REDIS_URL: redis://:${REDIS_PASSWORD:-bamboo_secure_redis_pass_2026}@redis:6379
+      PORT: 8088
+      HOST: 0.0.0.0
+      JWT_SECRET: ${JWT_SECRET:-bamboo_diplomat_super_secret_jwt_key_2026}
+      GM_PASSWORD: ${GM_PASSWORD:-bambooGM2026!}
+      SESSION_PIN: ${SESSION_PIN:-HCM202}
+    ports:
+      - "127.0.0.1:8088:8088"
+    networks:
+      - bamboo-internal
+    depends_on:
+      - postgres
+      - redis
+
+networks:
+  bamboo-internal:
+    driver: bridge
+
+volumes:
+  bamboo_pg_data:
+  bamboo_redis_data:

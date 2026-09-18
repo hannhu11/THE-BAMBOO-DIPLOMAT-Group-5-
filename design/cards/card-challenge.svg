@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 460" role="img" aria-label="Multilateral Challenge card">
+  <defs>
+    <linearGradient id="ch-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241417"/><stop offset="1" stop-color="#0B0808"/>
+    </linearGradient>
+    <linearGradient id="ch-frame" x1="0" x2="1"><stop offset="0" stop-color="#E8C2A6"/><stop offset="1" stop-color="#8A2F37"/></linearGradient>
+  </defs>
+  <rect x="6" y="6" width="308" height="448" rx="22" fill="url(#ch-bg)" stroke="url(#ch-frame)" stroke-width="1.2"/>
+  <rect x="14" y="14" width="292" height="432" rx="18" fill="none" stroke="#8A2F37" stroke-width=".6" opacity=".55"/>
+  <text x="26" y="42" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3" fill="#E8C2A6">CONFRONTATION · TIER II</text>
+  <text x="26" y="72" font-family="Be Vietnam Pro, sans-serif" font-size="22" font-weight="700" fill="#F3EEDC">CHẤT VẤN ĐA PHƯƠNG</text>
+  <text x="26" y="94" font-family="Inter, sans-serif" font-size="12" fill="#A8B3AF">Multilateral Challenge</text>
+
+  <g transform="translate(160 240)">
+    <!-- courtroom bench arc -->
+    <path d="M -110 40 Q 0 -20 110 40" stroke="#E8C2A6" stroke-width="1.6" fill="none"/>
+    <path d="M -110 66 Q 0 6 110 66" stroke="#8A2F37" stroke-width="1.2" fill="none" opacity=".8"/>
+    <!-- spotlight cone -->
+    <path d="M 0 -100 L -80 60 L 80 60 Z" fill="#E8C2A6" opacity=".08"/>
+    <path d="M 0 -100 L -80 60 L 80 60 Z" fill="none" stroke="#E8C2A6" stroke-width=".6" opacity=".4"/>
+    <!-- gavel -->
+    <g transform="translate(0 -20) rotate(-18)" stroke="#F0DFB6" stroke-width="1.6" fill="none">
+      <rect x="-30" y="-8" width="60" height="16" rx="2"/>
+      <line x1="30" y1="0" x2="70" y2="0"/>
+      <circle cx="70" cy="0" r="3"/>
+    </g>
+    <!-- microphone dots -->
+    <g fill="#E8C2A6">
+      <circle cx="-60" cy="60" r="3"/>
+      <circle cx="0"   cy="60" r="3"/>
+      <circle cx="60"  cy="60" r="3"/>
+    </g>
+  </g>
+
+  <g transform="translate(24 384)" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.6" fill="#A8B3AF">
+    <rect x="0" y="0" width="272" height="1" fill="#8A2F37" opacity=".5"/>
+    <text x="0" y="20">TÁC DỤNG</text>
+    <text x="0" y="38" font-family="Inter, sans-serif" font-size="12.5" fill="#F3EEDC">Buộc nhóm hạng 1 giải trình 45s. Fail → −20 uy tín, chuyển cho nhóm chất vấn.</text>
+    <text x="0" y="60">SỬ DỤNG · 1 / TRẬN · CẢ LỚP</text>
+    <text x="0" y="76" fill="#E8C2A6">RARITY · CRIMSON</text>
+  </g>
+</svg>

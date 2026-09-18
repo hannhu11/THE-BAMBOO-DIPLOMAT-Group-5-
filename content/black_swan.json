@@ -1,0 +1,162 @@
+{
+  "version": "1.0.0",
+  "events": [
+    {
+      "id": "bs_semi",
+      "title": "Đứt gãy chuỗi cung ứng bán dẫn toàn cầu",
+      "banner": "BLACK SWAN — Bán dẫn dừng xuất khẩu 90 ngày",
+      "narrative": "Một cuộc khủng hoảng địa chính trị bất ngờ khiến các fab bán dẫn hàng đầu tạm dừng xuất khẩu. Nền kinh tế nào phụ thuộc ngoại lực nặng sẽ chao đảo.",
+      "tier": "I",
+      "rules": [
+        {
+          "id": "rule_semi_low_autonomy",
+          "description": "Nếu Tự Chủ < 40 thì Kinh Tế -20, Uy Tín -5",
+          "when": {
+            "type": "axis_compare",
+            "axis": "autonomy",
+            "op": "lt",
+            "value": 40
+          },
+          "effect": {
+            "autonomy": 0,
+            "economy": -20,
+            "prestige": -5
+          }
+        },
+        {
+          "id": "rule_semi_high_autonomy",
+          "description": "Nếu Tự Chủ >= 70 thì Kinh Tế +10, Uy Tín +5",
+          "when": {
+            "type": "axis_compare",
+            "axis": "autonomy",
+            "op": "gte",
+            "value": 70
+          },
+          "effect": {
+            "autonomy": 0,
+            "economy": 10,
+            "prestige": 5
+          }
+        }
+      ],
+      "wisdom": "Lấy nội lực làm quyết định, ngoại lực là quan trọng."
+    },
+    {
+      "id": "bs_energy",
+      "title": "Khủng hoảng năng lượng châu Á",
+      "banner": "BLACK SWAN — Giá khí đốt tăng 300%",
+      "narrative": "Đường ống khí đốt xuyên khu vực bị gián đoạn đột ngột. Các nền kinh tế phụ thuộc nhập khẩu năng lượng chịu cú sốc lớn.",
+      "tier": "I",
+      "rules": [
+        {
+          "id": "rule_energy_choice_a",
+          "description": "Nếu chọn phương án A ở tình huống 3 thì Kinh Tế -18, Tự Chủ -8",
+          "when": {
+            "type": "choice_match",
+            "scenarioId": "sc3",
+            "choice": "A"
+          },
+          "effect": {
+            "autonomy": -8,
+            "economy": -18,
+            "prestige": 0
+          }
+        },
+        {
+          "id": "rule_energy_choice_c",
+          "description": "Nếu chọn phương án C ở tình huống 3 thì Kinh Tế +8, Uy Tín +5",
+          "when": {
+            "type": "choice_match",
+            "scenarioId": "sc3",
+            "choice": "C"
+          },
+          "effect": {
+            "autonomy": 0,
+            "economy": 8,
+            "prestige": 5
+          }
+        }
+      ],
+      "wisdom": "Chuyển dịch năng lượng phải phù hợp năng lực tự thân."
+    },
+    {
+      "id": "bs_maritime",
+      "title": "Va chạm hàng hải quốc tế",
+      "banner": "BLACK SWAN — Tuyến hàng hải chiến lược bị phong toả",
+      "narrative": "Va chạm gần eo biển trọng yếu khiến giao thương ngưng trệ. Nước nào nghiêng hẳn về 1 cực sẽ bị áp lực.",
+      "tier": "II",
+      "rules": [
+        {
+          "id": "rule_maritime_low_prestige",
+          "description": "Nếu Uy Tín < 45 thì Kinh Tế -12",
+          "when": {
+            "type": "axis_compare",
+            "axis": "prestige",
+            "op": "lt",
+            "value": 45
+          },
+          "effect": {
+            "autonomy": 0,
+            "economy": -12,
+            "prestige": 0
+          }
+        },
+        {
+          "id": "rule_maritime_resilient",
+          "description": "Nếu Uy Tín >= 65 và Tự Chủ >= 55 thì Uy Tín +10, Kinh Tế +5",
+          "when": {
+            "type": "compound_and",
+            "conditions": [
+              { "type": "axis_compare", "axis": "prestige", "op": "gte", "value": 65 },
+              { "type": "axis_compare", "axis": "autonomy", "op": "gte", "value": 55 }
+            ]
+          },
+          "effect": {
+            "autonomy": 0,
+            "economy": 5,
+            "prestige": 10
+          }
+        }
+      ],
+      "wisdom": "Ngoại giao cân bằng là chiếc phao cứu sinh lúc giông bão."
+    },
+    {
+      "id": "bs_cyber",
+      "title": "Tấn công mạng quy mô lớn vào hạ tầng số",
+      "banner": "BLACK SWAN — Zero-day tấn công lưới điện và ngân hàng",
+      "narrative": "Chuỗi tấn công mạng phối hợp nhắm vào hạ tầng dữ liệu. Nước nào không giữ chủ quyền dữ liệu sẽ chịu tổn thất lớn.",
+      "tier": "I",
+      "rules": [
+        {
+          "id": "rule_cyber_choice_a",
+          "description": "Nếu chọn A ở tình huống 1 thì Tự Chủ -15, Kinh Tế -10",
+          "when": {
+            "type": "choice_match",
+            "scenarioId": "sc1",
+            "choice": "A"
+          },
+          "effect": {
+            "autonomy": -15,
+            "economy": -10,
+            "prestige": 0
+          }
+        },
+        {
+          "id": "rule_cyber_choice_c",
+          "description": "Nếu chọn C ở tình huống 1 thì Tự Chủ +8, Uy Tín +8",
+          "when": {
+            "type": "choice_match",
+            "scenarioId": "sc1",
+            "choice": "C"
+          },
+          "effect": {
+            "autonomy": 8,
+            "economy": 0,
+            "prestige": 8
+          }
+        }
+      ],
+      "wisdom": "Chủ quyền dữ liệu là chủ quyền quốc gia trong kỷ nguyên số."
+    }
+  ]
+}

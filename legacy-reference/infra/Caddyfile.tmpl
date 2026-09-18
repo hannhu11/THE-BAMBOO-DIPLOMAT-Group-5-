@@ -1,0 +1,38 @@
+{$DOMAIN} {
+  encode zstd gzip
+
+  # Strict security headers
+  header {
+    Strict-Transport-Security "max-age=15552000; includeSubDomains"
+    X-Content-Type-Options    "nosniff"
+    Referrer-Policy           "no-referrer"
+    Permissions-Policy        "camera=(), microphone=(), geolocation=()"
+    -Server
+  }
+
+  # Socket.io upgrade
+  @ws {
+    header Connection *Upgrade*
+    header Upgrade websocket
+  }
+  reverse_proxy @ws api:3000
+
+  # API paths
+  @api path /api/* /join /qr /state /vote /admin/* /health /socket.io/*
+  reverse_proxy @api api:3000
+
+  # Static player + dashboard
+  route /gm* {
+    root * /usr/share/nginx/html/gm
+    file_server
+  }
+  route {
+    root * /usr/share/nginx/html/play
+    file_server
+  }
+}
+
+# Redirect www / bare
+:80 {
+  redir https://{host}{uri}
+}

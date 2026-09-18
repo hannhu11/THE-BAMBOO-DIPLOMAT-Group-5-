@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1600,initial-scale=1"/>
+<title>Bamboo Diplomat · Public Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07110E;--panel:#0D1815;--panel2:#11211C;--elev:#162A23;
+  --b700:#1C5C47;--b500:#2F7D62;--b300:#68A98F;--b100:#B5D6C6;
+  --g700:#8E6A24;--g500:#B88A33;--g300:#D8B46D;--g100:#F0DFB6;
+  --paper:#F3EEDC;--slate3:#A8B3AF;--slate5:#6D7C77;
+  --danger:#A9474F;--warn:#C08A2E;
+  --f-display:"Be Vietnam Pro",system-ui,sans-serif;
+  --f-ui:"Inter",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--paper);font-family:var(--f-ui);-webkit-font-smoothing:antialiased}
+.stage{width:1600px;height:900px;padding:24px;background:
+  radial-gradient(1400px 700px at 50% -12%, rgba(47,125,98,.14), transparent 60%),
+  radial-gradient(1000px 700px at 92% 108%, rgba(184,138,51,.10), transparent 60%),
+  linear-gradient(180deg,#07110E,#050807);
+  display:grid;grid-template-rows:76px 1fr 260px;gap:18px;}
+
+/* top bar */
+.topbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;padding:0 20px;background:linear-gradient(180deg,#0D1815,#0B1512);border:1px solid rgba(230,223,202,.08);border-radius:20px;height:76px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(180deg,#1C5C47,#0F3628);border:1px solid #8E6A24;display:grid;place-items:center}
+.brand .mark::before{content:"";width:5px;height:22px;background:#B5D6C6;border-radius:3px;box-shadow:8px 0 0 #68A98F,-8px 0 0 #2F7D62}
+.brand h1{margin:0;font-family:var(--f-display);font-size:19px;letter-spacing:.4px}
+.brand .sub{font-family:var(--f-mono);font-size:10.5px;letter-spacing:3px;color:var(--g300)}
+.phaseStrip{display:flex;justify-content:center;gap:8px;font-family:var(--f-mono);font-size:12px;letter-spacing:2px;color:var(--slate3)}
+.phaseStrip .p{padding:6px 12px;border-radius:999px;border:1px solid #33413D;background:rgba(255,255,255,.02)}
+.phaseStrip .p.done{color:var(--b100);border-color:rgba(104,169,143,.4)}
+.phaseStrip .p.now{color:#0D1815;background:var(--g300);border-color:transparent;font-weight:700}
+.metric{display:flex;gap:22px;align-items:center;font-family:var(--f-mono);color:var(--paper)}
+.metric .k{font-size:10.5px;letter-spacing:2px;color:var(--slate3);display:block}
+.metric .v{font-size:26px;font-family:var(--f-display);font-weight:700;letter-spacing:.5px}
+.metric .v small{font-size:14px;color:var(--slate3)}
+
+/* main grid */
+.main{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 40%), linear-gradient(180deg,#11211C,#0D1815);border:1px solid rgba(230,223,202,.08);border-radius:22px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.03);position:relative;overflow:hidden}
+.panel .corner{position:absolute;top:14px;right:14px;font-family:var(--f-mono);font-size:10px;letter-spacing:2px;color:var(--slate5)}
+
+.scenarioStage .kicker{font-family:var(--f-mono);font-size:12.5px;letter-spacing:4px;color:var(--g300)}
+.scenarioStage h2{font-family:var(--f-display);font-size:44px;line-height:1.08;margin:8px 0 14px;letter-spacing:.2px;font-weight:700}
+.scenarioStage p{margin:0;color:var(--slate3);font-size:16px;line-height:1.55;max-width:820px}
+.axes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:22px}
+.axis{border:1px solid rgba(216,180,109,.16);border-radius:16px;padding:14px 16px;background:linear-gradient(180deg,#152922,#0D1815)}
+.axis .k{font-family:var(--f-mono);font-size:11px;letter-spacing:2.5px;color:var(--g300)}
+.axis .v{font-family:var(--f-display);font-size:28px;font-weight:700}
+.axis .bar{height:8px;background:#0B1210;border-radius:999px;margin-top:8px;overflow:hidden;border:1px solid #33413D}
+.axis .fill{height:100%;background:linear-gradient(90deg,#2F7D62,#B5D6C6);border-radius:999px}
+.axis.eco .fill{background:linear-gradient(90deg,#8E6A24,#D8B46D)}
+.axis.pre .fill{background:linear-gradient(90deg,#4E7EA7,#B5D6C6)}
+
+.leaderboard h3{margin:0 0 12px;font-family:var(--f-display);font-size:20px;letter-spacing:.4px}
+.lb{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:36px 1fr auto auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;border:1px solid rgba(230,223,202,.06);background:linear-gradient(180deg,#152922,#0F1913)}
+.row .rank{font-family:var(--f-mono);color:var(--slate3);font-size:12.5px;letter-spacing:2px}
+.row .name{font-family:var(--f-display);font-size:15.5px;font-weight:600}
+.row .name small{display:block;color:var(--slate5);font-family:var(--f-mono);font-size:10.5px;letter-spacing:1.5px;margin-top:2px;font-weight:400}
+.row .score{font-family:var(--f-mono);font-size:18px;color:var(--paper)}
+.row .flags{display:flex;gap:4px}
+.flag{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-family:var(--f-mono);font-size:9.5px;border:1px solid #33413D;color:var(--slate3);background:rgba(255,255,255,.02)}
+.flag.g{color:var(--g300);border-color:rgba(216,180,109,.55)}
+.flag.j{color:var(--b300);border-color:rgba(104,169,143,.55)}
+.flag.c{color:#E8C2A6;border-color:rgba(169,71,79,.55)}
+.row.top{border-color:rgba(216,180,109,.4);background:linear-gradient(180deg,#1C2A22,#101C18);box-shadow:inset 0 1px 0 rgba(216,180,109,.2)}
+.row.top .rank{color:var(--g300)}
+
+/* bottom rail */
+.rail{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:18px}
+.feed h4,.field h4,.stakes h4{margin:0 0 10px;font-family:var(--f-display);font-size:15px;letter-spacing:.4px;color:var(--paper)}
+.feed .fx{display:flex;flex-direction:column;gap:8px;max-height:180px;overflow:hidden}
+.fx .item{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(230,223,202,.06);font-size:12.5px;color:var(--slate3)}
+.fx .item b{color:var(--paper);font-weight:600}
+.dot{width:10px;height:10px;border-radius:3px}
+.dot.w{background:#6B87B4}.dot.n{background:#7A2A2E}.dot.u{background:#5F7284}.dot.v{background:#2F7D62}
+.fx .delta{font-family:var(--f-mono);font-size:11.5px;color:var(--slate3)}
+.fx .delta.up{color:#B5D6C6}.fx .delta.down{color:#E8C2A6}
+
+.field .radar{position:relative;height:180px}
+.stakes{display:flex;flex-direction:column;gap:10px}
+.sk{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;border:1px solid rgba(230,223,202,.06);background:rgba(255,255,255,.02)}
+.sk .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center}
+.sk .n{font-family:var(--f-display);font-size:13.5px;font-weight:600}
+.sk .m{font-family:var(--f-mono);font-size:10.5px;color:var(--slate5);letter-spacing:1.5px}
+</style>
+</head>
+<body>
+<div class="stage" role="img" aria-label="Public projector display">
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <h1>THE BAMBOO DIPLOMAT</h1>
+        <div class="sub">SITUATION ROOM · MULTIPOLAR ERA</div>
+      </div>
+    </div>
+    <div class="phaseStrip">
+      <span class="p done">R01 · CÁP QUANG</span>
+      <span class="p now">R02 · LÁ PHIẾU LƯƠNG TRI</span>
+      <span class="p">R03 · JETP TRAP</span>
+      <span class="p">FINAL · BLACK SWAN</span>
+    </div>
+    <div class="metric" aria-label="Live participation and timer">
+      <div><span class="k">ONLINE</span><span class="v">34<small> /34</small></span></div>
+      <div><span class="k">LOCKED</span><span class="v">5<small> /7</small></span></div>
+      <div><span class="k">COUNTDOWN</span><span class="v">00:38</span></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <section class="panel scenarioStage" aria-label="Scenario">
+      <span class="corner">SC-002 · UN GENERAL ASSEMBLY</span>
+      <div class="kicker">ROUND 02 · TÌNH HUỐNG LƯƠNG TRI</div>
+      <h2>Lá phiếu tại Đại hội đồng Liên Hợp Quốc</h2>
+      <p>Nghị quyết trừng phạt Quốc gia K — đối tác truyền thống — sắp được biểu quyết. Bỏ phiếu Thuận cứu thị trường xuất khẩu; bỏ phiếu Chống giữ chữ Tình; bỏ phiếu Trắng kèm Tuyên bố Lập trường là con đường Ngoại giao Cây Tre.</p>
+
+      <div class="axes" aria-label="Strategic axes for currently leading group">
+        <div class="axis"><span class="k">TỰ CHỦ · AUTONOMY</span><div class="v">72</div><div class="bar"><div class="fill" style="width:72%"></div></div></div>
+        <div class="axis eco"><span class="k">KINH TẾ · ECONOMY</span><div class="v">61</div><div class="bar"><div class="fill" style="width:61%"></div></div></div>
+        <div class="axis pre"><span class="k">UY TÍN · PRESTIGE</span><div class="v">68</div><div class="bar"><div class="fill" style="width:68%"></div></div></div>
+      </div>
+    </section>
+
+    <section class="panel leaderboard" aria-label="Leaderboard">
+      <span class="corner">LB · LIVE</span>
+      <h3>BẢNG XẾP HẠNG · STRATEGIC RESILIENCE INDEX</h3>
+      <div class="lb">
+        <div class="row top"><div class="rank">01</div><div class="name">Nhóm 03<small>CAPTAIN · MAI</small></div><div class="score">78.2</div><div class="flags"><span class="flag g">G</span></div></div>
+        <div class="row"><div class="rank">02</div><div class="name">Nhóm 05<small>CAPTAIN · LINH</small></div><div class="score">74.9</div><div class="flags"><span class="flag g">G</span><span class="flag j">J</span></div></div>
+        <div class="row"><div class="rank">03</div><div class="name">Nhóm 01<small>CAPTAIN · KHOA</small></div><div class="score">71.5</div><div class="flags"></div></div>
+        <div class="row"><div class="rank">04</div><div class="name">Nhóm 02<small>CAPTAIN · HÂN</small></div><div class="score">68.0</div><div class="flags"><span class="flag j">J</span></div></div>
+        <div class="row"><div class="rank">05</div><div class="name">Nhóm 04<small>CAPTAIN · DUY</small></div><div class="score">65.1</div><div class="flags"><span class="flag g">G</span></div></div>
+        <div class="row"><div class="rank">06</div><div class="name">Nhóm 06<small>CAPTAIN · MINH</small></div><div class="score">60.3</div><div class="flags"><span class="flag g">G</span><span class="flag c">C</span></div></div>
+        <div class="row"><div class="rank">07</div><div class="name">Nhóm 07<small>CAPTAIN · NGỌC</small></div><div class="score">58.8</div><div class="flags"><span class="flag g">G</span><span class="flag c">C</span></div></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="rail">
+    <section class="panel feed" aria-label="Reaction feed">
+      <span class="corner">STAKEHOLDER FEED</span>
+      <h4>DÒNG PHẢN ỨNG CHIẾN LƯỢC</h4>
+      <div class="fx">
+        <div class="item"><span class="dot w" aria-hidden="true"></span><div><b>Western Capital</b> · Hoan nghênh minh bạch pháp lý</div><div class="delta up">+12 UY TÍN</div></div>
+        <div class="item"><span class="dot n" aria-hidden="true"></span><div><b>Neighboring Power</b> · Áp thuế trừng phạt thương mại</div><div class="delta down">−25 KINH TẾ</div></div>
+        <div class="item"><span class="dot u" aria-hidden="true"></span><div><b>UN &amp; International Law</b> · Ghi nhận lập trường có lý, có tình</div><div class="delta up">+8 UY TÍN</div></div>
+        <div class="item"><span class="dot v" aria-hidden="true"></span><div><b>Vietnamese People</b> · Đòi tự chủ dữ liệu quốc gia</div><div class="delta up">+10 TỰ CHỦ</div></div>
+      </div>
+    </section>
+
+    <section class="panel field" aria-label="Strategic radar">
+      <span class="corner">RADAR · 7 GROUPS</span>
+      <h4>TRƯỜNG CHIẾN LƯỢC</h4>
+      <div class="radar" aria-hidden="true">
+        <svg viewBox="0 0 400 200" width="100%" height="100%">
+          <defs>
+            <radialGradient id="rg" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#2F7D62" stop-opacity=".35"/><stop offset="1" stop-color="#0D1815" stop-opacity="0"/></radialGradient>
+          </defs>
+          <ellipse cx="200" cy="120" rx="180" ry="80" fill="url(#rg)"/>
+          <g stroke="#33413D" fill="none" stroke-width=".8">
+            <polygon points="200,20 340,120 260,196 140,196 60,120"/>
+            <polygon points="200,60 300,120 246,176 154,176 100,120" opacity=".7"/>
+            <polygon points="200,90 270,120 236,162 164,162 130,120" opacity=".5"/>
+          </g>
+          <g stroke="#D8B46D" fill="none" stroke-width="1">
+            <line x1="60" y1="120" x2="340" y2="120"/>
+            <line x1="200" y1="20" x2="200" y2="196"/>
+          </g>
+          <!-- group polygons -->
+          <polygon points="200,42 300,110 250,180 158,168 108,112" fill="rgba(184,138,51,.22)" stroke="#D8B46D" stroke-width="1.4"/>
+          <polygon points="200,66 288,116 236,168 168,166 118,118" fill="rgba(47,125,98,.22)" stroke="#68A98F" stroke-width="1.4"/>
+          <polygon points="200,80 270,120 224,164 176,168 130,124" fill="rgba(78,126,167,.18)" stroke="#4E7EA7" stroke-width="1.2"/>
+          <g fill="#F3EEDC" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.6">
+            <text x="200" y="14" text-anchor="middle">TỰ CHỦ</text>
+            <text x="348" y="126">KINH TẾ</text>
+            <text x="10" y="126">UY TÍN</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="panel stakes" aria-label="Stakeholder legend">
+      <span class="corner">4 STAKEHOLDER BLOCS</span>
+      <h4>KHỐI TÁC NHÂN</h4>
+      <div class="sk"><div class="ic" style="background:linear-gradient(180deg,#182739,#0D1420);border:1px solid #6B87B4"><span style="width:14px;height:14px;background:#C7D3E5;border-radius:3px"></span></div><div><div class="n">Western Capital</div><div class="m">MINH BẠCH · IPR · CBAM</div></div></div>
+      <div class="sk"><div class="ic" style="background:linear-gradient(180deg,#2A1416,#150708);border:1px solid #7A2A2E"><span style="width:14px;height:14px;background:#E8C2A6;border-radius:3px"></span></div><div><div class="n">Neighboring Power</div><div class="m">AN NINH VÙNG BIÊN</div></div></div>
+      <div class="sk"><div class="ic" style="background:linear-gradient(180deg,#1B2229,#0D1114);border:1px solid #5F7284"><span style="width:14px;height:14px;background:#DAD6C4;border-radius:3px"></span></div><div><div class="n">UN &amp; International Law</div><div class="m">UNCLOS 1982 · UNGA</div></div></div>
+      <div class="sk"><div class="ic" style="background:linear-gradient(180deg,#152922,#0D1815);border:1px solid #2F7D62"><span style="width:14px;height:14px;background:#C7E1CE;border-radius:3px"></span></div><div><div class="n">Nhân dân &amp; DN Việt Nam</div><div class="m">VIỆC LÀM · CHỦ QUYỀN SỐ</div></div></div>
+    </section>
+  </div>
+</div>
+</body>
+</html>

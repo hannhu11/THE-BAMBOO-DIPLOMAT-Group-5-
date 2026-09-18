@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Bamboo Diplomat · Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07110E;--panel:#0D1815;--panel2:#11211C;--elev:#162A23;
+  --b700:#1C5C47;--b500:#2F7D62;--b300:#68A98F;--b100:#B5D6C6;
+  --g700:#8E6A24;--g500:#B88A33;--g300:#D8B46D;--g100:#F0DFB6;
+  --paper:#F3EEDC;--paper2:#E6DFCA;--slate3:#A8B3AF;--slate5:#6D7C77;
+  --danger:#A9474F;--warn:#C08A2E;--focus:#D4AE63;
+  --f-display:"Be Vietnam Pro","Plus Jakarta Sans",system-ui,sans-serif;
+  --f-ui:"Inter",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:#03080A;color:var(--paper);font-family:var(--f-ui);-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center;align-items:flex-start;padding:24px;min-height:100vh;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(47,125,98,.10), transparent 60%),
+    radial-gradient(800px 500px at 90% 90%, rgba(184,138,51,.08), transparent 60%),
+    #03080A;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:44px;padding:16px;
+  box-shadow: 0 40px 120px rgba(0,0,0,.55), 0 0 0 8px #0b1310, 0 0 0 9px #1a2620;
+  position:relative;overflow:hidden;
+  background-image:
+    radial-gradient(600px 300px at 50% -20%, rgba(104,169,143,.10), transparent 60%),
+    radial-gradient(400px 300px at 100% 100%, rgba(184,138,51,.06), transparent 60%);
+}
+.notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:130px;height:28px;background:#000;border-radius:20px;z-index:5}
+.shell{display:grid;grid-template-rows:auto auto 1fr auto;gap:14px;padding-top:44px;height:100%;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 4px;}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(180deg,#1C5C47,#0F3628);display:grid;place-items:center;border:1px solid #8E6A24}
+.brand .dot::before{content:"";width:4px;height:14px;background:#B5D6C6;border-radius:2px;box-shadow:6px 0 0 #68A98F,-6px 0 0 #2F7D62}
+.brand .name{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.6px}
+.brand .sub{font-family:var(--f-mono);font-size:9.5px;letter-spacing:2px;color:var(--g300)}
+.seat{font-family:var(--f-mono);font-size:11px;color:var(--slate3);border:1px solid #33413D;border-radius:999px;padding:6px 10px;background:rgba(255,255,255,.02)}
+.seat b{color:var(--paper);font-weight:600}
+
+.phase{border:1px solid rgba(216,180,109,.24);border-radius:16px;padding:12px 14px;background:linear-gradient(180deg,#11211C,#0D1815);display:flex;align-items:center;justify-content:space-between}
+.phase .pill{font-family:var(--f-mono);font-size:10.5px;color:#0D1815;background:var(--g300);padding:4px 8px;border-radius:999px;letter-spacing:1.5px}
+.phase .t{display:flex;align-items:baseline;gap:6px;font-family:var(--f-mono);color:var(--paper);font-size:18px}
+.phase .t small{color:var(--slate3);font-size:11px;letter-spacing:2px}
+
+.card-scenario{background:
+  linear-gradient(180deg, rgba(255,255,255,.02), transparent 40%),
+  linear-gradient(180deg,#162A23,#0D1815);
+  border:1px solid rgba(230,223,202,.08);border-radius:22px;padding:16px;box-shadow:0 14px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03)}
+.card-scenario .kicker{font-family:var(--f-mono);font-size:10.5px;letter-spacing:3px;color:var(--g300)}
+.card-scenario h1{font-family:var(--f-display);font-size:22px;margin:8px 0 6px;line-height:1.2;letter-spacing:.2px}
+.card-scenario p{margin:0;color:var(--slate3);font-size:13.5px;line-height:1.55}
+.read-more{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--g300);text-decoration:none;font-family:var(--f-mono);letter-spacing:1.4px}
+
+.choices{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.choice{position:relative;border:1px solid rgba(230,223,202,.08);background:linear-gradient(180deg,#162A23,#101C18);border-radius:18px;padding:14px;min-height:96px;display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:start}
+.choice .badge{width:28px;height:28px;border-radius:8px;background:#0F3628;color:var(--g300);display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;border:1px solid #8E6A24}
+.choice .body h3{margin:0;font-size:15px;font-weight:650;color:var(--paper);font-family:var(--f-display)}
+.choice .body .desc{margin-top:2px;font-size:12.5px;color:var(--slate3);line-height:1.5}
+.chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.chip{font-family:var(--f-mono);font-size:10px;letter-spacing:1.2px;padding:4px 8px;border-radius:999px;border:1px solid #33413D;color:var(--slate3);background:rgba(255,255,255,.02);display:inline-flex;gap:6px;align-items:center}
+.chip.up{color:#B5D6C6;border-color:rgba(104,169,143,.35)}
+.chip.down{color:#E8C2A6;border-color:rgba(169,71,79,.35)}
+.chip.mid{color:#DAD6C4;border-color:rgba(95,114,132,.4)}
+.choice.sel{border-color:rgba(104,169,143,.55);box-shadow:0 0 0 3px rgba(47,125,98,.18)}
+.choice .sel-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid #33413D;margin-top:6px}
+.choice.sel .sel-dot{background:radial-gradient(#F0DFB6 30%,#B88A33 70%);border-color:#8E6A24}
+
+.mechanics{margin-top:14px;display:grid;grid-template-columns:1fr;gap:10px}
+.allin{border:1px dashed rgba(216,180,109,.45);border-radius:16px;padding:12px 14px;background:linear-gradient(180deg,#182116,#0F1611);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.allin .l{display:flex;flex-direction:column}
+.allin .kicker{font-family:var(--f-mono);font-size:10px;letter-spacing:2.4px;color:var(--g300)}
+.allin .lbl{font-family:var(--f-display);font-weight:600;font-size:14px}
+.allin .sub{font-size:11.5px;color:var(--slate3);margin-top:2px}
+.toggle{width:52px;height:30px;border-radius:999px;background:#0B1512;border:1px solid #33413D;position:relative}
+.toggle .thumb{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:linear-gradient(180deg,#F0DFB6,#8E6A24);box-shadow:0 3px 8px rgba(0,0,0,.5);transition:.2s}
+.toggle.on{background:linear-gradient(180deg,#1C5C47,#0F3628);border-color:#68A98F}
+.toggle.on .thumb{left:27px}
+
+.cardsRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mini{border:1px solid #33413D;border-radius:14px;padding:10px;background:linear-gradient(180deg,#11211C,#0B1210);display:flex;flex-direction:column;gap:6px;min-height:78px}
+.mini .k{font-family:var(--f-mono);font-size:9.5px;letter-spacing:2px;color:var(--g300)}
+.mini .n{font-family:var(--f-display);font-size:12.5px;font-weight:600;line-height:1.15}
+.mini .st{font-family:var(--f-mono);font-size:9.5px;color:var(--slate5)}
+.mini.active{border-color:rgba(216,180,109,.6);box-shadow:0 0 0 2px rgba(216,180,109,.14)}
+
+.actions{position:sticky;bottom:0;padding-top:12px;background:linear-gradient(180deg,rgba(7,17,14,0),rgba(7,17,14,.96) 32%)}
+.btn{width:100%;min-height:52px;border:none;border-radius:16px;font-family:var(--f-display);font-weight:600;font-size:15.5px;letter-spacing:.4px;cursor:pointer;transition:.15s}
+.btn.primary{background:linear-gradient(180deg,#2F7D62,#1C5C47);color:#F3EEDC;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.4)}
+.btn.primary:hover{filter:brightness(1.06)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-family:var(--f-mono);font-size:10.5px;color:var(--slate5);letter-spacing:1.6px}
+.dotline{display:inline-flex;gap:4px;align-items:center}
+.dotline .d{width:6px;height:6px;border-radius:50%;background:#33413D}
+.dotline .d.on{background:#68A98F}
+</style>
+</head>
+<body>
+<div class="phone" aria-label="Player mobile mockup">
+  <div class="notch"></div>
+  <div class="shell">
+    <div class="hdr">
+      <div class="brand">
+        <div class="dot" aria-hidden="true"></div>
+        <div>
+          <div class="name">THE BAMBOO DIPLOMAT</div>
+          <div class="sub">KỶ NGUYÊN · ĐA CỰC</div>
+        </div>
+      </div>
+      <div class="seat">Nhóm <b>03</b> · Ghế <b>#02</b></div>
+    </div>
+
+    <div class="phase" aria-label="Round phase">
+      <div class="pill">ROUND · 02 / 03</div>
+      <div class="t">00:38<small>REMAIN</small></div>
+    </div>
+
+    <div class="card-scenario" role="group" aria-label="Scenario card">
+      <div class="kicker">TÌNH HUỐNG · CÁP QUANG BIỂN</div>
+      <h1>Chủ quyền dữ liệu số &amp; áp lực đa cực</h1>
+      <p>Tuyến cáp huyết mạch đứt gãy. Liên minh Siêu cường A tài trợ 100% nếu được đặt trạm trung chuyển độc quyền. Cường quốc B cảnh báo trừng phạt thương mại.</p>
+      <a class="read-more" href="#">▾ Đọc bối cảnh đầy đủ</a>
+
+      <div class="choices" role="radiogroup" aria-label="Choose an option">
+        <div class="choice" role="radio" aria-checked="false">
+          <div class="badge">A</div>
+          <div class="body">
+            <h3>Tăng tốc số ngắn hạn</h3>
+            <div class="desc">Chấp thuận Siêu cường A. Đón sóng đầu tư công nghệ.</div>
+            <div class="chips">
+              <span class="chip up">KINH TẾ +30</span>
+              <span class="chip down">TỰ CHỦ −30</span>
+              <span class="chip mid">UY TÍN ±0</span>
+            </div>
+          </div>
+          <div class="sel-dot" aria-hidden="true"></div>
+        </div>
+
+        <div class="choice" role="radio" aria-checked="false">
+          <div class="badge">B</div>
+          <div class="body">
+            <h3>Tự cô lập an toàn</h3>
+            <div class="desc">Tự đầu tư nội địa, dung lượng thấp, giữ chủ quyền tuyệt đối.</div>
+            <div class="chips">
+              <span class="chip up">TỰ CHỦ +30</span>
+              <span class="chip down">KINH TẾ −35</span>
+              <span class="chip mid">UY TÍN −5</span>
+            </div>
+          </div>
+          <div class="sel-dot" aria-hidden="true"></div>
+        </div>
+
+        <div class="choice sel" role="radio" aria-checked="true">
+          <div class="badge">C</div>
+          <div class="body">
+            <h3>Ngoại giao Cây Tre</h3>
+            <div class="desc">Đấu thầu đa phương · giữ trạm cập bờ · tuân thủ UNCLOS 1982.</div>
+            <div class="chips">
+              <span class="chip up">TỰ CHỦ +12</span>
+              <span class="chip up">KINH TẾ +10</span>
+              <span class="chip up">UY TÍN +18</span>
+            </div>
+          </div>
+          <div class="sel-dot" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="mechanics">
+        <div class="allin" aria-label="All-in strategic bet">
+          <div class="l">
+            <div class="kicker">CƯỢC TẤT TAY</div>
+            <div class="lbl">All-in · Nhân điểm ×1.35 → ×2.2</div>
+            <div class="sub">Đủ điều kiện: hạng ≥ 4. Còn <b>1</b> lượt.</div>
+          </div>
+          <div class="toggle on" aria-pressed="true"><div class="thumb"></div></div>
+        </div>
+
+        <div class="cardsRow">
+          <div class="mini">
+            <div class="k">GOLD</div>
+            <div class="n">Dĩ Bất Biến</div>
+            <div class="st">1 / 1</div>
+          </div>
+          <div class="mini active">
+            <div class="k">JADE</div>
+            <div class="n">Cầu Đồng Tồn Dị</div>
+            <div class="st">chọn nhóm 06</div>
+          </div>
+          <div class="mini">
+            <div class="k">CRIMSON</div>
+            <div class="n">Chất Vấn Đa Phương</div>
+            <div class="st">lớp: 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" aria-label="Lock decision">CHỐT QUYẾT ĐỊNH NHÓM</button>
+      <div class="foot">
+        <span>CAPTAIN LOCK · SERVER AUTHORITATIVE</span>
+        <span class="dotline" aria-label="Group members ready">
+          <span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span><span class="d on"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+/*
+ * THE BAMBOO DIPLOMAT — Design Tokens (Neo-Oriental Civic Strategy)
+ * Single source of truth for color / typography / spacing / radius / motion.
+ * Any hex/rgb outside this file in production code is a bug.
+ */
+
+:root {
+  /* Canvas & panels */
+  --bg-canvas:     #07110E;
+  --bg-panel:      #0D1815;
+  --bg-panel-2:    #11211C;
+  --bg-elevated:   #162A23;
+  --bg-scrim:      rgba(4, 10, 8, 0.72);
+
+  /* Bamboo (primary) */
+  --bamboo-900: #0F3628;
+  --bamboo-700: #1C5C47;
+  --bamboo-500: #2F7D62;
+  --bamboo-300: #68A98F;
+  --bamboo-100: #B5D6C6;
+
+  /* Gold (ceremonial accent) */
+  --gold-900: #5C4416;
+  --gold-700: #8E6A24;
+  --gold-500: #B88A33;
+  --gold-300: #D8B46D;
+  --gold-100: #F0DFB6;
+
+  /* Neutrals */
+  --ink-950:  #050807;
+  --ink-900:  #0B0E10;
+  --slate-800:#1B2521;
+  --slate-700:#33413D;
+  --slate-500:#6D7C77;
+  --slate-400:#8896911A;
+  --slate-300:#A8B3AF;
+  --slate-200:#C4CCC9;
+  --paper-100:#F3EEDC;
+  --paper-200:#E6DFCA;
+
+  /* Semantic */
+  --success: #3D8C6A;
+  --warning: #C08A2E;
+  --danger:  #A9474F;
+  --danger-strong: #8A2F37;
+  --info:    #4E7EA7;
+  --focus:   #D4AE63;
+
+  /* Stakeholder factions */
+  --fac-west-ink:      #C7D3E5;
+  --fac-west-accent:   #6B87B4;
+  --fac-neigh-ink:     #E8C2A6;
+  --fac-neigh-accent:  #7A2A2E;
+  --fac-un-ink:        #DAD6C4;
+  --fac-un-accent:     #5F7284;
+  --fac-vn-ink:        #C7E1CE;
+  --fac-vn-accent:     #2F7D62;
+
+  /* Elevation */
+  --e-1: 0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px rgba(0,0,0,0.28);
+  --e-2: 0 1px 0 rgba(255,255,255,0.04) inset, 0 14px 40px rgba(0,0,0,0.32);
+  --e-3: 0 1px 0 rgba(255,255,255,0.05) inset, 0 30px 80px rgba(0,0,0,0.42);
+
+  /* Borders */
+  --border-hair:    1px solid rgba(230,223,202,0.08);
+  --border-soft:    1px solid rgba(230,223,202,0.14);
+  --border-strong:  1px solid rgba(216,180,109,0.28);
+  --border-active:  1px solid rgba(104,169,143,0.55);
+  --border-danger:  1px solid rgba(169,71,79,0.55);
+
+  /* Radius */
+  --r-xs: 10px;
+  --r-sm: 14px;
+  --r-md: 18px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Spacing scale (4pt) */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 20px;  --s-6: 24px;  --s-8: 32px;  --s-10: 40px;
+  --s-12: 48px; --s-16: 64px; --s-20: 80px;
+
+  /* Typography — Be Vietnam Pro first-class for perfect Vietnamese diacritics */
+  --font-display: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-ui:      "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:    "IBM Plex Mono", "Space Mono", ui-monospace, monospace;
+
+  /* Motion */
+  --ease-standard: cubic-bezier(.22,.61,.36,1);
+  --ease-emphasis: cubic-bezier(.2,.7,.1,1);
+  --dur-fast:  140ms;
+  --dur-base:  220ms;
+  --dur-slow:  320ms;
+  --dur-reveal:520ms;
+
+  /* Semantic token aliases for cross-app consistency — High-Contrast & Luminous */
+  --color-bg-base: #060D0A;
+  --color-panel-base: #0B1713;
+  --color-panel-translucent: rgba(11, 23, 19, 0.85);
+  --color-panel-elevated: #132620;
+  --color-paper-light: #FFFFFF;
+  --color-paper-subtle: #F1F5F3;
+  --color-slate-200: #E2E8F0;
+  --color-slate-300: #CBD5E1;
+  --color-slate-400: #94A3B8;
+  --color-slate-500: #64748B;
+  --color-gold-100: #FEF3C7;
+  --color-gold-300: #F3CA68;
+  --color-gold-400: #E5B842;
+  --color-gold-500: #D4A325;
+  --color-gold-700: #A17510;
+  --color-bamboo-100: #D1FAE5;
+  --color-bamboo-300: #6EE7B7;
+  --color-bamboo-500: #10B981;
+  --color-bamboo-700: #047857;
+  --color-bamboo-900: #064E3B;
+  --color-crimson: #EF4444;
+  --color-crimson-glow: rgba(239, 68, 68, 0.25);
+  --color-gold-glow: rgba(243, 202, 104, 0.25);
+  --color-bamboo-glow: rgba(16, 185, 129, 0.25);
+  --color-hairline: rgba(255, 255, 255, 0.12);
+  --color-hairline-gold: rgba(243, 202, 104, 0.28);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --motion-fast: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-reveal: 0ms;
+  }
+}

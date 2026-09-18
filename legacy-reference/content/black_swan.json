@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "events": [
+    {
+      "id": "bs_semi",
+      "title": "Đứt gãy chuỗi cung ứng bán dẫn toàn cầu",
+      "banner": "BLACK SWAN — Bán dẫn dừng xuất khẩu 90 ngày",
+      "narrative": "Một cuộc khủng hoảng địa chính trị bất ngờ khiến các fab bán dẫn hàng đầu tạm dừng xuất khẩu. Nền kinh tế nào phụ thuộc ngoại lực nặng sẽ chao đảo.",
+      "rules": [
+        { "if": "autonomy < 40",  "then": { "economy": -20, "prestige":  -5 } },
+        { "if": "autonomy >= 70", "then": { "economy": 10, "prestige": 5 } }
+      ],
+      "wisdom": "Nội lực là quyết định. Ngoại lực là quan trọng."
+    },
+    {
+      "id": "bs_energy",
+      "title": "Khủng hoảng năng lượng châu Á",
+      "banner": "BLACK SWAN — Giá khí đốt tăng 300%",
+      "narrative": "Đường ống khí đốt xuyên khu vực bị gián đoạn đột ngột. Các nền kinh tế phụ thuộc nhập khẩu năng lượng chịu cú sốc lớn.",
+      "rules": [
+        { "if": "any_choice_A_on:sc3", "then": { "economy": -18, "autonomy": -8 } },
+        { "if": "any_choice_C_on:sc3", "then": { "economy": 8, "prestige": 5 } }
+      ],
+      "wisdom": "Chuyển dịch năng lượng phải phù hợp năng lực tự thân."
+    },
+    {
+      "id": "bs_maritime",
+      "title": "Va chạm hàng hải quốc tế",
+      "banner": "BLACK SWAN — Tuyến hàng hải chiến lược bị phong toả",
+      "narrative": "Va chạm gần eo biển trọng yếu khiến giao thương ngưng trệ. Nước nào nghiêng hẳn về 1 cực sẽ bị áp lực.",
+      "rules": [
+        { "if": "prestige < 45", "then": { "economy": -12 } },
+        { "if": "prestige >= 65 && autonomy >= 55", "then": { "prestige": 10, "economy": 5 } }
+      ],
+      "wisdom": "Ngoại giao cân bằng là chiếc phao lúc bão."
+    },
+    {
+      "id": "bs_cyber",
+      "title": "Tấn công mạng quy mô lớn vào hạ tầng số",
+      "banner": "BLACK SWAN — Zero-day tấn công lưới điện + ngân hàng",
+      "narrative": "Chuỗi tấn công mạng phối hợp nhắm vào hạ tầng dữ liệu. Nước nào không giữ chủ quyền dữ liệu sẽ chịu tổn thất lớn.",
+      "rules": [
+        { "if": "any_choice_A_on:sc1", "then": { "autonomy": -15, "economy": -10 } },
+        { "if": "any_choice_C_on:sc1", "then": { "autonomy": 8, "prestige": 8 } }
+      ],
+      "wisdom": "Chủ quyền dữ liệu là chủ quyền quốc gia thời số."
+    }
+  ]
+}

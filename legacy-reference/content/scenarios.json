@@ -1,0 +1,154 @@
+{
+  "version": "1.0.0",
+  "timerSec": 45,
+  "revealSec": 20,
+  "scenarios": [
+    {
+      "id": "sc1",
+      "order": 1,
+      "title": "Cáp quang biển và Chủ quyền dữ liệu số",
+      "principle": "5.2.3 · Nguyên tắc độc lập, tự chủ, tự lực cánh sinh",
+      "citation": "Giáo trình HCM 2021, tr.170–185 · UNCLOS 1982 (C1, C3, C9)",
+      "context": "Tuyến cáp quang biển huyết mạch kết nối quốc tế của Việt Nam bị đứt gãy nghiêm trọng. Một liên minh công nghệ do Siêu cường A dẫn đầu đề xuất tài trợ 100% chi phí xây dựng tuyến cáp thế hệ mới tốc độ cực cao, với điều kiện đặt trạm trung chuyển dữ liệu độc quyền trên lãnh thổ Việt Nam và miễn trừ kiểm toán an ninh mạng. Cường quốc B lập tức cảnh báo hành động này đe dọa an ninh vùng biên và tuyên bố sẽ hạn chế xuất nhập khẩu nếu Việt Nam đồng ý.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Tăng tốc số — nhận trọn gói tài trợ Siêu cường A",
+          "hint": "Kinh tế bứt phá, nhưng đánh đổi tự chủ dữ liệu.",
+          "reactions": {
+            "west":      { "delta": { "autonomy": -8,  "economy": 30, "prestige": 5 }, "text": "Hoan nghênh Việt Nam gia nhập trục minh bạch dữ liệu." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy": -25, "prestige":  -8 }, "text": "Áp thuế đáp trả — cảnh báo bao vây chiến lược." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige":  -5 }, "text": "Quan ngại về tính minh bạch của điều khoản miễn trừ kiểm toán." },
+            "vn_people": { "delta": { "autonomy": -22, "economy": 5, "prestige":   0 }, "text": "Phản đối dữ dội vì rủi ro lộ lọt dữ liệu quốc gia." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Tự cô lập an toàn — dùng ngân sách công tự kéo cáp",
+          "hint": "Tự chủ tuyệt đối, nhưng ngân sách cạn kiệt.",
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": -20, "prestige":  -5 }, "text": "FDI công nghệ dịch chuyển sang thị trường khác." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy": 5, "prestige":   0 }, "text": "Trung tính — không phản đối." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige":   0 }, "text": "Không ý kiến — nội bộ Việt Nam quyết." },
+            "vn_people": { "delta": { "autonomy": 30, "economy": -15, "prestige":   0 }, "text": "Ủng hộ tinh thần tự lực nhưng lo ngại kinh tế chậm nhịp." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây tre — mở gói thầu đa phương, giữ trạm cập bờ",
+          "hint": "Cân bằng dài hạn. Bám nguyên tắc 5.2.3.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": 12, "prestige": 8 }, "text": "Chấp nhận tham gia đấu thầu công khai." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy": 5, "prestige": 3 }, "text": "Nhẹ nhõm — có cửa tham gia." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige": 12 }, "text": "Hoan nghênh việc tôn trọng UNCLOS 1982." },
+            "vn_people": { "delta": { "autonomy": 18, "economy": 8, "prestige": 5 }, "text": "Tin tưởng vào chủ quyền dữ liệu quốc gia." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Muốn người ta giúp cho thì trước hết phải tự giúp lấy mình.",
+        "source": "Hồ Chí Minh Toàn tập, tập 5 (cần Bạn 2 verify số trang chính xác)"
+      }
+    },
+
+    {
+      "id": "sc2",
+      "order": 2,
+      "title": "Lá phiếu lương tri tại Đại hội đồng LHQ",
+      "principle": "5.2.3 · Đoàn kết có lý, có tình",
+      "citation": "Giáo trình HCM 2021, tr.170–185 · Hiến chương LHQ (C2, C6)",
+      "context": "Đại hội đồng Liên Hợp Quốc chuẩn bị bỏ phiếu một Nghị quyết áp đặt trừng phạt kinh tế toàn diện và cô lập ngoại giao đối với Quốc gia K — một đối tác truyền thống từng viện trợ to lớn cho Việt Nam trong lịch sử — do K vừa có hành động can thiệp quân sự vào nước láng giềng.",
+      "note": "Tình huống mô phỏng học thuật — không phản ánh lập trường chính thức của bất kỳ chủ thể nào.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Bỏ phiếu THUẬN — theo đa số phương Tây",
+          "hint": "Bảo vệ xuất khẩu, nhưng mất chữ 'Tình'.",
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": 20, "prestige": 8 }, "text": "Đánh giá cao lập trường có trách nhiệm." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy":   0, "prestige":  -5 }, "text": "Trung tính." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige": 8 }, "text": "Ủng hộ giải pháp đa phương." },
+            "vn_people": { "delta": { "autonomy":  -5, "economy": 5, "prestige": -18 }, "text": "Bức xúc vì phản bội đạo lý với bạn bè cũ." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Bỏ phiếu CHỐNG — trung thành tuyệt đối với đồng minh cũ",
+          "hint": "Giữ chữ 'Tình' nhưng chịu đòn trừng phạt thứ cấp.",
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": -28, "prestige": -12 }, "text": "Chuẩn bị các biện pháp trừng phạt thứ cấp." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy": 5, "prestige":   0 }, "text": "Ghi nhận, không thay đổi." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige":  -8 }, "text": "Băn khoăn về việc dung túng vi phạm luật QT." },
+            "vn_people": { "delta": { "autonomy": 8, "economy": -10, "prestige": 5 }, "text": "Ủng hộ đạo lý nhưng lo lạm phát." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Bỏ phiếu TRẮNG + Tuyên bố lập trường 'có lý, có tình'",
+          "hint": "Giữ vững nguyên tắc pháp lý, giữ trọn đạo lý.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": 5, "prestige": 5 }, "text": "Hiểu và tôn trọng nguyên tắc trung lập tích cực." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy":   0, "prestige": 3 }, "text": "Không phản đối — ghi nhận nỗ lực ngoại giao." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige": 18 }, "text": "Đánh giá cao việc kiên định luật pháp quốc tế + cứu trợ nhân đạo." },
+            "vn_people": { "delta": { "autonomy": 10, "economy":   0, "prestige": 12 }, "text": "Tự hào về đường lối ngoại giao 'có lý, có tình'." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Đoàn kết quốc tế phải trên cơ sở có lý, có tình.",
+        "source": "Giáo trình Tư tưởng Hồ Chí Minh 2021, mục 5.2.3 (Bạn 2 verify)"
+      }
+    },
+
+    {
+      "id": "sc3",
+      "order": 3,
+      "title": "Bẫy tài chính Chuyển đổi năng lượng xanh (JETP)",
+      "principle": "5.3.3 · Nội lực là quyết định, ngoại lực là quan trọng",
+      "citation": "Giáo trình HCM 2021, mục 5.3.3 · JETP Việt Nam 12/2022 (C7, P1, P5)",
+      "context": "Một liên minh tài chính quốc tế đề nghị gói tài trợ 15,5 tỷ USD hỗ trợ Việt Nam đóng cửa toàn bộ nhà máy nhiệt điện than trước năm 2035. Điều kiện giải ngân: 70% vốn là các khoản vay thương mại lãi suất thả nổi, kèm điều khoản chuyển giao quyền giám sát và định giá thị trường điện cho một tổ chức tư vấn quốc tế.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Ký ngay — đạt danh hiệu tiên phong xanh",
+          "hint": "Uy tín môi trường tăng vọt, nhưng vướng bẫy nợ.",
+          "reactions": {
+            "west":      { "delta": { "autonomy": -5,  "economy": 18, "prestige": 15 }, "text": "Hoan nghênh cam kết Net-zero." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy":   0, "prestige":   0 }, "text": "Không phản đối." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige": 8 }, "text": "Đánh giá cao cam kết khí hậu." },
+            "vn_people": { "delta": { "autonomy": -30, "economy": -12, "prestige":   0 }, "text": "Lo ngại mất chủ quyền điều độ lưới điện." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Hủy cam kết, giữ than rẻ",
+          "hint": "Sản xuất ổn định, nhưng bị hàng rào CBAM.",
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": -22, "prestige": -18 }, "text": "Áp thuế carbon biên giới, đưa vào danh sách chú ý." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy": 8, "prestige":   0 }, "text": "Không phản đối." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige": -10 }, "text": "Nhắc nhở cam kết COP26." },
+            "vn_people": { "delta": { "autonomy": 5, "economy": 8, "prestige":   0 }, "text": "Ủng hộ giữ giá điện, lo dài hạn." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Tái đàm phán — tăng viện trợ không hoàn lại + giữ điều độ lưới",
+          "hint": "'Nội lực quyết định — ngoại lực quan trọng'.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy":  0,  "economy": 8, "prestige": 5 }, "text": "Ghi nhận nỗ lực đàm phán có trách nhiệm." },
+            "neighbor":  { "delta": { "autonomy":  0,  "economy":   0, "prestige":   0 }, "text": "Trung tính." },
+            "un":        { "delta": { "autonomy":  0,  "economy":   0, "prestige": 10 }, "text": "Hoan nghênh lộ trình phù hợp năng lực quốc gia." },
+            "vn_people": { "delta": { "autonomy": 22, "economy": 8, "prestige": 8 }, "text": "Tin tưởng chiến lược cân bằng." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Kết hợp sức mạnh dân tộc với sức mạnh thời đại; lấy nội lực làm quyết định, ngoại lực là quan trọng.",
+        "source": "Giáo trình Tư tưởng Hồ Chí Minh 2021, mục 5.3.3 (Bạn 2 verify)"
+      }
+    }
+  ]
+}

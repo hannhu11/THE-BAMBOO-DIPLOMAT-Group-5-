@@ -1,0 +1,21 @@
+{
+  "name": "the-bamboo-diplomat",
+  "private": true,
+  "version": "1.0.0",
+  "description": "THE BAMBOO DIPLOMAT — Kỷ Nguyên Đa Cực (HCM202 Strategic Crisis Simulation)",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "vitest run",
+    "check-secrets": "bash legacy-reference/scripts/check-secrets.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.13",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.1"
+  }
+}
