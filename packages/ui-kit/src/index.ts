@@ -12,3 +12,4 @@ export * from './DecryptedText';
 export * from './SovereigntyRadar';
 export * from './TacticalCard';
 export * from './Sigils';
+export * from './BrandLogo';

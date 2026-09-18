@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Button, Panel, StatusPill, Timer, Icon, VolumeToggle, audioEngine } from '@bamboo/ui-kit';
+import { Button, Panel, StatusPill, Timer, Icon, VolumeToggle, audioEngine, BrandLogoMark } from '@bamboo/ui-kit';
 
 export function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('bamboo_gm_token'));
@@ -232,11 +232,12 @@ export function App() {
   if (!token) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#03080A' }}>
-        <Panel variant="elevated" style={{ width: 400, padding: 30 }}>
+        <Panel variant="elevated" style={{ width: 420, padding: 32, textAlign: 'center' }}>
+          <BrandLogoMark size={56} style={{ margin: '0 auto 12px' }} />
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-gold-300)', letterSpacing: 2 }}>
             SITUATION ROOM · GM CONSOLE
           </div>
-          <h2 style={{ fontFamily: 'var(--font-display)', margin: '8px 0 20px' }}>Đăng nhập Quản trò</h2>
+          <h2 style={{ fontFamily: 'var(--font-display)', margin: '8px 0 20px', color: '#F3EEDC' }}>Đăng nhập Quản trò</h2>
 
           {loginError && (
             <div style={{ color: 'var(--color-crimson)', fontSize: 13, marginBottom: 12 }}>
@@ -244,7 +245,7 @@ export function App() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14, textAlign: 'left' }}>
             <div>
               <label style={{ fontSize: 12, color: 'var(--color-slate-300)' }}>Mật khẩu Quản trò (GM Secret)</label>
               <input
@@ -277,13 +278,11 @@ export function App() {
     <div className="stage">
       {/* Left Sidebar */}
       <aside className="side">
-        <div className="brand">
-          <div className="brand-m">
-            <Icon name="lock" size={20} />
-          </div>
+        <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <BrandLogoMark size={36} />
           <div>
-            <h1 className="brand-h1">GM CONSOLE</h1>
-            <div className="brand-s">SITUATION ROOM · v1.0</div>
+            <h1 className="brand-h1" style={{ fontSize: 16, margin: 0, color: '#F3EEDC' }}>GM CONSOLE</h1>
+            <div className="brand-s" style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#D8B46D', letterSpacing: 1.5 }}>SITUATION ROOM · v1.0</div>
           </div>
         </div>
 

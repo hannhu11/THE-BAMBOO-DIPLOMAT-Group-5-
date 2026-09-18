@@ -12,7 +12,137 @@ import {
   SigilNeighbor,
   SigilUN,
   SigilVN,
+  BrandLogoLockup,
 } from '@bamboo/ui-kit';
+
+interface IntelCable {
+  faction: string;
+  sigil: React.ComponentType<{ size?: number }>;
+  code: string;
+  tag: string;
+  tagColor: string;
+  borderColor: string;
+  text: string;
+}
+
+const INTEL_FEEDS: Record<string, IntelCable[]> = {
+  sc1: [
+    {
+      faction: 'WESTERN · MARITIME & TECH ALLIANCE',
+      sigil: SigilWest,
+      code: 'CABLE #W-811',
+      tag: 'ÁP LỰC FONOP & CÁP',
+      tagColor: '#93C5FD',
+      borderColor: 'rgba(107,135,180,0.35)',
+      text: 'Đề xuất tài trợ toàn phần tuyến cáp quang tốc độ cao; yêu cầu trạm cập bờ độc quyền và quyền miễn trừ kiểm toán an ninh mạng quốc gia.',
+    },
+    {
+      faction: 'NEIGHBORING · REGIONAL SECURITY',
+      sigil: SigilNeighbor,
+      code: 'DISPATCH #N-402',
+      tag: 'CẢNH BÁO ĐỊA CHÍNH TRỊ',
+      tagColor: '#FCA5A5',
+      borderColor: 'rgba(138,47,55,0.4)',
+      text: 'Cảnh báo nguy cơ mất cân bằng an ninh khu vực; chuẩn bị phương án siết chặt thông quan biên mậu nếu Việt Nam thỏa hiệp độc quyền với bên thứ ba.',
+    },
+    {
+      faction: 'UNITED NATIONS · UNCLOS TRIBUNAL',
+      sigil: SigilUN,
+      code: 'BRIEF #UN-109',
+      tag: 'THƯỢNG TÔN LUẬT PHÁP',
+      tagColor: '#FDE68A',
+      borderColor: 'rgba(216,180,109,0.35)',
+      text: 'Nhấn mạnh Công ước LHQ về Luật Biển (UNCLOS 1982) bảo đảm quyền tự chủ vùng đặc quyền kinh tế và tính mở của hạ tầng cáp ngầm quốc tế.',
+    },
+    {
+      faction: 'VIETNAMESE CITIZENS · SOVEREIGN WILL',
+      sigil: SigilVN,
+      code: 'MEMO #VN-DOMESTIC',
+      tag: 'TỰ CHỦ DỮ LIỆU SỐ',
+      tagColor: '#86EFAC',
+      borderColor: 'rgba(47,125,98,0.4)',
+      text: 'Ý chí toàn dân kiên định: Chủ quyền không gian số là bộ phận bất khả xâm phạm của chủ quyền quốc gia — Độc lập, tự chủ, tự lực cánh sinh.',
+    },
+  ],
+  sc2: [
+    {
+      faction: 'WESTERN · DIPLOMATIC BLOC',
+      sigil: SigilWest,
+      code: 'CABLE #W-923',
+      tag: 'VẬN ĐỘNG HÀNH LANG',
+      tagColor: '#93C5FD',
+      borderColor: 'rgba(107,135,180,0.35)',
+      text: 'Đại sứ quán phương Tây tăng cường tiếp xúc song phương; thúc đẩy bỏ phiếu Thuận nhằm cô lập Quốc gia K và đe dọa các biện pháp trừng phạt thứ cấp.',
+    },
+    {
+      faction: 'NEIGHBORING & HISTORIC PARTNERS',
+      sigil: SigilNeighbor,
+      code: 'DISPATCH #N-518',
+      tag: 'QUAN SÁT LẬP TRƯỜNG',
+      tagColor: '#FCA5A5',
+      borderColor: 'rgba(138,47,55,0.4)',
+      text: 'Theo dõi chặt chẽ tiến trình bỏ phiếu tại New York; ghi nhận sự ủng hộ truyền thống và khuyến cáo thận trọng trước tiền lệ can thiệp đơn phương.',
+    },
+    {
+      faction: 'UN GENERAL ASSEMBLY · SECRETARIAT',
+      sigil: SigilUN,
+      code: 'BRIEF #UN-244',
+      tag: 'CỨU TRỢ NHÂN ĐẠO',
+      tagColor: '#FDE68A',
+      borderColor: 'rgba(216,180,109,0.35)',
+      text: 'Chủ tịch ĐHĐ kêu gọi các bên ngừng bắn ngay lập tức, mở hành lang nhân đạo và giải quyết tranh chấp bằng đàm phán trên nền tảng Hiến chương LHQ.',
+    },
+    {
+      faction: 'VIETNAMESE CITIZENS · MORAL FIBER',
+      sigil: SigilVN,
+      code: 'MEMO #VN-ETHICS',
+      tag: 'CÓ LÝ, CÓ TÌNH',
+      tagColor: '#86EFAC',
+      borderColor: 'rgba(47,125,98,0.4)',
+      text: 'Truyền thống nghĩa tình thủy chung với bạn bè quốc tế song hành cùng lòng tôn trọng công lý quốc tế — Kiên quyết không chọn phe, chọn chính nghĩa.',
+    },
+  ],
+  sc3: [
+    {
+      faction: 'WESTERN · JETP FINANCIAL CONSORTIUM',
+      sigil: SigilWest,
+      code: 'CABLE #W-775',
+      tag: 'ĐIỀU KIỆN TÍN DỤNG',
+      tagColor: '#93C5FD',
+      borderColor: 'rgba(107,135,180,0.35)',
+      text: 'Đề xuất 15,5 tỷ USD chuyển đổi xanh nhưng 70% là vay thương mại lãi suất nổi; yêu cầu quyền giám sát và định giá thị trường điều độ điện lực.',
+    },
+    {
+      faction: 'NEIGHBORING · ENERGY ALLIANCE',
+      sigil: SigilNeighbor,
+      code: 'DISPATCH #N-331',
+      tag: 'AN NINH NĂNG LƯỢNG',
+      tagColor: '#FCA5A5',
+      borderColor: 'rgba(138,47,55,0.4)',
+      text: 'Sẵn sàng ký kết thỏa thuận cung ứng nhiên liệu phụ trợ và chuyển giao công nghệ điện sạch khu vực nếu các điều kiện JETP gây bất lợi cho Việt Nam.',
+    },
+    {
+      faction: 'UN FRAMEWORK CONVENTION (UNFCCC)',
+      sigil: SigilUN,
+      code: 'BRIEF #UN-502',
+      tag: 'CÔNG BẰNG KHÍ HẬU',
+      tagColor: '#FDE68A',
+      borderColor: 'rgba(216,180,109,0.35)',
+      text: 'Nhắc lại nguyên tắc "Trách nhiệm chung nhưng có phân biệt"; tài chính khí hậu quốc tế phải là trách nhiệm hỗ trợ không hoàn lại, không tạo gánh nặng nợ.',
+    },
+    {
+      faction: 'VIETNAMESE CITIZENS & SCIENTISTS',
+      sigil: SigilVN,
+      code: 'MEMO #VN-ENERGY',
+      tag: 'NỘI LỰC LÀ THEN CHỐT',
+      tagColor: '#86EFAC',
+      borderColor: 'rgba(47,125,98,0.4)',
+      text: 'Giữ vững an ninh năng lượng là xương sống phát triển quốc gia; kết hợp sức mạnh dân tộc với sức mạnh thời đại — Nội lực quyết định, ngoại lực là quan trọng.',
+    },
+  ],
+};
+
+const DEFAULT_INTEL_FEEDS: IntelCable[] = INTEL_FEEDS['sc1']!;
 
 export function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -100,18 +230,14 @@ export function App() {
     return () => clearInterval(interval);
   }, [session?.status, remainingSec]);
 
+  const activeCables: IntelCable[] = (scenario?.id && INTEL_FEEDS[scenario.id]) ? INTEL_FEEDS[scenario.id]! : DEFAULT_INTEL_FEEDS;
+
   return (
     <div className="stage" role="img" aria-label="Public situation room projector display">
       {/* Top Bar */}
       <header className="topbar">
-        <div className="brand">
-          <div className="brand-mark">
-            <Icon name="autonomy" size={24} />
-          </div>
-          <div>
-            <h1 className="brand-h1">THE BAMBOO DIPLOMAT</h1>
-            <div className="brand-sub">SITUATION ROOM · MULTIPOLAR ERA</div>
-          </div>
+        <div className="brand" style={{ display: 'flex', alignItems: 'center' }}>
+          <BrandLogoLockup height={42} subtitle="KỶ NGUYÊN ĐA CỰC · PHÒNG TÁC CHIẾN CHIẾN LƯỢC" />
         </div>
 
         <div className="phase-strip">
@@ -237,8 +363,8 @@ export function App() {
           </div>
 
           <SovereigntyRadar
-            width={340}
-            height={340}
+            width={260}
+            height={260}
             isCrisis={Boolean(blackSwanBanner)}
           />
 
@@ -298,13 +424,19 @@ export function App() {
                     {isFirst ? 'TOP 1' : `0${item.rank}`}
                   </div>
                   <div>
-                    <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: '#FFFFFF' }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14.5, color: '#FFFFFF' }}>
                       {item.groupId} · {faction}
                     </div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#94A3B8', letterSpacing: 0.5, marginTop: 2 }}>
-                      <span style={{ color: '#86EFAC' }}>TC: {item.axes?.autonomy}</span> ·{' '}
-                      <span style={{ color: '#FDE047' }}>KT: {item.axes?.economy}</span> ·{' '}
-                      <span style={{ color: '#7DD3FC' }}>UT: {item.axes?.prestige}</span>
+                    <div style={{ display: 'flex', gap: 6, marginTop: 3, alignItems: 'center' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(16, 185, 129, 0.18)', border: '1px solid rgba(16, 185, 129, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#86EFAC' }}>
+                        <span style={{ fontSize: 9, opacity: 0.8 }}>TC</span> {item.axes?.autonomy ?? 50}
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(245, 158, 11, 0.18)', border: '1px solid rgba(245, 158, 11, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#FDE047' }}>
+                        <span style={{ fontSize: 9, opacity: 0.8 }}>KT</span> {item.axes?.economy ?? 50}
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(56, 189, 248, 0.18)', border: '1px solid rgba(56, 189, 248, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#7DD3FC' }}>
+                        <span style={{ fontSize: 9, opacity: 0.8 }}>UT</span> {item.axes?.prestige ?? 50}
+                      </span>
                     </div>
                   </div>
                   <div
@@ -348,60 +480,77 @@ export function App() {
           </div>
         ) : (
           <>
-            <Panel variant="standard" style={{ padding: '12px 14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: 2, color: 'var(--color-gold-300)', fontWeight: 700 }}>
-                  PHẢN ỨNG QUỐC TẾ (REACTION FEED)
+            {/* Live Strategic Intelligence Wire */}
+            <Panel variant="standard" style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: 2, color: 'var(--color-gold-300)', fontWeight: 700 }}>
+                  PHẢN ỨNG QUỐC TẾ & ĐIỆN MẬT TÌNH BÁO
                 </span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: '#10B981', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5, color: '#10B981', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px #10B981' }} />
-                  TÌNH BÁO
+                  ĐIỆN MẬT 24/7
                 </span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 8, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(107,135,180,0.2)' }}>
-                  <SigilWest size={26} />
-                  <div style={{ fontSize: 11.5, color: 'var(--color-slate-300)', lineHeight: 1.35 }}>
-                    <b style={{ color: '#C7D3E5' }}>Phương Tây:</b> Giám sát tự do hàng hải & quyền khai thác trạm cáp biển.
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 8, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(138,47,55,0.25)' }}>
-                  <SigilNeighbor size={26} />
-                  <div style={{ fontSize: 11.5, color: 'var(--color-slate-300)', lineHeight: 1.35 }}>
-                    <b style={{ color: '#E8C2A6' }}>Láng Giềng:</b> Cảnh báo nguy cơ mất thăng bằng nếu ký kết liên minh quân sự.
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 8, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(95,114,132,0.25)' }}>
-                  <SigilUN size={26} />
-                  <div style={{ fontSize: 11.5, color: 'var(--color-slate-300)', lineHeight: 1.35 }}>
-                    <b style={{ color: '#DAD6C4' }}>Liên Hợp Quốc:</b> Đề xuất giải quyết hòa bình trên cơ sở UNCLOS 1982.
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 8, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(47,125,98,0.3)' }}>
-                  <SigilVN size={26} />
-                  <div style={{ fontSize: 11.5, color: 'var(--color-slate-300)', lineHeight: 1.35 }}>
-                    <b style={{ color: '#C7E1CE' }}>Nhân Dân VN:</b> Kiên định ngoại giao Cây Tre — Giữ độc lập, chủ quyền là trên hết.
-                  </div>
-                </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, flex: 1 }}>
+                {activeCables.map((cable, idx) => {
+                  const SigilComp = cable.sigil;
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        gap: 2,
+                        padding: '4px 8px',
+                        borderRadius: 6,
+                        background: 'rgba(255,255,255,0.02)',
+                        border: `1px solid ${cable.borderColor}`,
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <SigilComp size={16} />
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: '#E2E8F0', letterSpacing: 0.2 }}>
+                            {cable.faction}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: '#94A3B8' }}>{cable.code}</span>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 7.5, fontWeight: 700, color: cable.tagColor, background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: 3 }}>
+                            {cable.tag}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 10, color: '#CBD5E1', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {cable.text}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </Panel>
 
-            <Panel variant="standard">
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: 2, color: 'var(--color-gold-300)', marginBottom: 8 }}>
+            <Panel variant="standard" style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 2, color: 'var(--color-gold-300)', marginBottom: 4, fontWeight: 700 }}>
                 NGUYÊN TẮC NGOẠI GIAO HỒ CHÍ MINH
               </div>
-              <div style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--color-paper-light)', lineHeight: 1.6 }}>
-                "Dĩ bất biến, ứng vạn biến. Thực lực là cái chiêng mà ngoại giao là cái tiếng, chiêng có to tiếng mới lớn."
+              <div style={{ fontSize: 12, fontStyle: 'italic', color: 'var(--color-paper-light)', lineHeight: 1.5 }}>
+                "{scenario?.wisdom?.quote || 'Dĩ bất biến, ứng vạn biến. Thực lực là cái chiêng mà ngoại giao là cái tiếng, chiêng có to tiếng mới lớn.'}"
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--color-gold-300)', marginTop: 4, opacity: 0.85 }}>
+                {scenario?.wisdom?.source || 'Hồ Chí Minh Toàn tập'}
               </div>
             </Panel>
 
-            <Panel variant="standard">
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: 2, color: 'var(--color-gold-300)', marginBottom: 8 }}>
-                TIẾN ĐỘ BIỂU QUYẾT
+            <Panel variant="standard" style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 2, color: 'var(--color-gold-300)', marginBottom: 4, fontWeight: 700 }}>
+                TRẠM TÁC CHIẾN HỆ THỐNG
               </div>
-              <div style={{ fontSize: 13, color: 'var(--color-slate-300)' }}>
-                <div>Số nhóm đã khóa phiếu: <b>{leaderboard.length}/7</b></div>
-                <div style={{ marginTop: 6 }}>Tất cả các quyết định được xử lý tập trung trên Server 2 OCI.</div>
+              <div style={{ fontSize: 11.5, color: 'var(--color-slate-300)', lineHeight: 1.5 }}>
+                <div>Đã khóa phiếu: <b style={{ color: '#86EFAC', fontFamily: 'var(--font-mono)', fontSize: 13 }}>{leaderboard.length}/7</b> nhóm</div>
+                <div style={{ color: '#94A3B8', marginTop: 2, fontSize: 11 }}>Trực tuyến: <b>{presence.onlineSeats}/34</b> đại biểu</div>
+                <div style={{ color: '#64748B', marginTop: 2, fontSize: 9.5, fontFamily: 'var(--font-mono)' }}>Server 2 OCI · Đồng bộ thời gian thực</div>
               </div>
             </Panel>
           </>

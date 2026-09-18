@@ -109,6 +109,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
   const [glintY, setGlintY] = useState(50);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalFace, setModalFace] = useState<'front' | 'back'>('front');
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (compact || status === 'spent') return;
@@ -213,7 +214,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
           </div>
         </div>
 
-        {/* Modal Xem Cận Cảnh & Kích Hoạt Thẻ */}
+        {/* Modal Xem Cận Cảnh & Kích Hoạt Thẻ (Khắc phục triệt để lỗi che thẻ, hỗ trợ lật 2 mặt) */}
         {isModalOpen && (
           <div
             style={{
@@ -223,10 +224,11 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: 16,
+              padding: '16px',
               background: 'rgba(3, 8, 6, 0.88)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
+              overflowY: 'auto',
             }}
             onClick={() => setIsModalOpen(false)}
           >
@@ -234,112 +236,204 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
               style={{
                 position: 'relative',
                 width: '100%',
-                maxWidth: 340,
+                maxWidth: 350,
+                maxHeight: '90vh',
+                overflowY: 'auto',
                 borderRadius: 24,
-                padding: 22,
+                padding: '20px 20px',
                 border: `1.5px solid ${meta.colors.border}`,
                 background: meta.colors.bg,
                 boxShadow: `0 25px 60px rgba(0,0,0,0.85), 0 0 35px ${meta.colors.glow}`,
+                display: 'flex',
+                flexDirection: 'column',
+                boxSizing: 'border-box',
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                style={{
-                  position: 'absolute',
-                  top: 14,
-                  right: 14,
-                  width: 32,
-                  height: 32,
-                  borderRadius: '50%',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  background: 'rgba(255,255,255,0.05)',
-                  color: '#CBD5E1',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                }}
-              >
-                ✕
-              </button>
+              {/* Top Controls: Face Switcher & Close */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      audioEngine.playCardFlip();
+                      setModalFace('front');
+                    }}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: 6,
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono, monospace)',
+                      fontWeight: 700,
+                      border: modalFace === 'front' ? `1px solid ${meta.colors.border}` : '1px solid rgba(255,255,255,0.1)',
+                      background: modalFace === 'front' ? 'rgba(216, 180, 109, 0.2)' : 'rgba(255,255,255,0.03)',
+                      color: modalFace === 'front' ? '#F3CA68' : '#94A3B8',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    MẶT TRƯỚC
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      audioEngine.playCardFlip();
+                      setModalFace('back');
+                    }}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: 6,
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono, monospace)',
+                      fontWeight: 700,
+                      border: modalFace === 'back' ? `1px solid ${meta.colors.border}` : '1px solid rgba(255,255,255,0.1)',
+                      background: modalFace === 'back' ? 'rgba(216, 180, 109, 0.2)' : 'rgba(255,255,255,0.03)',
+                      color: modalFace === 'back' ? '#F3CA68' : '#94A3B8',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ĐIỂN TÍCH BÁC HỒ
+                  </button>
+                </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <span
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
                   style={{
-                    fontSize: 9.5,
-                    fontFamily: 'var(--font-mono, monospace)',
-                    padding: '3px 8px',
-                    borderRadius: 4,
-                    fontWeight: 800,
-                    letterSpacing: 1.5,
-                    background: meta.colors.badgeBg,
-                    color: meta.colors.badgeText,
-                  }}
-                >
-                  {meta.tier}
-                </span>
-                <span style={{ fontSize: 10.5, fontFamily: 'var(--font-mono, monospace)', color: '#D8B46D' }}>
-                  {meta.rarity}
-                </span>
-              </div>
-
-              <h3 style={{ margin: '4px 0 2px', fontSize: 22, fontWeight: 800, fontFamily: 'var(--font-display, sans-serif)', color: '#F3EEDC' }}>
-                {meta.title}
-              </h3>
-              <div style={{ fontSize: 11, color: '#8E9C95', fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1, marginBottom: 14 }}>
-                {meta.sub}
-              </div>
-
-              {/* Tactical Sigil Artwork */}
-              <div style={{ display: 'flex', justifyContent: 'center', margin: '14px 0 16px' }}>
-                <div
-                  style={{
-                    width: 96,
-                    height: 96,
+                    width: 28,
+                    height: 28,
                     borderRadius: '50%',
-                    border: `1px solid ${meta.colors.border}`,
-                    background: 'radial-gradient(circle, rgba(28,92,71,0.35) 0%, rgba(9,18,14,0.9) 80%)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    background: 'rgba(255,255,255,0.05)',
+                    color: '#CBD5E1',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: `0 0 25px ${meta.colors.glow}`,
+                    cursor: 'pointer',
+                    fontSize: 13,
                   }}
                 >
-                  {type === 'anchor' ? (
-                    <CardAnchorArt size={76} />
-                  ) : type === 'alliance' ? (
-                    <CardAllianceArt size={76} />
-                  ) : (
-                    <CardChallengeArt size={76} />
-                  )}
-                </div>
+                  ✕
+                </button>
               </div>
 
-              <div style={{ padding: 12, borderRadius: 12, background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)', marginBottom: 12 }}>
-                <div style={{ fontSize: 9.5, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1.5, color: '#D8B46D', marginBottom: 4, textTransform: 'uppercase' }}>
-                  TÁC DỤNG CHIẾN LƯỢC
-                </div>
-                <p style={{ margin: 0, fontSize: 13, color: '#F3EEDC', lineHeight: 1.55 }}>
-                  {meta.effect}
-                </p>
-              </div>
+              {modalFace === 'front' ? (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <span
+                      style={{
+                        fontSize: 9.5,
+                        fontFamily: 'var(--font-mono, monospace)',
+                        padding: '3px 8px',
+                        borderRadius: 4,
+                        fontWeight: 800,
+                        letterSpacing: 1.5,
+                        background: meta.colors.badgeBg,
+                        color: meta.colors.badgeText,
+                      }}
+                    >
+                      {meta.tier}
+                    </span>
+                    <span style={{ fontSize: 10.5, fontFamily: 'var(--font-mono, monospace)', color: '#D8B46D' }}>
+                      {meta.rarity}
+                    </span>
+                  </div>
 
-              <div style={{ padding: 12, borderRadius: 12, background: 'rgba(17, 33, 28, 0.6)', border: '1px solid rgba(47, 125, 98, 0.25)', marginBottom: 18 }}>
-                <div style={{ fontSize: 9.5, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1.5, color: '#68A98F', marginBottom: 4, textTransform: 'uppercase' }}>
-                  ĐIỂN TÍCH NGOẠI GIAO HỒ CHÍ MINH
-                </div>
-                <p style={{ margin: 0, fontSize: 11.5, color: '#CBD5E1', fontStyle: 'italic', lineHeight: 1.55 }}>
-                  {meta.lore}
-                </p>
-                <div style={{ fontSize: 10.5, color: '#D8B46D', fontWeight: 600, marginTop: 6, textAlign: 'right' }}>
-                  {meta.quote}
-                </div>
-              </div>
+                  <h3 style={{ margin: '4px 0 2px', fontSize: 21, fontWeight: 800, fontFamily: 'var(--font-display, sans-serif)', color: '#F3EEDC' }}>
+                    {meta.title}
+                  </h3>
+                  <div style={{ fontSize: 11, color: '#8E9C95', fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1, marginBottom: 12 }}>
+                    {meta.sub}
+                  </div>
 
-              <div style={{ display: 'flex', gap: 10 }}>
+                  {/* Tactical Sigil Artwork */}
+                  <div
+                    onClick={() => {
+                      audioEngine.playCardFlip();
+                      setModalFace('back');
+                    }}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      margin: '8px 0 12px',
+                      cursor: 'pointer',
+                    }}
+                    title="Chạm để lật xem Điển tích"
+                  >
+                    <div
+                      style={{
+                        width: 92,
+                        height: 92,
+                        borderRadius: '50%',
+                        border: `1.5px solid ${meta.colors.border}`,
+                        background: 'radial-gradient(circle, rgba(28,92,71,0.45) 0%, rgba(9,18,14,0.95) 80%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: `0 0 25px ${meta.colors.glow}`,
+                      }}
+                    >
+                      {type === 'anchor' ? (
+                        <CardAnchorArt size={74} />
+                      ) : type === 'alliance' ? (
+                        <CardAllianceArt size={74} />
+                      ) : (
+                        <CardChallengeArt size={74} />
+                      )}
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'center', fontSize: 9.5, color: '#8E9C95', fontStyle: 'italic', marginBottom: 10 }}>
+                    Chạm biểu trưng hoặc tab trên để lật xem Điển tích Hồ Chí Minh ↻
+                  </div>
+
+                  <div style={{ padding: '10px 12px', borderRadius: 12, background: 'rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.08)', marginBottom: 14 }}>
+                    <div style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1.5, color: '#D8B46D', marginBottom: 4, textTransform: 'uppercase' }}>
+                      TÁC DỤNG CHIẾN LƯỢC
+                    </div>
+                    <p style={{ margin: 0, fontSize: 12.5, color: '#F3EEDC', lineHeight: 1.5 }}>
+                      {meta.effect}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                /* Mặt sau: Điển tích Bác Hồ */
+                <div style={{ padding: '4px 0 12px' }}>
+                  <div style={{ fontSize: 10, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 2, color: '#68A98F', marginBottom: 6, textTransform: 'uppercase' }}>
+                    DI SẢN NGOẠI GIAO HỒ CHÍ MINH
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 800, fontFamily: 'var(--font-display, sans-serif)', color: '#F3CA68', marginBottom: 10 }}>
+                    {meta.title}
+                  </div>
+
+                  <blockquote
+                    style={{
+                      margin: '0 0 12px 0',
+                      padding: '10px 12px',
+                      borderRadius: 10,
+                      background: 'rgba(216, 180, 109, 0.08)',
+                      borderLeft: '3px solid #D8B46D',
+                      fontStyle: 'italic',
+                      fontSize: 12,
+                      color: '#F3EEDC',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {meta.quote}
+                  </blockquote>
+
+                  <div style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(17, 33, 28, 0.6)', border: '1px solid rgba(47, 125, 98, 0.25)', marginBottom: 14 }}>
+                    <div style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: '#A8B3AF', letterSpacing: 1, marginBottom: 4 }}>
+                      BỐI CẢNH LỊCH SỬ & ÁP DỤNG
+                    </div>
+                    <p style={{ margin: 0, fontSize: 11.5, color: '#CBD5E1', lineHeight: 1.55 }}>
+                      {meta.lore}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: 10, marginTop: 'auto', paddingTop: 6 }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}

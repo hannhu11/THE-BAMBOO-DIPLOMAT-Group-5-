@@ -12,6 +12,7 @@ import {
   VolumeToggle,
   DecryptedText,
   audioEngine,
+  BrandLogoMark,
 } from '@bamboo/ui-kit';
 import { ChoiceLetter, CardType, Role } from '@bamboo/domain-types';
 
@@ -24,7 +25,8 @@ interface SeatData {
 }
 
 export function App() {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('bamboo_token'));
+  // Auth state
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('bamboo_token'));
   const [seat, setSeat] = useState<SeatData | null>(() => {
     const saved = localStorage.getItem('bamboo_seat');
     return saved ? JSON.parse(saved) : null;
@@ -41,7 +43,7 @@ export function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [session, setSession] = useState<any>(null);
   const [scenario, setScenario] = useState<any>(null);
-  const [selectedChoice, setSelectedChoice] = useState<ChoiceLetter>('C');
+  const [selectedChoice, setSelectedChoice] = useState<ChoiceLetter | undefined>(undefined);
   const [allInArmed, setAllInArmed] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardType | undefined>(undefined);
   const [allianceTarget, setAllianceTarget] = useState<string>('G02');
@@ -100,6 +102,9 @@ export function App() {
       setSession(data.session);
       setScenario(data.scenario);
       setIsLocked(false);
+      setSelectedChoice(undefined);
+      setSelectedCard(undefined);
+      setAllInArmed(false);
       setRemainingSec(data.durationSeconds || 45);
       setStatusMessage('Vòng mới bắt đầu');
       audioEngine.playGong();
@@ -360,13 +365,15 @@ export function App() {
     <div className="player-shell">
       {/* Header */}
       <div className="header">
-        <div className="brand">
-          <div className="brand-icon">
-            <Icon name="autonomy" size={16} />
-          </div>
+        <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <BrandLogoMark size={34} />
           <div>
-            <div className="brand-title">THE BAMBOO DIPLOMAT</div>
-            <div className="brand-sub">SITUATION ROOM · FALL26</div>
+            <div className="brand-title" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 15, color: '#F3EEDC' }}>
+              THE BAMBOO DIPLOMAT
+            </div>
+            <div className="brand-sub" style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#D8B46D', letterSpacing: 1.5 }}>
+              SITUATION ROOM · FALL26
+            </div>
           </div>
         </div>
 
