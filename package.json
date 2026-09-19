@@ -1,0 +1,24 @@
+{
+  "name": "the-bamboo-diplomat",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @bamboo/api --filter @bamboo/player-web --filter @bamboo/public-screen --filter @bamboo/gm-console dev",
+    "dev:api": "pnpm --filter @bamboo/api dev",
+    "dev:player": "pnpm --filter @bamboo/player-web dev",
+    "dev:screen": "pnpm --filter @bamboo/public-screen dev",
+    "dev:gm": "pnpm --filter @bamboo/gm-console dev",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.13",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.1"
+  }
+}

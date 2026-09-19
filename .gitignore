@@ -1,0 +1,67 @@
+# ==============================================================================
+# BẢO MẬT TUYỆT ĐỐI — DANH MỤC CẤM COMMIT VÀ PUSH (ZERO-LEAK MANDATE)
+# ==============================================================================
+
+# 1. SSH Keys & TLS Private Keys (CẤM TUYỆT ĐỐI)
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+id_ecdsa*
+known_hosts
+authorized_keys
+ssh-key-*
+
+# 2. Environment Variables & Credentials (CẤM TUYỆT ĐỐI)
+.env
+.env.*
+!.env.example
+credentials.json
+service-account*.json
+admin-token*.txt
+game-master.pass
+secrets.json
+
+# 3. Runtime Data & Databases (CẤM TUYỆT ĐỐI)
+*.rdb
+*.aof
+*.sql
+*.dump
+caddy_data/
+caddy_config/
+redis-data/
+pg-data/
+postgres-data/
+backup-*/
+
+# 4. Logs & Debugger
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 5. Node / Build Artifacts
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+.cache/
+coverage/
+
+# 6. OS & Editor Artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# 7. Archives & Temp Mirrors
+*.zip
+*.tar.gz
+THE-BAMBOO-DIPLOMAT/
+deploy_dist/

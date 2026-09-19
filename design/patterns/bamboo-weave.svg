@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Bamboo weave background pattern">
+  <defs>
+    <pattern id="weave" width="24" height="24" patternUnits="userSpaceOnUse">
+      <rect width="24" height="24" fill="#07110E"/>
+      <path d="M0 12 Q6 0 12 12 T24 12" fill="none" stroke="#2F7D62" stroke-width=".6" opacity=".45"/>
+      <path d="M12 0 Q0 6 12 12 T12 24" fill="none" stroke="#D8B46D" stroke-width=".4" opacity=".28"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="400" fill="url(#weave)"/>
+</svg>

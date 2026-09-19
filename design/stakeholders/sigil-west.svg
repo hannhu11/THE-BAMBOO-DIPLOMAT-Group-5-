@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Western Capital Bloc sigil">
+  <defs>
+    <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C7D3E5"/><stop offset="1" stop-color="#6B87B4"/>
+    </linearGradient>
+    <pattern id="wgrid" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#6B87B4" stroke-width=".5" opacity=".45"/>
+    </pattern>
+  </defs>
+  <circle cx="100" cy="100" r="94" fill="#0D1815" stroke="url(#wg)" stroke-width="1.2"/>
+  <circle cx="100" cy="100" r="80" fill="url(#wgrid)" opacity=".55"/>
+  <!-- capital column motif -->
+  <g stroke="#C7D3E5" stroke-width="1.4" fill="none">
+    <line x1="60" y1="140" x2="140" y2="140"/>
+    <line x1="60" y1="60"  x2="140" y2="60"/>
+    <line x1="72" y1="60"  x2="72"  y2="140"/>
+    <line x1="100" y1="60" x2="100" y2="140"/>
+    <line x1="128" y1="60" x2="128" y2="140"/>
+    <path d="M50 60 L100 30 L150 60" fill="none"/>
+    <path d="M56 148 L144 148" stroke-width="2"/>
+  </g>
+  <!-- ascending arrow (market) -->
+  <path d="M62 118 L80 106 L96 112 L114 92 L136 78" stroke="#F0DFB6" stroke-width="1.6" fill="none"/>
+  <path d="M136 78 L128 82 M136 78 L132 88" stroke="#F0DFB6" stroke-width="1.6" fill="none"/>
+  <text x="100" y="182" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="3" fill="#C7D3E5">WESTERN · CAPITAL</text>
+</svg>

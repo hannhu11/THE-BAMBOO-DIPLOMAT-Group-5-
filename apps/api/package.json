@@ -1,0 +1,30 @@
+{
+  "name": "@bamboo/api",
+  "version": "1.0.0",
+  "description": "Fastify Backend & Socket.IO Real-Time Server for The Bamboo Diplomat",
+  "main": "./dist/server.mjs",
+  "scripts": {
+    "build": "tsup",
+    "start": "node dist/server.mjs",
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bamboo/content-schema": "workspace:*",
+    "@bamboo/design-tokens": "workspace:*",
+    "@bamboo/domain-types": "workspace:*",
+    "@bamboo/engine": "workspace:*",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/jwt": "^8.0.1",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1",
+    "socket.io": "^4.7.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "socket.io-client": "^4.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

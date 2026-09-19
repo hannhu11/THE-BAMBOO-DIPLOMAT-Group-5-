@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 460" role="img" aria-label="Alliance Form card">
+  <defs>
+    <linearGradient id="al-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#152A25"/><stop offset="1" stop-color="#0B1512"/>
+    </linearGradient>
+    <linearGradient id="al-frame" x1="0" x2="1"><stop offset="0" stop-color="#B5D6C6"/><stop offset="1" stop-color="#2F7D62"/></linearGradient>
+  </defs>
+  <rect x="6" y="6" width="308" height="448" rx="22" fill="url(#al-bg)" stroke="url(#al-frame)" stroke-width="1.2"/>
+  <rect x="14" y="14" width="292" height="432" rx="18" fill="none" stroke="#2F7D62" stroke-width=".6" opacity=".5"/>
+  <text x="26" y="42" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3" fill="#68A98F">DIPLOMATIC · TIER I</text>
+  <text x="26" y="72" font-family="Be Vietnam Pro, sans-serif" font-size="22" font-weight="700" fill="#F3EEDC">CẦU ĐỒNG TỒN DỊ</text>
+  <text x="26" y="94" font-family="Inter, sans-serif" font-size="12" fill="#A8B3AF">Alliance Form</text>
+
+  <g transform="translate(160 240)">
+    <!-- two arcs weaving -->
+    <path d="M -100 -40 C -40 -110 40 -110 100 -40" fill="none" stroke="#B5D6C6" stroke-width="2"/>
+    <path d="M -100 40 C -40 110 40 110 100 40" fill="none" stroke="#68A98F" stroke-width="2"/>
+    <path d="M -100 -40 C -40 20 40 20 100 -40" fill="none" stroke="#D8B46D" stroke-width="1.2" opacity=".8"/>
+    <path d="M -100 40 C -40 -20 40 -20 100 40" fill="none" stroke="#D8B46D" stroke-width="1.2" opacity=".8"/>
+    <!-- knot node -->
+    <g stroke="#F0DFB6" stroke-width="1.4" fill="none">
+      <rect x="-14" y="-14" width="28" height="28" transform="rotate(45)"/>
+      <circle r="6"/>
+    </g>
+    <!-- two flags (abstract) -->
+    <g stroke="#B5D6C6" stroke-width="1.4" fill="none">
+      <line x1="-100" y1="-70" x2="-100" y2="70"/>
+      <line x1="100" y1="-70" x2="100" y2="70"/>
+      <rect x="-100" y="-70" width="22" height="16" fill="#2F7D62" stroke="none"/>
+      <rect x="78" y="-70" width="22" height="16" fill="#8E6A24" stroke="none"/>
+    </g>
+  </g>
+
+  <g transform="translate(24 384)" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.6" fill="#A8B3AF">
+    <rect x="0" y="0" width="272" height="1" fill="#2F7D62" opacity=".5"/>
+    <text x="0" y="20">TÁC DỤNG</text>
+    <text x="0" y="38" font-family="Inter, sans-serif" font-size="12.5" fill="#F3EEDC">Chỉ định 1 nhóm đối tác. Nếu cùng chọn phương án cân bằng → +50% điểm.</text>
+    <text x="0" y="60">SỬ DỤNG · 1 / TRẬN</text>
+    <text x="150" y="60">RARITY · JADE</text>
+  </g>
+</svg>

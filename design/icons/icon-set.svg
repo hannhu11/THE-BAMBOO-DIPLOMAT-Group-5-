@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" role="img" aria-label="Icon set - custom line iconography">
+  <style>
+    .ic{ fill:none; stroke:#D8B46D; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; }
+    .lbl{ font-family: IBM Plex Mono, monospace; font-size: 10px; fill:#A8B3AF; letter-spacing:1.6px; }
+    .frame{ fill:#0D1815; stroke:#33413D; }
+  </style>
+  <g>
+    <!-- Autonomy -->
+    <rect class="frame" x="12"  y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(52 52)">
+      <path d="M0 -22 L18 -6 L12 18 L-12 18 L-18 -6 Z"/>
+      <circle r="4"/>
+    </g>
+    <text class="lbl" x="52" y="122" text-anchor="middle">TỰ CHỦ</text>
+
+    <!-- Economy -->
+    <rect class="frame" x="112" y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(152 52)">
+      <path d="M-22 12 L-8 -2 L2 6 L20 -14"/>
+      <path d="M14 -14 L22 -14 L22 -6"/>
+      <line x1="-22" y1="20" x2="22" y2="20"/>
+    </g>
+    <text class="lbl" x="152" y="122" text-anchor="middle">KINH TẾ</text>
+
+    <!-- Prestige -->
+    <rect class="frame" x="212" y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(252 52)">
+      <circle r="18"/>
+      <path d="M-12 -4 L-4 6 L12 -8"/>
+    </g>
+    <text class="lbl" x="252" y="122" text-anchor="middle">UY TÍN</text>
+
+    <!-- Timer -->
+    <rect class="frame" x="312" y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(352 52)">
+      <circle r="18"/>
+      <line x1="0" y1="0" x2="0" y2="-12"/>
+      <line x1="0" y1="0" x2="10" y2="4"/>
+    </g>
+    <text class="lbl" x="352" y="122" text-anchor="middle">THỜI GIAN</text>
+
+    <!-- Vote lock -->
+    <rect class="frame" x="412" y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(452 52)">
+      <rect x="-14" y="-4" width="28" height="20" rx="3"/>
+      <path d="M-8 -4 V-12 A8 8 0 0 1 8 -12 V-4"/>
+    </g>
+    <text class="lbl" x="452" y="122" text-anchor="middle">CHỐT</text>
+
+    <!-- All-in -->
+    <rect class="frame" x="512" y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(552 52)">
+      <path d="M-16 16 L0 -16 L16 16 Z"/>
+      <line x1="-8" y1="6" x2="8" y2="6"/>
+    </g>
+    <text class="lbl" x="552" y="122" text-anchor="middle">ALL-IN</text>
+
+    <!-- Reveal -->
+    <rect class="frame" x="612" y="12" width="80" height="80" rx="12"/>
+    <g class="ic" transform="translate(652 52)">
+      <path d="M-18 0 C -10 -12 10 -12 18 0 C 10 12 -10 12 -18 0 Z"/>
+      <circle r="4"/>
+    </g>
+    <text class="lbl" x="652" y="122" text-anchor="middle">REVEAL</text>
+
+    <text x="360" y="170" text-anchor="middle" class="lbl" fill="#68A98F">CUSTOM LINE ICONOGRAPHY · NO EMOJI · NO STOCK GLYPHS</text>
+  </g>
+</svg>

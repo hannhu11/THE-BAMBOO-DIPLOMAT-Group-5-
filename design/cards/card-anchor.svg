@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 460" role="img" aria-label="Anchor of Sovereignty card">
+  <defs>
+    <linearGradient id="ac-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#162A23"/><stop offset="1" stop-color="#0B1512"/>
+    </linearGradient>
+    <linearGradient id="ac-frame" x1="0" x2="1"><stop offset="0" stop-color="#D8B46D"/><stop offset="1" stop-color="#8E6A24"/></linearGradient>
+    <radialGradient id="ac-inner" cx=".5" cy=".4" r=".8">
+      <stop offset="0" stop-color="#1C5C47" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#0B1512" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- frame -->
+  <rect x="6" y="6" width="308" height="448" rx="22" fill="url(#ac-bg)" stroke="url(#ac-frame)" stroke-width="1.2"/>
+  <rect x="14" y="14" width="292" height="432" rx="18" fill="none" stroke="#8E6A24" stroke-width=".6" opacity=".5"/>
+
+  <!-- ceremonial header -->
+  <text x="26" y="42" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3" fill="#D8B46D">DEFENSIVE · TIER I</text>
+  <text x="26" y="72" font-family="Be Vietnam Pro, sans-serif" font-size="22" font-weight="700" fill="#F3EEDC">DĨ BẤT BIẾN</text>
+  <text x="26" y="94" font-family="Inter, sans-serif" font-size="12" fill="#A8B3AF">Anchor of Sovereignty</text>
+
+  <!-- artwork -->
+  <g transform="translate(160 240)">
+    <circle r="120" fill="url(#ac-inner)"/>
+    <!-- bamboo cage lock -->
+    <g stroke="#D8B46D" stroke-width="1.2" fill="none" opacity=".9">
+      <circle r="88"/>
+      <circle r="72" opacity=".6"/>
+      <circle r="56" opacity=".4"/>
+    </g>
+    <g stroke="#68A98F" stroke-width="3" stroke-linecap="round">
+      <line x1="-58" y1="-58" x2="-58" y2="58"/>
+      <line x1="-28" y1="-70" x2="-28" y2="70"/>
+      <line x1="0"   y1="-76" x2="0"   y2="76"/>
+      <line x1="28"  y1="-70" x2="28"  y2="70"/>
+      <line x1="58"  y1="-58" x2="58"  y2="58"/>
+    </g>
+    <g stroke="#0F3628" stroke-width="4">
+      <line x1="-64" y1="-20" x2="64" y2="-20"/>
+      <line x1="-64" y1="20"  x2="64" y2="20"/>
+    </g>
+    <!-- anchor sigil -->
+    <g fill="none" stroke="#F0DFB6" stroke-width="1.6">
+      <circle cx="0" cy="0" r="10"/>
+      <line x1="0" y1="10" x2="0" y2="38"/>
+      <path d="M-20 30 C -18 44 -6 52 0 52 C 6 52 18 44 20 30"/>
+    </g>
+  </g>
+
+  <!-- footer stats -->
+  <g transform="translate(24 384)" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.6" fill="#A8B3AF">
+    <rect x="0" y="0" width="272" height="1" fill="#8E6A24" opacity=".5"/>
+    <text x="0" y="20">TÁC DỤNG</text>
+    <text x="0" y="38" font-family="Inter, sans-serif" font-size="12.5" fill="#F3EEDC">Vô hiệu mọi Δ âm của trục Tự Chủ trong vòng hiện tại.</text>
+    <text x="0" y="60">SỬ DỤNG · 1 / TRẬN</text>
+    <text x="150" y="60">RARITY · GOLD</text>
+  </g>
+</svg>
