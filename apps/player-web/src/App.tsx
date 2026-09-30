@@ -1055,33 +1055,33 @@ export function App() {
                   return (
                     <div
                       key={opt.id}
-                      className={`option-card ${isSelected ? 'selected' : ''}`}
+                      className={`option-laptop-card ${isSelected ? 'selected' : ''}`}
                       onClick={() => handleSelectOption(opt.id)}
                     >
-                      <div className="option-card-header">
-                        <div className="option-letter-badge">{opt.id}</div>
-                        <div className="option-label">{opt.label}</div>
-                      </div>
+                      <div className="option-letter-badge">{opt.id}</div>
 
-                      <div className="option-hint">{opt.hint}</div>
+                      <div className="option-body">
+                        <div className="option-title">{opt.label}</div>
+                        {opt.hint && <div className="option-hint">{opt.hint}</div>}
 
-                      {/* Stakeholder Reaction Icons */}
-                      <div className="stakeholder-preview-row">
-                        <div className="sigil-chip" title="Phản ứng Phương Tây">
-                          <SigilWest size={16} />
-                          <span>PT</span>
-                        </div>
-                        <div className="sigil-chip" title="Phản ứng Láng Giềng">
-                          <SigilNeighbor size={16} />
-                          <span>LG</span>
-                        </div>
-                        <div className="sigil-chip" title="Phản ứng Liên Hợp Quốc">
-                          <SigilUN size={16} />
-                          <span>UN</span>
-                        </div>
-                        <div className="sigil-chip" title="Ý Đảng Lòng Dân VN">
-                          <SigilVN size={16} />
-                          <span>VN</span>
+                        {/* Stakeholder Reaction Icons */}
+                        <div className="stakeholder-preview-row">
+                          <div className="sigil-chip" title="Phản ứng Phương Tây">
+                            <SigilWest size={16} />
+                            <span>PT: Phương Tây</span>
+                          </div>
+                          <div className="sigil-chip" title="Phản ứng Láng Giềng">
+                            <SigilNeighbor size={16} />
+                            <span>LG: Láng Giềng</span>
+                          </div>
+                          <div className="sigil-chip" title="Phản ứng Liên Hợp Quốc">
+                            <SigilUN size={16} />
+                            <span>UN: LHQ</span>
+                          </div>
+                          <div className="sigil-chip" title="Ý Đảng Lòng Dân VN">
+                            <SigilVN size={16} />
+                            <span>VN: Nhân Dân</span>
+                          </div>
                         </div>
                       </div>
                     </div>

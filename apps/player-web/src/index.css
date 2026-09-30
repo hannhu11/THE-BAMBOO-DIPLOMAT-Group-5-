@@ -415,6 +415,44 @@ body {
   line-height: 1.5;
 }
 
+.stakeholder-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.sigil-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FAF7F0;
+  border: 1px solid #E2D9C8;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #384C42;
+  transition: all 0.15s ease;
+}
+
+.sigil-chip svg {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.option-laptop-card:hover .sigil-chip {
+  border-color: #D4AF37;
+  background: #FDFBF7;
+}
+
+.option-laptop-card.selected .sigil-chip {
+  border-color: #B8860B;
+  background: #FFFFFF;
+}
+
 /* Gacha Portal Modal / Screen */
 .gacha-screen-overlay {
   position: fixed;
