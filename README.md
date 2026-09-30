@@ -1,140 +1,78 @@
-# THE BAMBOO DIPLOMAT — KỶ NGUYÊN ĐA CỰC
-> **Dự án Minigame Chiến lược Ngoại giao & Khủng hoảng Địa chính trị**  
-> **Môn học:** Tư tưởng Hồ Chí Minh (HCM202) · **Lớp:** SE1802 / FALL 2026 · **Nhóm thực hiện:** Nhóm 05
+# THE BAMBOO DIPLOMAT — BẢN LĨNH NGOẠI GIAO CÂY TRE
+### Đồ án Môn học Tư tưởng Hồ Chí Minh (Mã học phần: HCM202) — Nhóm 5
 
 ---
 
-## 📌 1. Giới thiệu Dự án
+## 🎋 1. Giới thiệu Dự án
 
-**THE BAMBOO DIPLOMAT** là một ứng dụng minigame web tương tác thời gian thực được xây dựng phục vụ bài tập lớn và thuyết trình môn **Tư tưởng Hồ Chí Minh (HCM202)**.
+**THE BAMBOO DIPLOMAT** là một ứng dụng mô phỏng chiến lược ngoại giao thời gian thực (Diplomatic Interactive Wargame), được thiết kế đặc thù cho các buổi học trải nghiệm và thảo luận tình huống trong học phần **Tư tưởng Hồ Chí Minh (HCM202)**.
 
-Thay vì những bài thuyết trình lý thuyết truyền thống hay các câu hỏi trắc nghiệm thông thường (Kahoot/Quizizz), dự án đưa sinh viên vào vai **Đoàn Ngoại giao Việt Nam** trong bối cảnh thế giới đa cực đầy biến động. Cả lớp (chia thành 7 nhóm đại biểu) sẽ cùng tham gia giải quyết các bài toán khủng hoảng quốc tế hóc búa, qua đó hiểu sâu sắc và vận dụng sinh động đường lối **Ngoại giao Cây Tre Việt Nam** cùng các nguyên tắc ngoại giao cốt lõi của Chủ tịch Hồ Chí Minh:
-- *"Dĩ bất biến, ứng vạn biến"*
-- *"Đoàn kết quốc tế có lý, có tình"*
-- *"Nội lực là quyết định, ngoại lực là quan trọng"*
+Dự án hiện thực hóa đường lối **"Ngoại giao Cây Tre Việt Nam"** do Tổng Bí thư Nguyễn Phú Trọng đúc kết dựa trên nền tảng tư tưởng ngoại giao Hồ Chí Minh:
+> *"Gốc vững, thân chắc, cành uyển chuyển — Dĩ bất biến, ứng vạn biến — Thêm bạn bớt thù — Độc lập, tự chủ, đa phương hóa, đa dạng hóa quan hệ quốc tế."*
 
----
-
-## 🚀 2. Hướng dẫn Cài đặt & Chạy Local (Cho Thành viên Nhóm)
-
-Dự án được cấu trúc theo mô hình **Monorepo (pnpm workspaces)** hiện đại, giúp toàn bộ mã nguồn Frontend và Backend nằm chung trong một kho mã nguồn nhưng hoàn toàn độc lập, dễ phát triển và chạy thử ngay trên máy cá nhân mà **không cần cài đặt server phức tạp hay mua domain**.
-
-### 2.1. Yêu cầu Môi trường Máy tính
-Trước khi bắt đầu, máy tính của bạn cần có:
-1. **Node.js**: Phiên bản LTS từ `v18.x` hoặc `v20.x` trở lên ([Tải tại nodejs.org](https://nodejs.org/)).
-2. **pnpm**: Trình quản lý gói nhanh và tiết kiệm dung lượng ổ cứng:
-   ```bash
-   npm install -g pnpm
-   ```
-3. **Git**: Đã cài đặt trên máy.
+Trong trò chơi, cả lớp sẽ đóng vai trò là **các Phái đoàn Ngoại giao đặc mệnh toàn quyền của Việt Nam** (mỗi bàn học là một đội tác chiến sở hữu 1 máy tính laptop). Trước những kịch bản đối ngoại căng thẳng và các cuộc khủng hoảng địa chính trị bất ngờ, từng bàn phải tranh luận, thống nhất quyết sách và tung ra các **Thẻ bài Chiến lược** để bảo vệ lợi ích tối cao của quốc gia.
 
 ---
 
-### 2.2. Các bước Khởi chạy (Chỉ 3 lệnh)
+## ✨ 2. Các Điểm Nổi bật & Tính năng Chính
 
-#### Bước 1: Clone mã nguồn về máy
+1. **Giao diện Laptop Chuyên dụng (100% Viewport Native Desktop):**
+   - Thiết kế tối ưu cho màn hình laptop học sinh / sinh viên (1366x768 đến 1920x1080) và màn chiếu hội trường lớn.
+   - Phong cách mỹ thuật **"Giấy Dó & Sơn Mài Cung Đình"** (Warm Parchment `#F7F4EA`, Deep Lacquer `#0E281E`, Royal Gold `#B8860B`, Cinnabar Red `#9E2A2B`). Không dùng biểu tượng generic, tương phản chuẩn quốc tế WCAG AAA.
+
+2. **Hệ thống 3 Trục Điểm Chiến lược (Khởi điểm 10 / 10 / 10 = 30 Điểm):**
+   - 🛡️ **Tự Chủ (Autonomy — TC):** Khả năng giữ vững độc lập, chủ quyền lãnh thổ, an ninh dữ liệu và quyền tự quyết.
+   - 📈 **Kinh Tế (Economy — KT):** Tiềm lực tăng trưởng, chuỗi cung ứng công nghệ cao, thương mại và thu hút đầu tư.
+   - 🌐 **Uy Tín Quốc Tế (Prestige — UT):** Vị thế ngoại giao, tính chính danh pháp lý theo Hiến chương LHQ và UNCLOS 1982.
+
+3. **Cơ chế Bốc Thẻ Chiến lược (Gacha Portal Fair Draw):**
+   - Ngay khi đăng ký tên bàn, mỗi đội được bốc ngẫu nhiên **3 Thẻ Chiến lược duy nhất** đảm bảo công bằng (1 Thẻ Tấn công + 1 Thẻ Phòng thủ + 1 Thẻ Tiện ích/Đa phương).
+   - Mỗi thẻ chỉ dùng được 1 lần trong cả trận đấu và yêu cầu điều kiện điểm số tương ứng để kích hoạt ($\text{KT} \ge 7$, $\text{TC} \ge 7$, $\text{UT} \ge 7$).
+
+4. **Console Quản trò 65/35 (GM Projector Display):**
+   - Màn hình dành cho Giảng viên / Quản trò chiếu lên máy chiếu lớp học.
+   - **65% bên trái:** Kịch bản đối ngoại trực tiếp, thời gian đếm ngược (45s), trích dẫn giáo trình chính thống và 4 lựa chọn (A, B, C, D).
+   - **35% bên phải:** Bảng xếp hạng trực tiếp (Dynamic Leaderboard) tự động tính toán và nhảy thứ hạng tức thời sau mỗi vòng biểu quyết.
+
+5. **Kịch bản Thực tiễn & Khủng hoảng Thiên Nga Đen (Black Swan):**
+   - 4 Kịch bản chiến lược bám sát thời sự: Đứt gáp quang biển, An ninh hàng hải Biển Đông, Đứt gãy chuỗi cung ứng bán dẫn & đất hiếm, Hiệp định Đối tác Chiến lược Toàn diện song hành.
+   - 4 Sự kiện khủng hoảng bất ngờ có thể được GM kích hoạt để thử thách năng lực ứng biến của các bàn.
+
+---
+
+## 🚀 3. Bắt đầu Nhanh (Quick Start)
+
+Dự án sử dụng mô hình **pnpm Monorepo**. Bạn có thể chạy toàn bộ hệ thống ngay trên máy cá nhân mà không cần cài đặt server hay database phức tạp.
+
 ```bash
-git clone https://github.com/hannhu11/THE-BAMBOO-DIPLOMAT-Group-5-.git
-cd THE-BAMBOO-DIPLOMAT-Group-5-
-```
-
-#### Bước 2: Cài đặt toàn bộ thư viện & dependencies
-```bash
+# 1. Cài đặt các thư viện
 pnpm install
-```
 
-#### Bước 3: Build các thư viện dùng chung (Bắt buộc chạy lần đầu)
-```bash
-pnpm build
-```
-*(Lệnh này sẽ biên dịch các module nội bộ: tokens màu sắc, game engine, UI kit, data schema).*
-
-#### Bước 4: Khởi chạy toàn bộ hệ thống ở chế độ Local Development
-```bash
+# 2. Khởi chạy toàn bộ hệ thống (Backend + Player + GM)
 pnpm dev
 ```
-*(Lệnh này sẽ tự động khởi động song song cả 4 dịch vụ: Backend Fastify + WebSocket và 3 ứng dụng Frontend React Vite).*
+
+Sau khi chạy lệnh trên:
+- **Ứng dụng Người chơi (Từng bàn):** `http://localhost:3080`
+- **Bàn Quản trò / Máy chiếu (GM Console):** `http://localhost:3082` *(Mật khẩu GM: `bambooGM2026!`)*
+- **Máy chủ Backend API & WebSocket:** `http://localhost:8088`
+
+👉 **Xem hướng dẫn chi tiết từng bước:** Đọc file [HUONG_DAN_CHAY_LOCAL.md](file:///c:/Users/ADMIN/Downloads/THE-BAMBOO-DIPLOMAT/HUONG_DAN_CHAY_LOCAL.md).
 
 ---
 
-## 🌐 3. Các Cổng Truy Cập Trên Trình Duyệt (Localhost)
+## 📚 4. Tài liệu Dành cho Thành viên Nhóm
 
-Sau khi chạy `pnpm dev`, bạn mở trình duyệt (Chrome / Edge / Firefox) và truy cập vào các địa chỉ sau:
-
-| Ứng dụng | Đường dẫn Localhost | Mục đích sử dụng |
-| :--- | :--- | :--- |
-| 📱 **Player Web App** | [`http://localhost:3080`](http://localhost:3080) | **Giao diện Điện thoại của Sinh viên / Đại biểu**. Mở F12 chọn chế độ xem Mobile (iPhone / Android) để biểu quyết, kích hoạt thẻ bài chiến lược, theo dõi công điện ngoại giao. |
-| 🖥️ **Public Situation Screen** | [`http://localhost:3081`](http://localhost:3081) | **Màn Chiếu Trung Tâm tại Giảng đường**. Hiển thị Radar quét chủ quyền Biển Đông 360°, bảng xếp hạng thời gian thực của 7 nhóm, đồng hồ đếm ngược và băng tin tình báo quốc tế. |
-| 🕹️ **Game Master Console** | [`http://localhost:3082`](http://localhost:3082) | **Bàn Điều Khiển Quản Trò (Giảng viên / Trưởng nhóm)**. Điều khiển mở vòng chơi, khóa phiếu, công bố kết quả (Reveal), kích hoạt biến cố Thiên Nga Đen, chấm điểm thuyết trình All-In. |
-| ⚙️ **Backend API & WebSocket** | [`http://localhost:8088`](http://localhost:8088) | Máy chủ xử lý dữ liệu Fastify & cổng giao tiếp thời gian thực Socket.IO. |
-
-> 💡 **Mật khẩu Quản Trò (GM Secret mặc định khi chạy local):** `bambooGM2026!`  
-> 💡 **Mã phòng / Session PIN mặc định:** `HCM202`
+| Tài liệu | Nội dung chi tiết |
+| :--- | :--- |
+| 📖 [**HUONG_DAN_CHAY_LOCAL.md**](file:///c:/Users/ADMIN/Downloads/THE-BAMBOO-DIPLOMAT/HUONG_DAN_CHAY_LOCAL.md) | Cách cài đặt môi trường, chạy local, giải quyết lỗi thường gặp |
+| 🎮 [**LUAT_CHOI_VA_KICH_BAN.md**](file:///c:/Users/ADMIN/Downloads/THE-BAMBOO-DIPLOMAT/LUAT_CHOI_VA_KICH_BAN.md) | Chi tiết luật chơi, 9 thẻ bài, 4 kịch bản, 4 thiên nga đen, cách tính điểm |
+| 🏗️ [**KIEN_TRUC_DU_AN.md**](file:///c:/Users/ADMIN/Downloads/THE-BAMBOO-DIPLOMAT/KIEN_TRUC_DU_AN.md) | Kiến trúc mã nguồn, cấu trúc thư mục, luồng Socket.IO và cách mở rộng code |
 
 ---
 
-## 📁 4. Cấu trúc Thư mục Dự Án (Monorepo)
+## 👥 5. Phân công Nhóm & Đóng góp
 
-```text
-THE-BAMBOO-DIPLOMAT/
-├── apps/                          # CÁC ỨNG DỤNG CHÍNH
-│   ├── api/                       # Backend Fastify + Socket.IO (Port 8088)
-│   ├── player-web/                # Frontend đại biểu sinh viên (Port 3080)
-│   ├── public-screen/             # Frontend màn chiếu giảng đường (Port 3081)
-│   └── gm-console/                # Frontend bàn điều khiển quản trò (Port 3082)
-│
-├── packages/                      # CÁC THƯ VIỆN & MODULE DÙNG CHUNG
-│   ├── ui-kit/                    # Bộ thành phần giao diện (Radar, Thẻ bài, Brand Logo, Audio Engine)
-│   ├── engine/                    # Thuật toán tính điểm 3 trục, luật chơi, kiểm toán gian lận
-│   ├── design-tokens/             # Bảng màu Sơn mài Đương đại, font chữ, kích thước
-│   ├── domain-types/              # Định nghĩa kiểu dữ liệu TypeScript (GameState, Option, Vote)
-│   └── content-schema/            # Schema Zod kiểm tra tính hợp lệ của kịch bản
-│
-├── content/                       # NỘI DUNG KỊCH BẢN & CÂU HỎI
-│   └── scenarios.json             # 3 kịch bản khủng hoảng, phản ứng của các khối, trích dẫn lời Bác
-│
-├── design/                        # TÀI NGUYÊN THIẾT KẾ VECTOR SVG
-│   ├── brand/                     # Logo thương hiệu, con dấu phong ấn
-│   ├── cards/                     # Vector minh họa 3 lá bài chiến thuật
-│   └── stakeholders/              # Biểu trưng 4 khối ngoại giao (Tây, Láng giềng, LHQ, Nhân dân)
-│
-├── README.md                      # File hướng dẫn chạy local & tổng quan (file này)
-├── PROJECT_OVERVIEW.md            # Tài liệu chi tiết kiến trúc & phân công nhiệm vụ
-└── GAMEPLAY_GUIDE.md              # Cẩm nang luật chơi & chi tiết các màn chơi
-```
-
----
-
-## 🛠️ 5. Quy trình Phối hợp Nhóm (Git Workflow)
-
-1. **Không commit trực tiếp vào nhánh `main`**:
-   - Khi nhận một tính năng hoặc sửa lỗi, hãy tạo nhánh mới:
-     ```bash
-     git checkout -b feature/ten-tinh-nang
-     # hoặc
-     git checkout -b fix/ten-loi
-     ```
-2. **Kiểm tra kỹ trước khi commit**:
-   - Chạy kiểm tra lỗi TypeScript:
-     ```bash
-     pnpm typecheck
-     ```
-   - Chạy build thử:
-     ```bash
-     pnpm build
-     ```
-3. **Đẩy mã nguồn và tạo Pull Request**:
-   ```bash
-   git add .
-   git commit -m "feat(player): mo ta ngan gon ve tinh nang"
-   git push origin feature/ten-tinh-nang
-   ```
-   Sau đó lên GitHub tạo Pull Request để cả nhóm cùng xem và duyệt merge.
-
----
-
-## 📚 6. Tài liệu Quan trọng Cần Đọc Tiếp
-
-Để hiểu rõ hơn về dự án và các màn chơi, bạn hãy đọc 2 tài liệu chi tiết sau:
-- 📖 [**PROJECT_OVERVIEW.md**](./PROJECT_OVERVIEW.md): Giới thiệu chi tiết ý tưởng thiết kế, công nghệ và phân chia module.
-- 🎮 [**GAMEPLAY_GUIDE.md**](./GAMEPLAY_GUIDE.md): Giải thích toàn bộ luật chơi, 3 trục chiến lược, chi tiết 3 màn chơi và các lá bài chiến thuật.
+- **Học phần:** Tư tưởng Hồ Chí Minh (HCM202)
+- **Nhóm:** Nhóm 5
+- **Công nghệ chính:** TypeScript, React 18, Vite, Fastify 4, Socket.IO, pnpm workspaces, CSS Variables Design Tokens.
