@@ -60,6 +60,10 @@ export const ScenarioItemSchema = z
     citation: z.string().min(5),
     context: z.string().min(20),
     note: z.string().optional(),
+    isBlackSwan: z.boolean().optional(),
+    scenarioGroup: z.number().int().optional(),
+    questionIndex: z.number().int().optional(),
+    category: z.string().optional(),
     options: z
       .array(ScenarioOptionSchema)
       .min(3)

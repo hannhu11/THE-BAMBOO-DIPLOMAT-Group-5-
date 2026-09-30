@@ -28,6 +28,7 @@ export interface ResolveRoundParams {
     allInArmed?: boolean;
     activeCard?: CardType;
     allianceTargetGroupId?: string;
+    targetGroupId?: string;
   };
   activeCards?: CardType[];
   allInGrade?: { stars: number; gmNote?: string } | number;
@@ -57,6 +58,7 @@ export interface GroupRoundInput {
     allInArmed?: boolean;
     activeCard?: CardType;
     allianceTargetGroupId?: string;
+    targetGroupId?: string;
   };
   allInGrade?: number;
 }

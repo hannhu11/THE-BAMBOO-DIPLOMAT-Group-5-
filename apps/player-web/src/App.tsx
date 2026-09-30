@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
+import gsap from 'gsap';
 import { io, Socket } from 'socket.io-client';
 import {
   Button,
@@ -34,6 +36,118 @@ interface SeatData {
   role: Role;
 }
 
+interface LeaderboardEntry {
+  groupId: string;
+  name?: string;
+  rank: number;
+  score: number;
+  axes: {
+    autonomy: number;
+    economy: number;
+    prestige: number;
+  };
+}
+
+// ==========================================
+// GSAP 3D Interactive Card Envelope Component
+// ==========================================
+function GachaInteractiveEnvelope({
+  idx,
+  cardType,
+  categoryLabel,
+  isRevealed,
+  onReveal,
+}: {
+  idx: number;
+  cardType: CardType;
+  categoryLabel: string;
+  isRevealed: boolean;
+  onReveal: () => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const sealRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useRef<HTMLDivElement>(null);
+
+  const handleClick = () => {
+    if (isRevealed) return;
+    audioEngine.playCardFlip();
+
+    const seal = sealRef.current;
+    const card = cardRef.current;
+    const particles = particlesRef.current;
+
+    if (seal && card && particles) {
+      particles.innerHTML = '';
+      for (let i = 0; i < 14; i++) {
+        const p = document.createElement('div');
+        p.className = 'wax-particle';
+        particles.appendChild(p);
+        const angle = (i / 14) * Math.PI * 2;
+        const dist = 35 + Math.random() * 55;
+        gsap.to(p, {
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist,
+          opacity: 0,
+          scale: Math.random() * 0.4 + 0.2,
+          duration: 0.65,
+          ease: 'power2.out',
+        });
+      }
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          onReveal();
+        },
+      });
+
+      tl.to(seal, {
+        scale: 1.25,
+        rotation: 12,
+        duration: 0.15,
+        ease: 'power1.out',
+      })
+      .to(seal, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.22,
+        ease: 'power2.in',
+      })
+      .to(card, {
+        rotationY: 180,
+        duration: 0.75,
+        ease: 'back.out(1.4)',
+      }, '-=0.1');
+    } else {
+      onReveal();
+    }
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className={`gacha-interactive-card ${isRevealed ? 'flipped' : ''}`}
+      onClick={handleClick}
+    >
+      <div className="card-flipper">
+        {/* Front Side: Sealed Wax Envelope */}
+        <div className="card-face front-envelope">
+          <div ref={particlesRef} className="particles-burst-container" />
+          <div ref={sealRef} className="wax-seal-interactive">
+            <span>{idx === 0 ? 'CÔNG' : idx === 1 ? 'THỦ' : 'MINH'}</span>
+          </div>
+          <div className="envelope-label">{categoryLabel}</div>
+          <div className="envelope-sub">Chạm để bóc niêm phong sáp đỏ ↻</div>
+        </div>
+
+        {/* Back Side: Revealed Tactical Card */}
+        <div className="card-face back-card">
+          <TacticalCard type={cardType} status="ready" canActivate={true} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function App() {
   // Authentication & Group State
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('bamboo_token'));
@@ -45,6 +159,8 @@ export function App() {
     const g = localStorage.getItem('bamboo_group');
     return g ? JSON.parse(g) : null;
   });
+  const [allGroups, setAllGroups] = useState<GroupData[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   // Login Form
   const [teamNameInput, setTeamNameInput] = useState('');
@@ -64,10 +180,30 @@ export function App() {
   const [scenario, setScenario] = useState<any>(null);
   const [selectedChoice, setSelectedChoice] = useState<ChoiceLetter | undefined>(undefined);
   const [selectedCardForVote, setSelectedCardForVote] = useState<CardType | undefined>(undefined);
+  const [targetTeamId, setTargetTeamId] = useState<string>('');
   const [isLocked, setIsLocked] = useState(false);
-  const [remainingSec, setRemainingSec] = useState(45);
+  const [remainingSec, setRemainingSec] = useState(30);
   const [serverStatus, setServerStatus] = useState('Đang kết nối...');
   const [resolutionData, setResolutionData] = useState<any>(null);
+
+  // Modals State
+  const [inspectedCard, setInspectedCard] = useState<CardType | null>(null);
+  const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
+
+  // Browser History Navigation (popstate)
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const hash = window.location.hash;
+      if (hash === '#/gacha') {
+        setShowGacha(true);
+      } else if (hash === '#/battle') {
+        setShowGacha(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Socket Connection Effect
   useEffect(() => {
@@ -96,11 +232,16 @@ export function App() {
       setScenario(data.currentScenario);
 
       if (data.groups) {
+        setAllGroups(data.groups);
         const found = data.groups.find((g: any) => g.id === seat.groupId);
         if (found) {
           setMyGroup(found);
           localStorage.setItem('bamboo_group', JSON.stringify(found));
         }
+      }
+
+      if (data.leaderboard) {
+        setLeaderboard(data.leaderboard);
       }
 
       const dec = data.roundDecisions?.[seat.groupId];
@@ -123,7 +264,8 @@ export function App() {
       setSelectedCardForVote(undefined);
       setIsLocked(false);
       setResolutionData(null);
-      setRemainingSec(data.durationSeconds || 45);
+      setShowLeaderboardModal(false);
+      setRemainingSec(data.durationSeconds || 30);
     });
 
     s.on('round.locked', (data: any) => {
@@ -138,10 +280,16 @@ export function App() {
       if (myRes) {
         setResolutionData(myRes);
       }
+      if (data.leaderboard) {
+        setLeaderboard(data.leaderboard);
+      }
+      // Show leaderboard automatically upon round conclusion
+      setShowLeaderboardModal(true);
     });
 
-    s.on('leaderboard.updated', (lb: any[]) => {
+    s.on('leaderboard.updated', (lb: LeaderboardEntry[]) => {
       if (Array.isArray(lb)) {
+        setLeaderboard(lb);
         const found = lb.find((item: any) => item.groupId === seat.groupId);
         if (found) {
           setMyGroup((prev) =>
@@ -210,6 +358,8 @@ export function App() {
       setSeat(data.seat);
       setMyGroup(data.group);
 
+      window.history.pushState({ step: 'gacha' }, '', '#/gacha');
+
       // Trigger Gacha Portal
       fetchGachaCards(data.group.id);
     } catch (err: any) {
@@ -254,6 +404,7 @@ export function App() {
   const handleCompleteGacha = () => {
     audioEngine.playStamp();
     setShowGacha(false);
+    window.history.pushState({ step: 'battle' }, '', '#/battle');
   };
 
   // Check Card Eligibility
@@ -265,14 +416,14 @@ export function App() {
       return { eligible: false, reason: 'Thẻ đã được kích hoạt trong trận đấu' };
     }
 
-    // Check score threshold >= 7
+    // Check score threshold >= 7 (uncapped scale)
     if (
       cardType === 'break_supply' ||
       cardType === 'counter_tariff' ||
       cardType === 'submarine_cable'
     ) {
       if (myGroup.economy < 7) {
-        return { eligible: false, reason: `Kinh tế (${myGroup.economy}/20) chưa đạt yêu cầu ≥ 7` };
+        return { eligible: false, reason: `Kinh tế (${myGroup.economy}) chưa đạt yêu cầu ≥ 7` };
       }
     } else if (
       cardType === 'di_bat_bien' ||
@@ -281,7 +432,7 @@ export function App() {
       cardType === 'anchor'
     ) {
       if (myGroup.autonomy < 7) {
-        return { eligible: false, reason: `Tự chủ (${myGroup.autonomy}/20) chưa đạt yêu cầu ≥ 7` };
+        return { eligible: false, reason: `Tự chủ (${myGroup.autonomy}) chưa đạt yêu cầu ≥ 7` };
       }
     } else if (
       cardType === 'cau_dong_ton_di' ||
@@ -291,7 +442,7 @@ export function App() {
       cardType === 'challenge'
     ) {
       if (myGroup.prestige < 7) {
-        return { eligible: false, reason: `Uy tín (${myGroup.prestige}/20) chưa đạt yêu cầu ≥ 7` };
+        return { eligible: false, reason: `Uy tín (${myGroup.prestige}) chưa đạt yêu cầu ≥ 7` };
       }
     }
 
@@ -305,20 +456,6 @@ export function App() {
     setSelectedChoice(letter);
   };
 
-  // Toggle Card for this Vote
-  const handleToggleCardForVote = (card: CardType) => {
-    if (isLocked || session?.status !== 'round_open') return;
-    const { eligible } = isCardEligible(card);
-    if (!eligible) return;
-
-    audioEngine.playCardFlip();
-    if (selectedCardForVote === card) {
-      setSelectedCardForVote(undefined);
-    } else {
-      setSelectedCardForVote(card);
-    }
-  };
-
   // Lock Vote Submission
   const handleLockVote = () => {
     if (!socket || !selectedChoice || !scenario || isLocked) return;
@@ -328,18 +465,9 @@ export function App() {
       roundId: scenario.id,
       chosenOption: selectedChoice,
       activeCard: selectedCardForVote,
+      targetGroupId: targetTeamId || undefined,
     });
     setIsLocked(true);
-  };
-
-  // Handle Logout / Switch Team
-  const handleLogout = () => {
-    localStorage.removeItem('bamboo_token');
-    localStorage.removeItem('bamboo_seat');
-    localStorage.removeItem('bamboo_group');
-    setToken(null);
-    setSeat(null);
-    setMyGroup(null);
   };
 
   // ==========================================
@@ -430,7 +558,7 @@ export function App() {
                   textTransform: 'uppercase',
                 }}
               >
-                TÊN NHÓM CỦA BẠN (VD: BÀN 1, TEAM SEN VÀNG)
+                TÊN NHÓM CỦA BẠN (VD: BÀN 1, TEAM NGOẠI GIAO)
               </label>
               <input
                 type="text"
@@ -528,7 +656,7 @@ export function App() {
   }
 
   // ==========================================
-  // RENDER: GACHA REVEAL PORTAL (TAM TRỤ)
+  // RENDER: GACHA REVEAL PORTAL (TAM TRỤ GSAP)
   // ==========================================
   if (showGacha) {
     const allRevealed = revealedCards.every(Boolean);
@@ -560,28 +688,21 @@ export function App() {
             {gachaCards.map((cardType, idx) => {
               const isRevealed = revealedCards[idx];
               const categoryLabel =
-                idx === 0 ? 'MẬT THƯ TẤN CÔNG (KT ≥ 7)' : idx === 1 ? 'MẬT THƯ PHÒNG THỦ (TC ≥ 7)' : 'MẬT THƯ CHỨC NĂNG (UT ≥ 7)';
-
-              if (!isRevealed) {
-                return (
-                  <div key={idx} className="gacha-sealed-envelope" onClick={() => handleRevealCard(idx)}>
-                    <div className="wax-seal">
-                      {idx === 0 ? 'CÔNG' : idx === 1 ? 'THỦ' : 'MINH'}
-                    </div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 800, color: '#0E281E' }}>
-                      {categoryLabel}
-                    </div>
-                    <div style={{ fontSize: 12, color: '#B8860B', fontStyle: 'italic' }}>
-                      Chạm để bóc niêm phong sáp đỏ ↻
-                    </div>
-                  </div>
-                );
-              }
+                idx === 0
+                  ? 'MẬT THƯ TẤN CÔNG (KT ≥ 7)'
+                  : idx === 1
+                  ? 'MẬT THƯ PHÒNG THỦ (TC ≥ 7)'
+                  : 'MẬT THƯ CHỨC NĂNG (UT ≥ 7)';
 
               return (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'center' }}>
-                  <TacticalCard type={cardType} status="ready" canActivate={true} />
-                </div>
+                <GachaInteractiveEnvelope
+                  key={idx}
+                  idx={idx}
+                  cardType={cardType}
+                  categoryLabel={categoryLabel}
+                  isRevealed={Boolean(isRevealed)}
+                  onReveal={() => handleRevealCard(idx)}
+                />
               );
             })}
           </div>
@@ -632,6 +753,9 @@ export function App() {
     );
   }
 
+  // Max score for normalization in visual bars (uncapped score scale)
+  const maxScoreScale = Math.max(20, myGroup.autonomy, myGroup.economy, myGroup.prestige);
+
   // ==========================================
   // RENDER: MAIN DESKTOP CONSOLE
   // ==========================================
@@ -673,25 +797,29 @@ export function App() {
             {serverStatus}
           </div>
 
-          <VolumeToggle />
-
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={() => setShowLeaderboardModal(true)}
             style={{
-              padding: '6px 12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
               borderRadius: 8,
-              fontSize: 11,
+              fontSize: 12,
               fontFamily: 'var(--font-mono)',
-              border: '1px solid #D8D0BE',
-              background: '#FFFFFF',
-              color: '#4A5B53',
+              fontWeight: 800,
+              border: '1.5px solid #B8860B',
+              background: '#FDF8EC',
+              color: '#B8860B',
               cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(184, 134, 11, 0.15)',
             }}
-            title="Đổi tên nhóm"
           >
-            ĐỔI NHÓM
+            🏆 BẢNG XẾP HẠNG
           </button>
+
+          <VolumeToggle />
         </div>
       </header>
 
@@ -707,7 +835,7 @@ export function App() {
                 style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   color: '#B8860B',
                 }}
               >
@@ -715,21 +843,28 @@ export function App() {
               </span>
             </div>
 
-            <h2 className="team-display-name">{myGroup.name}</h2>
+            <h2 className="team-display-name" title={myGroup.name}>{myGroup.name}</h2>
 
-            {/* 3 Strategic Dials (Base 10 Scale, max 20) */}
+            {/* 3 Strategic Dials (Uncapped Points) */}
             <div className="axes-dials-container">
               {/* Autonomy */}
               <div className="axis-meter">
                 <div className="axis-meter-label">
                   <span style={{ color: '#0F3628' }}>TỰ CHỦ (TC)</span>
-                  <span style={{ color: '#0F3628' }}>{myGroup.autonomy} / 20</span>
+                  <div>
+                    <span style={{ color: '#0F3628', fontWeight: 800 }}>{myGroup.autonomy}</span>
+                    {resolutionData?.finalDelta?.autonomy !== undefined && (
+                      <span className={`axis-delta-badge ${resolutionData.finalDelta.autonomy >= 0 ? 'pos' : 'neg'}`}>
+                        {resolutionData.finalDelta.autonomy >= 0 ? `+${resolutionData.finalDelta.autonomy}` : resolutionData.finalDelta.autonomy}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="axis-bar-track">
                   <div
                     className="axis-bar-fill"
                     style={{
-                      width: `${Math.min(100, (myGroup.autonomy / 20) * 100)}%`,
+                      width: `${Math.min(100, (myGroup.autonomy / maxScoreScale) * 100)}%`,
                       background: 'linear-gradient(90deg, #1C5C47, #10B981)',
                     }}
                   />
@@ -740,13 +875,20 @@ export function App() {
               <div className="axis-meter">
                 <div className="axis-meter-label">
                   <span style={{ color: '#B8860B' }}>KINH TẾ (KT)</span>
-                  <span style={{ color: '#B8860B' }}>{myGroup.economy} / 20</span>
+                  <div>
+                    <span style={{ color: '#B8860B', fontWeight: 800 }}>{myGroup.economy}</span>
+                    {resolutionData?.finalDelta?.economy !== undefined && (
+                      <span className={`axis-delta-badge ${resolutionData.finalDelta.economy >= 0 ? 'pos' : 'neg'}`}>
+                        {resolutionData.finalDelta.economy >= 0 ? `+${resolutionData.finalDelta.economy}` : resolutionData.finalDelta.economy}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="axis-bar-track">
                   <div
                     className="axis-bar-fill"
                     style={{
-                      width: `${Math.min(100, (myGroup.economy / 20) * 100)}%`,
+                      width: `${Math.min(100, (myGroup.economy / maxScoreScale) * 100)}%`,
                       background: 'linear-gradient(90deg, #B8860B, #F3CA68)',
                     }}
                   />
@@ -757,13 +899,20 @@ export function App() {
               <div className="axis-meter">
                 <div className="axis-meter-label">
                   <span style={{ color: '#1E40AF' }}>UY TÍN (UT)</span>
-                  <span style={{ color: '#1E40AF' }}>{myGroup.prestige} / 20</span>
+                  <div>
+                    <span style={{ color: '#1E40AF', fontWeight: 800 }}>{myGroup.prestige}</span>
+                    {resolutionData?.finalDelta?.prestige !== undefined && (
+                      <span className={`axis-delta-badge ${resolutionData.finalDelta.prestige >= 0 ? 'pos' : 'neg'}`}>
+                        {resolutionData.finalDelta.prestige >= 0 ? `+${resolutionData.finalDelta.prestige}` : resolutionData.finalDelta.prestige}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="axis-bar-track">
                   <div
                     className="axis-bar-fill"
                     style={{
-                      width: `${Math.min(100, (myGroup.prestige / 20) * 100)}%`,
+                      width: `${Math.min(100, (myGroup.prestige / maxScoreScale) * 100)}%`,
                       background: 'linear-gradient(90deg, #1E40AF, #60A5FA)',
                     }}
                   />
@@ -776,7 +925,7 @@ export function App() {
           <div className="arsenal-panel">
             <div className="arsenal-header">
               <span>BỘ THẺ CHIẾN LƯỢC</span>
-              <span style={{ fontSize: 10, color: '#B8860B' }}>DÙNG 1 LẦN</span>
+              <span style={{ fontSize: 10, color: '#B8860B' }}>NHẤP ĐỂ XEM</span>
             </div>
 
             <div className="cards-hand-list">
@@ -789,10 +938,10 @@ export function App() {
                   return (
                     <div
                       key={card}
-                      onClick={() => handleToggleCardForVote(card)}
+                      onClick={() => setInspectedCard(card)}
                       style={{
-                        padding: '12px 14px',
-                        borderRadius: 12,
+                        padding: '9px 12px',
+                        borderRadius: 10,
                         border: isArmedForVote
                           ? '2px solid #B8860B'
                           : isSpent
@@ -803,16 +952,16 @@ export function App() {
                           : isSpent
                           ? '#F3EFE7'
                           : '#FFFFFF',
-                        cursor: eligible && !isSpent && !isLocked ? 'pointer' : 'default',
-                        opacity: isSpent ? 0.5 : eligible ? 1 : 0.75,
+                        cursor: 'pointer',
+                        opacity: isSpent ? 0.6 : 1,
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 6,
+                        gap: 4,
                         transition: 'all 0.2s ease',
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: 13, fontWeight: 800, color: '#0E281E' }}>
+                        <span style={{ fontSize: 12, fontWeight: 800, color: '#0E281E' }}>
                           {card === 'break_supply'
                             ? 'BẺ GÃY CHUỖI CUNG ỨNG'
                             : card === 'counter_tariff'
@@ -833,9 +982,9 @@ export function App() {
                         </span>
                         <span
                           style={{
-                            fontSize: 10,
+                            fontSize: 9.5,
                             fontFamily: 'var(--font-mono)',
-                            padding: '2px 6px',
+                            padding: '2px 5px',
                             borderRadius: 4,
                             background: isSpent ? '#E2E8F0' : isArmedForVote ? '#B8860B' : '#EFE9DC',
                             color: isArmedForVote ? '#FFFFFF' : '#0E281E',
@@ -846,15 +995,15 @@ export function App() {
                         </span>
                       </div>
 
-                      <div style={{ fontSize: 11, color: eligible ? '#4A5B53' : '#9E2A2B', lineHeight: 1.4 }}>
-                        {isSpent ? 'Thẻ đã hoàn thành sứ mệnh trong trận đấu' : eligible ? 'Bấm để gán kích hoạt cùng lượt biểu quyết này' : reason}
+                      <div style={{ fontSize: 10.5, color: eligible ? '#4A5B53' : '#9E2A2B', lineHeight: 1.3 }}>
+                        {isSpent ? 'Thẻ đã hoàn thành sứ mệnh' : eligible ? 'Chạm để xem chi tiết / gán lượt này' : reason}
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <div style={{ fontSize: 13, color: '#4A5B53', textAlign: 'center', padding: 12 }}>
-                  Chưa có thẻ chiến lược. Vui lòng tải lại trang để bốc thẻ.
+                <div style={{ fontSize: 12, color: '#4A5B53', textAlign: 'center', padding: 12 }}>
+                  Chưa có thẻ chiến lược.
                 </div>
               )}
             </div>
@@ -868,9 +1017,11 @@ export function App() {
               {/* Scenario Header */}
               <div className="scenario-header-bar">
                 <div className="scenario-meta">
-                  <div className="scenario-principle-chip">{scenario.principle}</div>
+                  <div className="scenario-principle-chip">
+                    {scenario.isBlackSwan ? '⚡ KHỦNG HOẢNG THIÊN NGA ĐEN' : scenario.principle}
+                  </div>
                   <h1 className="scenario-title">
-                    KỊCH BẢN 0{scenario.order}: {scenario.title}
+                    CÂU HỎI {scenario.order}/12: {scenario.title}
                   </h1>
                   <span className="scenario-citation">{scenario.citation}</span>
                 </div>
@@ -888,7 +1039,7 @@ export function App() {
                       color: isLocked ? '#10B981' : '#B8860B',
                     }}
                   >
-                    {isLocked ? '✓ ĐÃ KHÓA BIỂU QUYẾT' : 'ĐANG MỞ BIỂU QUYẾT'}
+                    {isLocked ? '✓ ĐÃ KHÓA BIỂU QUYẾT' : 'ĐANG MỞ BIỂU QUYẾT (30S)'}
                   </span>
                 </div>
               </div>
@@ -900,204 +1051,504 @@ export function App() {
               <div className="options-grid">
                 {scenario.options.map((opt: any) => {
                   const isSelected = selectedChoice === opt.id;
+                  const optionResolution = resolutionData?.chosenOption === opt.id;
 
                   return (
                     <div
                       key={opt.id}
-                      className={`option-laptop-card ${isSelected ? 'selected' : ''} ${
-                        isLocked ? 'locked' : ''
-                      }`}
-                      onClick={() => handleSelectOption(opt.id as ChoiceLetter)}
+                      className={`option-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleSelectOption(opt.id)}
                     >
-                      <div className="option-letter-badge">{opt.id}</div>
-                      <div className="option-body">
-                        <div className="option-title">{opt.label}</div>
-                        <div className="option-hint">{opt.hint}</div>
+                      <div className="option-card-header">
+                        <div className="option-letter-badge">{opt.id}</div>
+                        <div className="option-label">{opt.label}</div>
                       </div>
-                      {isSelected && (
-                        <span
-                          style={{
-                            fontFamily: 'var(--font-mono)',
-                            fontSize: 12,
-                            fontWeight: 800,
-                            color: '#B8860B',
-                            alignSelf: 'center',
-                          }}
-                        >
-                          {isLocked ? 'ĐÃ NỘP ✓' : 'ĐANG CHỌN'}
-                        </span>
-                      )}
+
+                      <div className="option-hint">{opt.hint}</div>
+
+                      {/* Stakeholder Reaction Icons */}
+                      <div className="stakeholder-preview-row">
+                        <div className="sigil-chip" title="Phản ứng Phương Tây">
+                          <SigilWest size={16} />
+                          <span>PT</span>
+                        </div>
+                        <div className="sigil-chip" title="Phản ứng Láng Giềng">
+                          <SigilNeighbor size={16} />
+                          <span>LG</span>
+                        </div>
+                        <div className="sigil-chip" title="Phản ứng Liên Hợp Quốc">
+                          <SigilUN size={16} />
+                          <span>UN</span>
+                        </div>
+                        <div className="sigil-chip" title="Ý Đảng Lòng Dân VN">
+                          <SigilVN size={16} />
+                          <span>VN</span>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
               </div>
 
-              {/* Vote Actions & Card Confirmation */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  paddingTop: 16,
-                  borderTop: '1.5px solid rgba(14, 40, 30, 0.08)',
-                }}
-              >
-                <div style={{ fontSize: 13, color: '#4A5B53' }}>
-                  {selectedCardForVote ? (
-                    <span>
-                      Gán thẻ chiến lược:{' '}
-                      <strong style={{ color: '#B8860B' }}>
-                        {selectedCardForVote.toUpperCase()}
-                      </strong>
-                    </span>
-                  ) : (
-                    <span>Chưa chọn thẻ chiến lược (tùy chọn)</span>
-                  )}
+              {/* Selected Card Pill info (if armed) */}
+              {selectedCardForVote && (
+                <div
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: 8,
+                    background: '#FDF8EC',
+                    border: '1.5px solid #B8860B',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, color: '#B8860B' }}>
+                    THẺ CHIẾN LƯỢC KÍCH HOẠT KÈM: {selectedCardForVote.toUpperCase()}
+                    {targetTeamId && ` (Mục tiêu: ${allGroups.find(g => g.id === targetTeamId)?.name || targetTeamId})`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCardForVote(undefined)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#9E2A2B',
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    HỦY GÁN ✕
+                  </button>
+                </div>
+              )}
+
+              {/* Action Bottom Bar */}
+              <div className="action-bar-bottom">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 13, color: '#4A5B53' }}>
+                    {selectedChoice
+                      ? `Bạn đang chọn phương án: ${selectedChoice}`
+                      : 'Vui lòng chọn 1 phương án tác chiến (A, B, C hoặc D)'}
+                  </span>
                 </div>
 
                 <button
                   type="button"
+                  className="lock-vote-btn"
                   onClick={handleLockVote}
                   disabled={!selectedChoice || isLocked || session?.status !== 'round_open'}
-                  style={{
-                    padding: '14px 28px',
-                    fontSize: 14,
-                    fontWeight: 800,
-                    fontFamily: 'var(--font-mono)',
-                    letterSpacing: 1.5,
-                    borderRadius: 12,
-                    border: '1.5px solid #B8860B',
-                    background:
-                      !selectedChoice || isLocked
-                        ? '#E2E8F0'
-                        : 'linear-gradient(180deg, #1C5C47, #0F3628)',
-                    color: !selectedChoice || isLocked ? '#64748B' : '#FFFFFF',
-                    cursor: !selectedChoice || isLocked ? 'not-allowed' : 'pointer',
-                    boxShadow:
-                      !selectedChoice || isLocked
-                        ? 'none'
-                        : '0 6px 18px rgba(15, 54, 40, 0.25)',
-                    transition: 'all 0.2s ease',
-                  }}
                 >
-                  {isLocked ? 'BIỂU QUYẾT ĐÃ KHÓA' : 'XÁC NHẬN BIỂU QUYẾT →'}
+                  {isLocked ? '✓ BIỂU QUYẾT ĐÃ KHÓA' : 'XÁC NHẬN BIỂU QUYẾT ➔'}
                 </button>
               </div>
 
-              {/* Result & Stakeholder Feedback when revealed */}
+              {/* Resolution Details Panel (if round resolved) */}
               {resolutionData && (
                 <div
                   style={{
-                    marginTop: 12,
-                    padding: 20,
+                    marginTop: 16,
+                    padding: '20px 24px',
                     borderRadius: 16,
-                    background: '#FAF7F0',
-                    border: '1.5px solid #B8860B',
+                    background: resolutionData.isBalanced ? 'rgba(16, 185, 129, 0.08)' : 'rgba(184, 134, 11, 0.08)',
+                    border: `1.5px solid ${resolutionData.isBalanced ? '#10B981' : '#B8860B'}`,
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 14,
+                    gap: 12,
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      borderBottom: '1px solid rgba(14, 40, 30, 0.08)',
-                      paddingBottom: 10,
-                    }}
-                  >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span
                       style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: 12,
                         fontWeight: 800,
-                        color: '#B8860B',
-                        letterSpacing: 1,
+                        color: resolutionData.isBalanced ? '#059669' : '#B8860B',
                       }}
                     >
-                      KẾT QUẢ ĐIỀU ĐỘ NGOẠI GIAO VÒNG NÀY
+                      {resolutionData.isBalanced
+                        ? '★ BẢN LĨNH CÂY TRE — PHƯƠNG ÁN ĐẠT CÂN BẰNG TỐI ƯU'
+                        : 'KẾT QUẢ ĐIỀU CHỈNH CHỈ SỐ LƯỢT NÀY'}
                     </span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#0E281E' }}>
-                      Điểm mới: {resolutionData.compositeScore}
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 800, color: '#0E281E' }}>
+                      ĐIỂM TỔNG MỚI: {resolutionData.compositeScore}
                     </span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-                    {Object.entries(resolutionData.reactions || {}).map(([key, item]: [string, any]) => (
-                      <div
-                        key={key}
-                        style={{
-                          padding: 12,
-                          background: '#FFFFFF',
-                          borderRadius: 10,
-                          border: '1px solid #D8D0BE',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 6,
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          {key === 'west' ? (
-                            <SigilWest size={24} />
-                          ) : key === 'neighbor' ? (
-                            <SigilNeighbor size={24} />
-                          ) : key === 'un' ? (
-                            <SigilUN size={24} />
-                          ) : (
-                            <SigilVN size={24} />
-                          )}
-                          <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-                            {key === 'west'
-                              ? 'PHƯƠNG TÂY'
-                              : key === 'neighbor'
-                              ? 'LÁNG GIỀNG'
-                              : key === 'un'
-                              ? 'LIÊN HỢP QUỐC'
-                              : 'NHÂN DÂN'}
-                          </span>
-                        </div>
-                        <p style={{ margin: 0, fontSize: 12, color: '#4A5B53', lineHeight: 1.4 }}>
-                          {item.text}
-                        </p>
-                      </div>
-                    ))}
+                  <div style={{ display: 'flex', gap: 16, fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700 }}>
+                    <span style={{ color: '#0F3628' }}>
+                      TC: {resolutionData.newState?.autonomy} ({resolutionData.finalDelta?.autonomy >= 0 ? `+${resolutionData.finalDelta?.autonomy}` : resolutionData.finalDelta?.autonomy})
+                    </span>
+                    <span style={{ color: '#B8860B' }}>
+                      KT: {resolutionData.newState?.economy} ({resolutionData.finalDelta?.economy >= 0 ? `+${resolutionData.finalDelta?.economy}` : resolutionData.finalDelta?.economy})
+                    </span>
+                    <span style={{ color: '#1E40AF' }}>
+                      UT: {resolutionData.newState?.prestige} ({resolutionData.finalDelta?.prestige >= 0 ? `+${resolutionData.finalDelta?.prestige}` : resolutionData.finalDelta?.prestige})
+                    </span>
                   </div>
+
+                  {resolutionData.reactions && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginTop: 6 }}>
+                      {Object.entries(resolutionData.reactions).map(([stakeholder, item]: [string, any]) => (
+                        <div
+                          key={stakeholder}
+                          style={{
+                            padding: '8px 12px',
+                            borderRadius: 8,
+                            background: '#FFFFFF',
+                            border: '1px solid #D8D0BE',
+                            fontSize: 11.5,
+                            color: '#0E281E',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 3,
+                          }}
+                        >
+                          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: '#B8860B' }}>
+                            {stakeholder === 'west'
+                              ? 'PHƯƠNG TÂY'
+                              : stakeholder === 'neighbor'
+                              ? 'LÁNG GIỀNG'
+                              : stakeholder === 'un'
+                              ? 'LIÊN HỢP QUỐC'
+                              : 'NHÂN DÂN VIỆT NAM'}
+                          </span>
+                          <span>{item.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </>
           ) : (
             <div
               style={{
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: 400,
+                gap: 16,
                 textAlign: 'center',
-                gap: 14,
+                color: '#4A5B53',
               }}
             >
-              <BrandLogoMark size={64} />
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: 20,
-                  fontWeight: 800,
-                  fontFamily: 'var(--font-display)',
-                  color: '#0E281E',
-                }}
-              >
-                PHÒNG CHỜ NGOẠI GIAO ĐANG MỞ
-              </h3>
-              <p style={{ margin: 0, fontSize: 14, color: '#4A5B53', maxWidth: 480 }}>
-                Đội ngũ của bạn đã kết nối an toàn. Hãy theo dõi màn hình chính của Quản trò (GM) và
-                thảo luận chiến lược với bàn của mình trong lúc chờ vòng mới bắt đầu!
+              <BrandLogoMark size={72} />
+              <h2 style={{ fontFamily: 'var(--font-display)', color: '#0E281E', margin: 0 }}>
+                PHÒNG TÁC CHIẾN NGOẠI GIAO
+              </h2>
+              <p style={{ maxWidth: 500, fontSize: 14 }}>
+                Đang chờ Quản trò (GM) phát lệnh mở câu hỏi tiếp theo. Hãy cùng đồng đội bàn luận chiến lược!
               </p>
             </div>
           )}
         </section>
       </main>
+
+      {/* ========================================== */}
+      {/* MODAL 1: CARD INSPECTION & ASSIGNMENT      */}
+      {/* ========================================== */}
+      {inspectedCard &&
+        ReactDOM.createPortal(
+          <div className="tactical-modal-overlay" onClick={() => setInspectedCard(null)}>
+            <div className="tactical-modal-box" onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 800,
+                    letterSpacing: 1.5,
+                    color: '#B8860B',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  MẬT LỆNH CHIẾN LƯỢC QUỐC GIA
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setInspectedCard(null)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 18,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    color: '#4A5B53',
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Render Full Card */}
+              <TacticalCard
+                type={inspectedCard}
+                status={myGroup.cardStatuses?.[inspectedCard] === 'used' ? 'spent' : 'ready'}
+                canActivate={isCardEligible(inspectedCard).eligible}
+              />
+
+              {/* Requirement status text */}
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 12,
+                  color: isCardEligible(inspectedCard).eligible ? '#059669' : '#DC2626',
+                  fontWeight: 700,
+                  textAlign: 'center',
+                }}
+              >
+                {isCardEligible(inspectedCard).reason}
+              </div>
+
+              {/* Target Team Selector for Attack cards */}
+              {(inspectedCard === 'break_supply' || inspectedCard === 'submarine_cable') &&
+                isCardEligible(inspectedCard).eligible &&
+                myGroup.cardStatuses?.[inspectedCard] !== 'used' && (
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <label
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        fontWeight: 800,
+                        color: '#0E281E',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      CHỌN ĐỘI MỤC TIÊU PHONG TỎA:
+                    </label>
+                    <select
+                      value={targetTeamId}
+                      onChange={(e) => setTargetTeamId(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: 10,
+                        border: '1.5px solid #D8D0BE',
+                        background: '#FAF7F0',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: '#0E281E',
+                        outline: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <option value="">-- Chọn 1 nhóm đối thủ --</option>
+                      {allGroups
+                        .filter((g) => g.id !== myGroup.id)
+                        .map((g) => (
+                          <option key={g.id} value={g.id}>
+                            #{g.rank} {g.name} (Điểm: {g.totalScore})
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                )}
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+                {myGroup.cardStatuses?.[inspectedCard] === 'used' ? (
+                  <button
+                    disabled
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      borderRadius: 12,
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 13,
+                      fontWeight: 800,
+                      background: '#E2E8F0',
+                      color: '#64748B',
+                      border: '1px solid #CBD5E1',
+                      cursor: 'not-allowed',
+                    }}
+                  >
+                    ĐÃ SỬ DỤNG TRONG TRẬN ĐẤU (KHÓA)
+                  </button>
+                ) : !isCardEligible(inspectedCard).eligible ? (
+                  <button
+                    disabled
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      borderRadius: 12,
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 13,
+                      fontWeight: 800,
+                      background: '#FEE2E2',
+                      color: '#DC2626',
+                      border: '1px solid #FCA5A5',
+                      cursor: 'not-allowed',
+                    }}
+                  >
+                    CHƯA ĐỦ ĐIỀU KIỆN (YÊU CẦU ĐIỂM ≥ 7)
+                  </button>
+                ) : (
+                  <>
+                    {session?.status === 'round_open' && !isLocked && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (selectedCardForVote === inspectedCard) {
+                            setSelectedCardForVote(undefined);
+                          } else {
+                            setSelectedCardForVote(inspectedCard);
+                          }
+                          setInspectedCard(null);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '14px',
+                          borderRadius: 12,
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: 13,
+                          fontWeight: 800,
+                          letterSpacing: 1,
+                          background:
+                            selectedCardForVote === inspectedCard
+                              ? '#9E2A2B'
+                              : 'linear-gradient(180deg, #1C5C47, #0F3628)',
+                          color: '#FFFFFF',
+                          border: '1.5px solid #B8860B',
+                          cursor: 'pointer',
+                          boxShadow: '0 6px 18px rgba(15, 54, 40, 0.25)',
+                        }}
+                      >
+                        {selectedCardForVote === inspectedCard
+                          ? 'HỦY GÁN CHO LƯỢT BIỂU QUYẾT NÀY ✕'
+                          : 'GÁN KÍCH HOẠT CHO LƯỢT BIỂU QUYẾT NÀY ✓'}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setInspectedCard(null)}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        borderRadius: 12,
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 13,
+                        fontWeight: 700,
+                        background: '#FFFFFF',
+                        border: '1px solid #D8D0BE',
+                        color: '#0E281E',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      ĐÓNG LẠI
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+
+      {/* ========================================== */}
+      {/* MODAL 2: LIVE CLASSROOM LEADERBOARD        */}
+      {/* ========================================== */}
+      {showLeaderboardModal &&
+        ReactDOM.createPortal(
+          <div className="leaderboard-modal-overlay" onClick={() => setShowLeaderboardModal(false)}>
+            <div className="leaderboard-modal-box" onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #EFE9DC', paddingBottom: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <BrandLogoMark size={32} />
+                  <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 800, color: '#0E281E', margin: 0 }}>
+                    BẢNG XẾP HẠNG TOÀN LỚP
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowLeaderboardModal(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 20,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    color: '#4A5B53',
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {leaderboard.length > 0 ? (
+                  leaderboard.map((item) => {
+                    const isMyTeam = item.groupId === seat?.groupId;
+
+                    return (
+                      <div
+                        key={item.groupId}
+                        className={`leaderboard-table-item ${isMyTeam ? 'highlight-my-team' : ''}`}
+                      >
+                        <div style={{ fontWeight: 800, color: item.rank <= 3 ? '#B8860B' : '#4A5B53' }}>
+                          #{item.rank}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ color: '#0E281E' }}>{item.name || item.groupId}</span>
+                          {isMyTeam && (
+                            <span
+                              style={{
+                                fontSize: 10,
+                                padding: '1px 6px',
+                                borderRadius: 4,
+                                background: '#B8860B',
+                                color: '#FFFFFF',
+                                fontWeight: 800,
+                              }}
+                            >
+                              ĐỘI BẠN
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', gap: 10, fontSize: 12 }}>
+                          <span style={{ color: '#0F3628' }}>TC: {item.axes?.autonomy}</span>
+                          <span style={{ color: '#B8860B' }}>KT: {item.axes?.economy}</span>
+                          <span style={{ color: '#1E40AF' }}>UT: {item.axes?.prestige}</span>
+                        </div>
+                        <div style={{ fontWeight: 800, color: '#B8860B', textAlign: 'right', fontSize: 15 }}>
+                          {item.score}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div style={{ textAlign: 'center', padding: 24, color: '#4A5B53', fontSize: 13 }}>
+                    Chưa có dữ liệu xếp hạng. Đang cập nhật từ máy chủ...
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => setShowLeaderboardModal(false)}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: 10,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    background: 'linear-gradient(180deg, #1C5C47, #0F3628)',
+                    color: '#FFFFFF',
+                    border: '1px solid #B8860B',
+                    cursor: 'pointer',
+                  }}
+                >
+                  TIẾP TỤC TÁC CHIẾN →
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

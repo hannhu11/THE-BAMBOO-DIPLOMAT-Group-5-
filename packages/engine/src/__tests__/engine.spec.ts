@@ -22,12 +22,13 @@ describe('@bamboo/engine - Mathematical Scoring Functions (Phase 2)', () => {
     expect(initialAxesState()).toEqual({ autonomy: 10, economy: 10, prestige: 10 });
   });
 
-  it('clampAxis clamps strictly between 0 and 20', () => {
+  it('clampAxis clamps strictly to minimum 0 without upper ceiling', () => {
     expect(clampAxis(-5)).toBe(0);
     expect(clampAxis(0)).toBe(0);
     expect(clampAxis(10)).toBe(10);
     expect(clampAxis(20)).toBe(20);
-    expect(clampAxis(25)).toBe(20);
+    expect(clampAxis(25)).toBe(25);
+    expect(clampAxis(100)).toBe(100);
     expect(clampAxis(NaN)).toBe(0);
   });
 
@@ -54,11 +55,11 @@ describe('@bamboo/engine - Mathematical Scoring Functions (Phase 2)', () => {
     expect(canActivateCard('diplomatic_gong', { autonomy: 5, economy: 5, prestige: 7 })).toBe(true);
   });
 
-  it('applyDelta properly updates and clamps axes within [0, 20]', () => {
+  it('applyDelta properly updates and clamps axes without upper ceiling', () => {
     const start = { autonomy: 18, economy: 2, prestige: 10 };
     const delta = { autonomy: 5, economy: -5, prestige: 3 };
     const result = applyDelta(start, delta);
-    expect(result).toEqual({ autonomy: 20, economy: 0, prestige: 13 });
+    expect(result).toEqual({ autonomy: 23, economy: 0, prestige: 13 });
   });
 });
 

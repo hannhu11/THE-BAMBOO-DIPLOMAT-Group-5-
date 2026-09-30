@@ -178,9 +178,20 @@ export function resolveAllGroupsRound(
 
   const results: Record<string, RoundResolution> = {};
 
+  // Track groups whose cards were frozen by break_supply
+  const brokenGroups = new Set<string>();
+  for (const g of groups) {
+    if (g.decision.activeCard === 'break_supply') {
+      const target = g.decision.targetGroupId || g.decision.allianceTargetGroupId;
+      if (target) {
+        brokenGroups.add(target);
+      }
+    }
+  }
+
   for (const groupInput of groups) {
     let allianceContext: AllianceContext | undefined = undefined;
-    const targetGroupId = groupInput.decision.allianceTargetGroupId;
+    const targetGroupId = groupInput.decision.allianceTargetGroupId || groupInput.decision.targetGroupId;
 
     if (groupInput.decision.activeCard === 'alliance' && targetGroupId) {
       const partner = decisionsMap.get(targetGroupId);
@@ -201,13 +212,18 @@ export function resolveAllGroupsRound(
       }
     }
 
+    const effectiveActiveCard = brokenGroups.has(groupInput.groupId)
+      ? undefined
+      : groupInput.decision.activeCard;
+
     results[groupInput.groupId] = resolveRound({
       previousGroupState: groupInput.previousState,
       scenario,
-      lockedDecision: groupInput.decision,
-      activeCards: groupInput.decision.activeCard
-        ? [groupInput.decision.activeCard]
-        : [],
+      lockedDecision: {
+        ...groupInput.decision,
+        activeCard: effectiveActiveCard,
+      },
+      activeCards: effectiveActiveCard ? [effectiveActiveCard] : [],
       allInGrade: groupInput.allInGrade,
       allianceContext,
     });

@@ -9,11 +9,11 @@ export function initialAxesState(): StrategicAxesState {
 }
 
 /**
- * Clamps axis value strictly between [0, 20]
+ * Clamps axis value to minimum 0 (points are uncapped above 0)
  */
 export function clampAxis(value: number): number {
   if (Number.isNaN(value)) return 0;
-  return Math.max(0, Math.min(20, value));
+  return Math.max(0, value);
 }
 
 /**

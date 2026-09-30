@@ -111,6 +111,7 @@ export interface GroupDecision {
   allInMultiplier?: number; // x(-0.8) to x2.2
   activeCard?: CardType;
   allianceTargetGroupId?: string;
+  targetGroupId?: string;
   lockedBySeatId: string;
   lockedAt: number;
 }
