@@ -119,6 +119,9 @@ export function resolveRound(params: ResolveRoundParams): RoundResolution {
   if (cardsToApply.has('cau_dong_ton_di') || cardsToApply.has('alliance')) {
     cardEffectsApplied.push('cau_dong_ton_di');
     workingDelta.prestige += 2;
+    if (allianceContext && allianceContext.partnerChose) {
+      allianceOutcome = allianceContext.isPartnerBalanced ? 'bonus' : 'penalty';
+    }
   }
 
   // Nghị Quyết Đại Hội Đồng LHQ (un_resolution): Tăng Uy Tín

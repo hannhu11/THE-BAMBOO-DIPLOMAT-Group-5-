@@ -62,7 +62,8 @@ export const ScenarioItemSchema = z
     note: z.string().optional(),
     options: z
       .array(ScenarioOptionSchema)
-      .length(3)
+      .min(3)
+      .max(4)
       .refine(
         (opts) => opts.filter((o) => o.isBalanced).length === 1,
         'Mỗi tình huống phải có đúng duy nhất 1 phương án cân bằng (isBalanced: true)'

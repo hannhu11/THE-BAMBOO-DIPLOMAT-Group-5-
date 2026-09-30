@@ -34,42 +34,34 @@ describe('Phase 1 — Content Validation & Safe Black Swan DSL', () => {
     const semiEvent = parsed.events.find((e) => e.id === 'bs_semi');
     expect(semiEvent).toBeDefined();
 
-    // Context 1: Low autonomy (< 40)
+    // Context 1: Low autonomy (< 7)
     const ctxLowAutonomy: EvaluationContext = {
-      currentStats: { autonomy: 35, economy: 50, prestige: 50 },
+      currentStats: { autonomy: 5, economy: 10, prestige: 10 },
       pastDecisions: {},
     };
     const effectLow = evaluateBlackSwanEvent(semiEvent!, ctxLowAutonomy);
-    expect(effectLow.economy).toBe(-20);
-    expect(effectLow.prestige).toBe(-5);
+    expect(effectLow.economy).toBe(-2);
+    expect(effectLow.prestige).toBe(-1);
 
-    // Context 2: High autonomy (>= 70)
-    const ctxHighAutonomy: EvaluationContext = {
-      currentStats: { autonomy: 75, economy: 50, prestige: 50 },
-      pastDecisions: {},
-    };
-    const effectHigh = evaluateBlackSwanEvent(semiEvent!, ctxHighAutonomy);
-    expect(effectHigh.economy).toBe(10);
-    expect(effectHigh.prestige).toBe(5);
-
-    // Context 3: Choice match for Energy Event (bs_energy)
-    const energyEvent = parsed.events.find((e) => e.id === 'bs_energy');
-    expect(energyEvent).toBeDefined();
-
-    const ctxChoiceA: EvaluationContext = {
-      currentStats: { autonomy: 50, economy: 50, prestige: 50 },
-      pastDecisions: { sc3: 'A' },
-    };
-    const effectA = evaluateBlackSwanEvent(energyEvent!, ctxChoiceA);
-    expect(effectA.economy).toBe(-18);
-    expect(effectA.autonomy).toBe(-8);
-
+    // Context 2: High autonomy (>= 7) with choice C on sc3
     const ctxChoiceC: EvaluationContext = {
-      currentStats: { autonomy: 50, economy: 50, prestige: 50 },
+      currentStats: { autonomy: 10, economy: 10, prestige: 10 },
       pastDecisions: { sc3: 'C' },
     };
-    const effectC = evaluateBlackSwanEvent(energyEvent!, ctxChoiceC);
-    expect(effectC.economy).toBe(8);
-    expect(effectC.prestige).toBe(5);
+    const effectC = evaluateBlackSwanEvent(semiEvent!, ctxChoiceC);
+    expect(effectC.economy).toBe(1);
+    expect(effectC.prestige).toBe(1);
+
+    // Context 3: Cyber Event (bs_cyber)
+    const cyberEvent = parsed.events.find((e) => e.id === 'bs_cyber');
+    expect(cyberEvent).toBeDefined();
+
+    const ctxCyberA: EvaluationContext = {
+      currentStats: { autonomy: 10, economy: 10, prestige: 10 },
+      pastDecisions: { sc1: 'A' },
+    };
+    const effectCyberA = evaluateBlackSwanEvent(cyberEvent!, ctxCyberA);
+    expect(effectCyberA.autonomy).toBe(-2);
+    expect(effectCyberA.economy).toBe(-1);
   });
 });

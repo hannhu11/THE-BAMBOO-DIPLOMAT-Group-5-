@@ -75,10 +75,17 @@ describe('Phase 1 — State Machine & Action Permissions', () => {
     });
     expect(valid.success).toBe(true);
 
-    // Reject invalid option
+    // Valid option D
+    const validOptionD = CaptainLockVoteSchema.safeParse({
+      roundId: 'R01',
+      chosenOption: 'D',
+    });
+    expect(validOptionD.success).toBe(true);
+
+    // Reject invalid option E
     const invalidOption = CaptainLockVoteSchema.safeParse({
       roundId: 'R01',
-      chosenOption: 'D', // Only A, B, C allowed!
+      chosenOption: 'E',
     });
     expect(invalidOption.success).toBe(false);
 
@@ -95,18 +102,15 @@ describe('Phase 1 — State Machine & Action Permissions', () => {
     const valid = JoinSessionSchema.safeParse({
       sessionPin: 'BAM-1234',
       studentName: 'Nguyen Van A',
-      groupId: 'G03',
-      memberIndex: 2,
+      teamName: 'Bàn 1 - Sen Vàng',
     });
     expect(valid.success).toBe(true);
 
-    // Invalid group ID
-    const invalidGroup = JoinSessionSchema.safeParse({
+    // Missing student name / team
+    const invalidSession = JoinSessionSchema.safeParse({
       sessionPin: 'BAM-1234',
-      studentName: 'Nguyen Van A',
-      groupId: 'G99', // Only G01 to G07!
-      memberIndex: 2,
+      studentName: '',
     });
-    expect(invalidGroup.success).toBe(false);
+    expect(invalidSession.success).toBe(false);
   });
 });
