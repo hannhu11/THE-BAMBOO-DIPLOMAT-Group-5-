@@ -23,7 +23,7 @@ export const StakeholderReactionItemSchema = z
 
 export const ScenarioOptionSchema = z
   .object({
-    id: z.enum(['A', 'B', 'C']),
+    id: z.enum(['A', 'B', 'C', 'D']),
     label: z.string().min(5),
     hint: z.string().min(5),
     isBalanced: z.boolean().default(false),

@@ -22,7 +22,7 @@ export const ChoiceConditionSchema = z
   .object({
     type: z.literal('choice_match').default('choice_match'),
     scenarioId: z.string(),
-    choice: z.enum(['A', 'B', 'C']),
+    choice: z.enum(['A', 'B', 'C', 'D']),
   })
   .strict();
 
@@ -94,7 +94,7 @@ export interface EvaluationContext {
     economy: number;
     prestige: number;
   };
-  pastDecisions: Record<string, 'A' | 'B' | 'C'>; // scenarioId -> choice
+  pastDecisions: Record<string, 'A' | 'B' | 'C' | 'D'>; // scenarioId -> choice
 }
 
 /**

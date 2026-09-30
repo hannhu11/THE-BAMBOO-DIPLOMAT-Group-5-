@@ -7,9 +7,38 @@ export type Role = 'member' | 'captain' | 'gm';
 
 export type StrategicAxis = 'autonomy' | 'economy' | 'prestige';
 
-export type ChoiceLetter = 'A' | 'B' | 'C';
+export type ChoiceLetter = 'A' | 'B' | 'C' | 'D';
 
-export type CardType = 'anchor' | 'alliance' | 'challenge';
+export type CardCategory = 'attack' | 'defense' | 'utility';
+
+export type CardType =
+  // Nhóm Tấn Công (Kích hoạt khi Kinh Tế >= 7)
+  | 'break_supply'
+  | 'counter_tariff'
+  | 'submarine_cable'
+  // Nhóm Phòng Thủ (Kích hoạt khi Tự Chủ >= 7)
+  | 'di_bat_bien'
+  | 'sovereignty_shield'
+  | 'self_reliance'
+  // Nhóm Chức Năng (Kích hoạt khi Uy Tín >= 7)
+  | 'cau_dong_ton_di'
+  | 'un_resolution'
+  | 'diplomatic_gong'
+  // Backward compatibility
+  | 'anchor'
+  | 'alliance'
+  | 'challenge';
+
+export interface TacticalCardDef {
+  id: CardType;
+  category: CardCategory;
+  name: string;
+  description: string;
+  minScoreRequired: {
+    axis: StrategicAxis;
+    value: number;
+  };
+}
 
 export type CardStatus = 'ready' | 'armed' | 'used' | 'exhausted';
 
@@ -36,16 +65,18 @@ export interface GameSession {
 }
 
 export interface Group {
-  id: string; // e.g. "G01", "G02"
-  name: string; // e.g. "Nhóm 01"
-  classCode: string; // e.g. "SE1802-01"
+  id: string; // generated ID or custom slug e.g. "team-1", "table-3"
+  name: string; // custom team name e.g. "Đội Ngoại Giao Bàn 3"
+  classCode: string; // e.g. "SE1802"
   rank: number;
-  totalScore: number;
-  autonomy: number; // 0-100 scale
-  economy: number; // 0-100 scale
-  prestige: number; // 0-100 scale
-  allInUses: number; // max 2 uses per game
-  activeCards: Record<CardType, CardStatus>;
+  totalScore: number; // default 30 (10 + 10 + 10)
+  autonomy: number; // 0-20 scale, default 10
+  economy: number; // 0-20 scale, default 10
+  prestige: number; // 0-20 scale, default 10
+  allInUses?: number;
+  assignedCards?: CardType[]; // 3 cards from Gacha (1 attack, 1 defense, 1 utility)
+  cardStatuses?: Record<string, CardStatus>;
+  activeCards?: Record<string, CardStatus>;
 }
 
 export interface Seat {

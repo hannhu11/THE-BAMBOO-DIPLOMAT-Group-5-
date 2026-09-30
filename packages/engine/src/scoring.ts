@@ -2,35 +2,55 @@ import { StakeholderReactionItem } from '@bamboo/content-schema';
 import { LeaderboardEntry, StrategicAxesState, StrategicDeltas } from './types';
 
 /**
- * Initial Strategic Axes State (50, 50, 50)
- * Reference: 03_LOGIC.md §1 & 03_KIEN_TRUC_LOGIC_BACKEND.md §4
+ * Initial Strategic Axes State (10, 10, 10) - Base 10 Scale (Total = 30)
  */
 export function initialAxesState(): StrategicAxesState {
-  return { autonomy: 50, economy: 50, prestige: 50 };
+  return { autonomy: 10, economy: 10, prestige: 10 };
 }
 
 /**
- * Clamps axis value strictly between [0, 100]
+ * Clamps axis value strictly between [0, 20]
  */
 export function clampAxis(value: number): number {
   if (Number.isNaN(value)) return 0;
-  return Math.max(0, Math.min(100, value));
+  return Math.max(0, Math.min(20, value));
 }
 
 /**
- * Weighted geometric mean composite score:
- * Score = A^0.4 * E^0.3 * P^0.3
- * Any axis <= 0 collapses score to 0.
+ * Total Score = Autonomy + Economy + Prestige (Base initial 30 points)
  * Result rounded to 1 decimal place.
- * Reference: 03_LOGIC.md §3
  */
 export function compositeScore(state: StrategicAxesState): number {
   const { autonomy: a, economy: e, prestige: p } = state;
-  if (a <= 0 || e <= 0 || p <= 0) {
-    return 0;
-  }
-  const score = Math.pow(a, 0.4) * Math.pow(e, 0.3) * Math.pow(p, 0.3);
+  const score = a + e + p;
   return Math.round(score * 10) / 10;
+}
+
+/**
+ * Checks if a strategic card can be activated based on group's current score
+ * - Attack (break_supply, counter_tariff, submarine_cable): requires economy >= 7
+ * - Defense (di_bat_bien, sovereignty_shield, self_reliance): requires autonomy >= 7
+ * - Utility (cau_dong_ton_di, un_resolution, diplomatic_gong): requires prestige >= 7
+ */
+export function canActivateCard(card: string, state: StrategicAxesState): boolean {
+  switch (card) {
+    case 'break_supply':
+    case 'counter_tariff':
+    case 'submarine_cable':
+      return state.economy >= 7;
+    case 'di_bat_bien':
+    case 'sovereignty_shield':
+    case 'self_reliance':
+    case 'anchor':
+      return state.autonomy >= 7;
+    case 'cau_dong_ton_di':
+    case 'un_resolution':
+    case 'diplomatic_gong':
+    case 'alliance':
+      return state.prestige >= 7;
+    default:
+      return true;
+  }
 }
 
 /**

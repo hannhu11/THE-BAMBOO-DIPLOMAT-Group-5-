@@ -234,6 +234,9 @@ importers:
       '@bamboo/design-tokens':
         specifier: workspace:*
         version: link:../design-tokens
+      '@bamboo/domain-types':
+        specifier: workspace:*
+        version: link:../domain-types
     devDependencies:
       '@types/react':
         specifier: ^18.3.5

@@ -12,6 +12,26 @@
   --bg-elevated:   #162A23;
   --bg-scrim:      rgba(4, 10, 8, 0.72);
 
+  /* Warm Parchment & Deep Lacquer (Giấy Dó & Sơn Mài Cung Đình) */
+  --parchment-canvas:        #F7F4EA;
+  --parchment-canvas-subtle: #F3EFE3;
+  --parchment-card:          #FFFFFF;
+  --parchment-card-warm:     #FAF7F0;
+  --parchment-card-elevated: #FDFBF7;
+  --lacquer-deep:            #0E281E;
+  --lacquer-ink:             #14221C;
+  --lacquer-ink-muted:       #4A5B53;
+  --lacquer-ink-faint:       #76887F;
+  --lacquer-border:          #D8D0BE;
+  --lacquer-border-light:    rgba(14, 40, 30, 0.12);
+  --gold-royal:              #B8860B;
+  --gold-royal-bright:       #D4AF37;
+  --gold-royal-subtle:       rgba(184, 134, 11, 0.12);
+  --gold-royal-border:       rgba(184, 134, 11, 0.35);
+  --cinnabar-red:            #9E2A2B;
+  --cinnabar-subtle:         rgba(158, 42, 43, 0.10);
+  --bamboo-forest:           #1A5336;
+
   /* Bamboo (primary) */
   --bamboo-900: #0F3628;
   --bamboo-700: #1C5C47;
