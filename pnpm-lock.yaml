@@ -124,6 +124,12 @@ importers:
       '@bamboo/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit
+      '@types/gsap':
+        specifier: ^3.0.0
+        version: 3.0.0
+      gsap:
+        specifier: ^3.15.0
+        version: 3.15.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -985,6 +991,10 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
+  '@types/gsap@3.0.0':
+    resolution: {integrity: sha512-BbWLi4WRHGze4C8NV7U7yRevuBFiPkPZZyGa0rryanvh/9HPUFXTNBXsGQxJZJq7Ix7j4RXMYodP3s+OsqCErg==}
+    deprecated: This is a stub types definition. gsap provides its own type definitions, so you do not need this installed.
+
   '@types/node@22.20.3':
     resolution: {integrity: sha512-DZmzkmwHzXrLPAXPyKNDzlIwMMUZCVacoD25ywdy5YTKGbOx/2ld+Q38Im2zJ0vBuZP5Prd3VZutKZyXwkOS8A==}
 
@@ -1287,6 +1297,9 @@ packages:
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
+
+  gsap@3.15.0:
+    resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -2267,6 +2280,10 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
+  '@types/gsap@3.0.0':
+    dependencies:
+      gsap: 3.15.0
+
   '@types/node@22.20.3':
     dependencies:
       undici-types: 6.21.0
@@ -2664,6 +2681,8 @@ snapshots:
     optional: true
 
   gensync@1.0.0-beta.2: {}
+
+  gsap@3.15.0: {}
 
   inherits@2.0.4: {}
 

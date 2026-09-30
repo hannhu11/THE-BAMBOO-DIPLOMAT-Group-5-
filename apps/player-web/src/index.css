@@ -114,39 +114,42 @@ body {
 }
 
 /* Left Sidebar: Team Dossier & Tactical Arsenal */
+/* Left Sidebar: Team Dossier & Tactical Arsenal */
 .sidebar-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   height: 100%;
-  overflow-y: auto;
-  padding-right: 4px;
+  min-height: 0;
+  overflow: hidden;
+  padding-right: 2px;
 }
 
 .dossier-card {
   background: #FFFFFF;
   border: 1.5px solid var(--lacquer-border, #D8D0BE);
-  border-radius: 16px;
-  padding: 18px 20px;
+  border-radius: 14px;
+  padding: 12px 14px;
   box-shadow: 0 4px 16px rgba(14, 40, 30, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .dossier-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(14, 40, 30, 0.08);
 }
 
 .team-badge-tag {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 6px;
   background: var(--gold-royal-subtle, rgba(184, 134, 11, 0.12));
   color: var(--gold-royal, #B8860B);
@@ -155,23 +158,26 @@ body {
 
 .team-display-name {
   font-family: var(--font-display);
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--lacquer-deep, #0E281E);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 3-Axis Strategic Dials */
 .axes-dials-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
 .axis-meter {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .axis-meter-label {
@@ -179,13 +185,31 @@ body {
   justify-content: space-between;
   align-items: center;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+}
+
+.axis-delta-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.axis-delta-badge.pos {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.axis-delta-badge.neg {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
 }
 
 .axis-bar-track {
   width: 100%;
-  height: 9px;
+  height: 6px;
   background: #EFE9DC;
   border-radius: 999px;
   overflow: hidden;
@@ -202,12 +226,15 @@ body {
 .arsenal-panel {
   background: #FFFFFF;
   border: 1.5px solid var(--lacquer-border, #D8D0BE);
-  border-radius: 16px;
-  padding: 18px 20px;
+  border-radius: 14px;
+  padding: 12px 14px;
   box-shadow: 0 4px 16px rgba(14, 40, 30, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .arsenal-header {
@@ -215,17 +242,30 @@ body {
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 1px;
   color: var(--lacquer-deep, #0E281E);
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .cards-hand-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 2px;
+}
+
+.cards-hand-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cards-hand-list::-webkit-scrollbar-thumb {
+  background: #D8D0BE;
+  border-radius: 4px;
 }
 
 /* Right Main Action Center */
@@ -458,4 +498,177 @@ body {
   font-weight: 800;
   font-size: 16px;
   box-shadow: 0 4px 14px rgba(158, 42, 43, 0.4);
+}
+
+/* GSAP 3D Interactive Card Envelope */
+.gacha-interactive-card {
+  width: 100%;
+  height: 380px;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.card-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gacha-interactive-card.flipped .card-flipper {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 20px;
+}
+
+.front-envelope {
+  background: linear-gradient(145deg, #FFFFFF, #FAF7F0);
+  border: 2px solid var(--gold-royal, #B8860B);
+  box-shadow: 0 10px 30px rgba(14, 40, 30, 0.08), inset 0 0 20px rgba(184, 134, 11, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 24px;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.front-envelope:hover {
+  box-shadow: 0 16px 40px rgba(184, 134, 11, 0.22);
+  transform: translateY(-4px);
+}
+
+.particles-burst-container {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.wax-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9E2A2B;
+  box-shadow: 0 0 6px rgba(158, 42, 43, 0.8);
+}
+
+.wax-seal-interactive {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #B91C1C, #7F1D1D);
+  border: 2.5px solid #F59E0B;
+  box-shadow: 0 6px 20px rgba(185, 28, 28, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 1px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.wax-seal-interactive:hover {
+  transform: scale(1.08) rotate(3deg);
+}
+
+.envelope-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  color: #0E281E;
+  letter-spacing: 0.5px;
+}
+
+.envelope-sub {
+  font-size: 12px;
+  color: #B8860B;
+  font-style: italic;
+  font-family: var(--font-ui);
+}
+
+.back-card {
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Overlays for Inspection & Leaderboard */
+.tactical-modal-overlay,
+.leaderboard-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 40, 30, 0.82);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.tactical-modal-box {
+  background: #F7F4EA;
+  border: 2px solid var(--gold-royal, #B8860B);
+  border-radius: 24px;
+  padding: 32px 36px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.leaderboard-modal-box {
+  background: #FFFFFF;
+  border: 2px solid var(--lacquer-border, #D8D0BE);
+  border-radius: 24px;
+  padding: 32px 36px;
+  max-width: 760px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.leaderboard-table-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 180px 80px;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #EFE9DC;
+  background: #FAF7F0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.leaderboard-table-item.highlight-my-team {
+  border: 2px solid var(--gold-royal, #B8860B);
+  background: #FDF8EC;
+  font-weight: 800;
 }

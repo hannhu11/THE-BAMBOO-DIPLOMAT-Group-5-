@@ -1,11 +1,13 @@
 {
-  "version": "2.0.0",
-  "timerSec": 45,
+  "version": "3.0.0",
+  "timerSec": 30,
   "revealSec": 20,
   "scenarios": [
     {
       "id": "sc1",
       "order": 1,
+      "scenarioGroup": 1,
+      "questionIndex": 1,
       "title": "Cáp quang biển và Chủ quyền dữ liệu số",
       "principle": "Mục 5.2.3 · Nguyên tắc độc lập, tự chủ, tự lực cánh sinh",
       "citation": "Giáo trình Tư tưởng Hồ Chí Minh, NXB Chính trị quốc gia Sự thật, 2021, tr. 170–185 · UNCLOS 1982",
@@ -66,8 +68,140 @@
       }
     },
     {
-      "id": "sc2",
+      "id": "sc1_q2",
       "order": 2,
+      "scenarioGroup": 1,
+      "questionIndex": 2,
+      "title": "Mã hóa an ninh mạng & Tiêu chuẩn trạm trung chuyển dữ liệu",
+      "principle": "Mục 5.2.3 · Tự chủ công nghệ lõi và an toàn thông tin quốc gia",
+      "citation": "Luật An ninh mạng 2018 · Nghị quyết 52-NQ/TW của Bộ Chính trị về CMCN 4.0",
+      "context": "Trước sức ép triển khai nhanh trung tâm dữ liệu quốc gia kết nối ASEAN, các tập đoàn đa quốc gia yêu cầu áp dụng độc quyền chuẩn mã hóa của họ và được quyền giám sát luồng lưu trữ qua biên giới. Việt Nam cần quyết định kiến trúc an ninh thông tin cho toàn bộ hệ thống cáp và trạm cập bờ.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Ủy thác hoàn toàn cho phần mềm bảo mật ngoại của Siêu cường A",
+          "hint": "Tiết kiệm chi phí triển khai, nhưng rủi ro lộ lọt bí mật nhà nước.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -2, "economy": 2, "prestige": 0 }, "text": "Hoan nghênh quyền truy cập sâu vào dữ liệu máy chủ khu vực." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -2, "prestige": -1 }, "text": "Cảnh báo hạ tầng số Việt Nam trở thành bàn đạp do thám mạng." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -1 }, "text": "Khuyến cáo về quyền riêng tư dữ liệu cá nhân theo chuẩn quốc tế." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": 1, "prestige": 0 }, "text": "Lo ngại an toàn dữ liệu công dân bị kiểm soát từ bên ngoài." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Đóng cổng kết nối quốc tế, chỉ sử dụng mạng nội bộ cô lập",
+          "hint": "An toàn tuyệt đối nhưng kìm hãm hoàn toàn chuyển đổi số và kinh tế đối ngoại.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -3, "prestige": -2 }, "text": "Đánh giá môi trường kinh doanh số Việt Nam đóng băng." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 0,  "prestige": 0 }, "text": "Không bị ảnh hưởng trực tiếp." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -1 }, "text": "Quan ngại về sự chia cắt Internet toàn cầu." },
+            "vn_people": { "delta": { "autonomy": 2,  "economy": -3, "prestige": -1 }, "text": "Kinh tế số trì trệ, doanh nghiệp thương mại điện tử điêu đứng." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Làm chủ công nghệ mã hóa lõi, hợp tác an ninh mạng mở",
+          "hint": "Tự chủ thuật toán quốc gia, kết hợp học hỏi chuẩn quốc tế ISO/IEC.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 1, "economy": 1, "prestige": 2 }, "text": "Tôn trọng năng lực làm chủ kỹ thuật và tính chuyên nghiệp của kỹ sư Việt." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 1, "prestige": 1 }, "text": "Yên tâm về tính bảo mật cân bằng, không có backdoor nhắm vào bên thứ ba." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 2 }, "text": "Biểu dương cách tiếp cận tự chủ số có trách nhiệm." },
+            "vn_people": { "delta": { "autonomy": 2, "economy": 1, "prestige": 2 }, "text": "Tự hào về sản phẩm công nghệ Make in Vietnam bảo vệ Tổ quốc." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Cho phép các bên tự do cài đặt công cụ giám sát chéo lẫn nhau",
+          "hint": "Thỏa hiệp tạm bợ, biến mạng lưới quốc gia thành chiến trường mạng thử nghiệm.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -1, "economy": 1, "prestige": -1 }, "text": "Tranh thủ cài cắm công cụ gián điệp vào hệ thống." },
+            "neighbor":  { "delta": { "autonomy": -1, "economy": 0, "prestige": -1 }, "text": "Tăng cường tấn công khai thác lỗ hổng từ các trạm cập bờ." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -2 }, "text": "Cảnh báo nguy cơ bất ổn an ninh mạng nghiêm trọng." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": 0, "prestige": -2 }, "text": "Bất an tột độ trước nguy cơ tê liệt mạng lưới ngân hàng, năng lượng." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Bất kỳ sự giúp đỡ nào của nước ngoài cũng rất quý báu, nhưng chúng ta phải tự lực cánh sinh là chính.",
+        "source": "Hồ Chí Minh Toàn tập, NXB Chính trị quốc gia Sự thật, Tập 11, tr. 98"
+      }
+    },
+    {
+      "id": "sc1_q3",
+      "order": 3,
+      "scenarioGroup": 1,
+      "questionIndex": 3,
+      "isBlackSwan": true,
+      "category": "THIÊN NGA ĐEN",
+      "title": "⚡ KHỦNG HOẢNG: Mã độc Zero-Day nhắm vào nút mạng quốc tế",
+      "principle": "Mục 5.2.2 · Dĩ bất biến, ứng vạn biến khi đối mặt khủng hoảng bất ngờ",
+      "citation": "Tư tưởng Hồ Chí Minh về bảo vệ Tổ quốc từ sớm, từ xa, từ khi nước chưa nguy",
+      "context": "BÁO ĐỘNG ĐỎ: Một cuộc tấn công mạng phối hợp diện rộng sử dụng mã độc Zero-Day chưa từng thấy đã đánh sập đồng loạt 3 tuyến cáp quốc tế tại Đông Nam Á. Hệ thống thanh toán liên ngân hàng và cổng dịch vụ công quốc gia của Việt Nam bị tê liệt một phần. Kẻ tấn công gửi tối hậu thư đòi chuyển nhượng quyền quản trị hệ thống.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Cầu cứu và giao quyền quản trị khẩn cấp cho Siêu cường A",
+          "hint": "Xử lý tức thời nhưng đánh mất vĩnh viễn quyền kiểm soát hạ tầng huyết mạch.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -3, "economy": 2, "prestige": 0 }, "text": "Tiếp quản phòng điều hành và áp đặt chuẩn kiểm soát đặc quyền." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -3, "prestige": -2 }, "text": "Lập tức phong tỏa đường truyền dữ liệu qua biên giới đất liền." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -1 }, "text": "Quan ngại về sự phụ thuộc an ninh quốc gia vào một tập đoàn nước ngoài." },
+            "vn_people": { "delta": { "autonomy": -3, "economy": 0, "prestige": -1 }, "text": "Bức xúc vì hạ tầng trọng yếu rơi vào tay người ngoài." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Cắt toàn bộ kết nối quốc tế, quay về giao dịch giấy thủ công",
+          "hint": "Ngăn chặn lây lan nhưng làm sụp đổ các chỉ số thương mại quốc tế.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -4, "prestige": -2 }, "text": "Các tập đoàn công nghệ rút chuyên gia và đóng băng đơn hàng." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -2, "prestige": -1 }, "text": "Thương mại đình trệ, giao thương biên mậu tắc nghẽn." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -2 }, "text": "Cảnh báo thiệt hại kinh tế nghiêm trọng cho chuỗi cung ứng ASEAN." },
+            "vn_people": { "delta": { "autonomy": 1,  "economy": -4, "prestige": -1 }, "text": "Khủng hoảng đời sống xã hội vì gián đoạn thanh toán và giao thông." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Kích hoạt mạng dự phòng, hợp tác ứng phó đa phương",
+          "hint": "Vận dụng nội lực tự cô lập vùng nhiễm xạ số, phối hợp CERT quốc tế giải mã.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 1, "economy": 1, "prestige": 3 }, "text": "Ghi nhận sự kiên cường và tinh thần hợp tác kỹ thuật chuẩn mực." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 1, "prestige": 2 }, "text": "Tham gia chia sẻ thông tin tình báo mối đe dọa không gian mạng." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 3 }, "text": "Tuyên dương mô hình ứng cứu sự cố không gian mạng của Việt Nam." },
+            "vn_people": { "delta": { "autonomy": 3, "economy": 1, "prestige": 2 }, "text": "Đoàn kết vượt qua khủng hoảng; bảo toàn toàn vẹn dữ liệu quốc gia." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Thỏa hiệp ngầm trả tiền chuộc cho nhóm tội phạm mạng",
+          "hint": "Giải pháp nhượng bộ tạo tiền lệ xấu và kích thích các đợt tấn công tiếp theo.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -1, "economy": -3, "prestige": -3 }, "text": "Lên án hành vi tiếp tay cho khủng bố mạng quốc tế." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -1, "prestige": -2 }, "text": "Hạ bậc uy tín an ninh và siết chặt kiểm tra kết nối." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -3 }, "text": "Nhắc nhở trách nhiệm thành viên Công ước quốc tế về chống tội phạm mạng." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": -3, "prestige": -3 }, "text": "Phẫn nộ vì ngân sách bị thất thoát và nguy cơ bị tống tiền liên tục." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Dĩ bất biến, ứng vạn biến. Kiên quyết giữ vững mục tiêu độc lập, còn phương pháp thì mềm dẻo, linh hoạt.",
+        "source": "Chủ tịch Hồ Chí Minh trả lời các nhà báo, 1946"
+      }
+    },
+    {
+      "id": "sc2",
+      "order": 4,
+      "scenarioGroup": 2,
+      "questionIndex": 1,
       "title": "Vùng xám Chiến lược và An ninh Hàng hải Biển Đông",
       "principle": "Mục 5.2.2 · Dĩ bất biến, ứng vạn biến trong giữ gìn độc lập chủ quyền",
       "citation": "Giáo trình Tư tưởng Hồ Chí Minh, NXB Chính trị quốc gia Sự thật, 2021, tr. 174–180 · UNCLOS 1982",
@@ -128,8 +262,140 @@
       }
     },
     {
+      "id": "sc2_q2",
+      "order": 5,
+      "scenarioGroup": 2,
+      "questionIndex": 2,
+      "title": "Xây dựng Bộ Quy tắc COC & Bảo hộ Ngư dân trên Thực địa",
+      "principle": "Mục 5.2.1 · Giữ vững môi trường hòa bình, ổn định để phát triển đất nước",
+      "citation": "Tuyên bố DOC 2002 · Tiến trình đàm phán COC ASEAN · Luật Thủy sản 2017",
+      "context": "Các cuộc đàm phán về Bộ Quy tắc Ứng xử Biển Đông (COC) giữa ASEAN và các đối tác bước vào giai đoạn then chốt. Một số bên muốn COC mang tính hình thức, không có cơ chế chế tài ràng buộc pháp lý, trong khi tàu cá của ngư dân Việt Nam liên tục bị quấy rối tại các ngư trường truyền thống Hoàng Sa - Trường Sa.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Ký kết COC hình thức để lấy lòng đối tác thương mại lớn",
+          "hint": "Duy trì kim ngạch xuất nhập khẩu nhưng buông lỏng bảo vệ ngư dân trên biển.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": 1, "prestige": -2 }, "text": "Thất vọng vì ASEAN bị phân hóa và thiếu ý chí ràng buộc pháp lý." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 2, "prestige": 0 }, "text": "Hài lòng vì COC không trói buộc các hoạt động xây dựng thực địa." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -2 }, "text": "Khuyến nghị các thỏa thuận khu vực phải phù hợp UNCLOS 1982." },
+            "vn_people": { "delta": { "autonomy": -3, "economy": 0, "prestige": -2 }, "text": "Xót xa khi ngư dân bơ vơ giữa ngư trường truyền thống của tổ tiên." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Tẩy chay tiến trình đàm phán COC, cắt đứt đối thoại ngoại giao",
+          "hint": "Cứng rắn cực đoan nhưng đẩy tình hình khu vực vào vòng xoáy đối đầu nguy hiểm.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -2, "prestige": 0 }, "text": "Ủng hộ thái độ cứng rắn nhưng lo ngại kênh đàm phán bị sụp đổ." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -3, "prestige": -2 }, "text": "Quy kết Việt Nam phá hoại ổn định khu vực và siết chặt kiểm soát." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -1 }, "text": "Kêu gọi kiềm chế và quay lại bàn đàm phán đa phương." },
+            "vn_people": { "delta": { "autonomy": 1,  "economy": -2, "prestige": -1 }, "text": "Lo sợ nguy cơ bùng phát xung đột vũ trang ảnh hưởng cuộc sống." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Thúc đẩy COC thực chất, tăng cường lực lượng thực thi dân sự",
+          "hint": "Kiên trì lập trường COC có hiệu lực pháp lý; huy động Cảnh sát biển & Kiểm ngư đồng hành.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 1, "economy": 1, "prestige": 2 }, "text": "Ủng hộ mạnh mẽ tiếng nói chính nghĩa và vai trò trung tâm của ASEAN." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 0, "prestige": 1 }, "text": "Tôn trọng quyết tâm bảo vệ quyền lợi hợp pháp của Việt Nam." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 2 }, "text": "Đánh giá cao vai trò xây dựng kiến tạo hòa bình của Việt Nam." },
+            "vn_people": { "delta": { "autonomy": 2, "economy": 1, "prestige": 2 }, "text": "Ngư dân yên tâm vươn khơi bám biển; củng cố thế trận lòng dân trên biển." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Vũ trang hóa toàn bộ tàu cá của ngư dân để tự tác chiến",
+          "hint": "Làm lu mờ ranh giới dân sự - quân sự, tạo cớ cho đối phương dùng vũ lực mạnh hơn.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -1, "economy": -1, "prestige": -1 }, "text": "Cảnh báo vi phạm quy chuẩn an toàn hàng hải quốc tế." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -2, "prestige": -1 }, "text": "Lấy cớ dùng tàu quân sự trấn áp trực tiếp tàu cá." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -2 }, "text": "Nhắc nhở nghĩa vụ bảo vệ thường dân trong các tranh chấp biển." },
+            "vn_people": { "delta": { "autonomy": -1, "economy": -1, "prestige": -2 }, "text": "Ngư dân hoang mang vì hiểm họa đối đầu vũ trang vượt quá khả năng." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Ngày trước ta chỉ có đêm và rừng. Ngày nay ta có ngày, có trời, có biển. Bờ biển ta dài, tươi đẹp, ta phải biết giữ gìn lấy nó.",
+        "source": "Bác Hồ căn dặn cán bộ, chiến sĩ Hải quân nhân dân Việt Nam, 1961"
+      }
+    },
+    {
+      "id": "sc2_q3",
+      "order": 6,
+      "scenarioGroup": 2,
+      "questionIndex": 3,
+      "isBlackSwan": true,
+      "category": "THIÊN NGA ĐEN",
+      "title": "⚡ KHỦNG HOẢNG: Va chạm Hàng hải & Báo động đỏ trên biển",
+      "principle": "Mục 5.2.2 · Giữ cái đầu lạnh, trái tim nóng trước khiêu khích quân sự",
+      "citation": "Tư tưởng Hồ Chí Minh về kết hợp đấu tranh quân sự, chính trị và ngoại giao",
+      "context": "TÌNH HUỐNG KHẨN CẤP: Một tàu hải cảnh nước ngoài cố tình đâm va gây chìm một tàu kiểm ngư Việt Nam đang làm nhiệm vụ bảo vệ quyền tài phán trong thềm lục địa. Đối phương triển khai đội hình bao vây giàn khoan dầu khí của ta và phát tín hiệu cảnh báo cấm bay trên vùng trời khu vực.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Phát lệnh tấn công đáp trả tiêu diệt tàu đối phương",
+          "hint": "Giải tỏa bức xúc nhất thời nhưng rơi vào bẫy khiêu khích châm ngòi chiến tranh.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -2, "economy": -4, "prestige": 0 }, "text": "Kích hoạt tình trạng khẩn cấp, rút kiều dân và phong tỏa vốn đầu tư." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -4, "prestige": -3 }, "text": "Tổng động viên lực lượng tàu chiến, phong tỏa toàn diện đường biển." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -2 }, "text": "Hội đồng Bảo an triệu tập phiên họp khẩn về xung đột vũ trang." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": -4, "prestige": -1 }, "text": "Bàng hoàng trước viễn cảnh chiến tranh tàn phá thành quả đổi mới." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Rút toàn bộ lực lượng về bờ, chấp nhận phong tỏa để cầu hòa",
+          "hint": "Đánh mất quyền kiểm soát thực địa và tạo tiền lệ mất mát chủ quyền không thể đảo ngược.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -2, "prestige": -3 }, "text": "Coi Việt Nam không còn khả năng bảo đảm an toàn tự do hàng hải." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 2,  "prestige": 0 }, "text": "Lập tức lập trạm kiểm soát thường trực trong vùng biển của ta." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -3 }, "text": "Quan ngại sâu sắc về sự thay đổi hiện trạng bằng sức ép phi pháp." },
+            "vn_people": { "delta": { "autonomy": -4, "economy": -2, "prestige": -3 }, "text": "Phẫn nộ khôn cùng vì chủ quyền biển đảo bị xâm phạm mà không phản kháng." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Bám trụ kiên quyết, công khai hóa quốc tế, đàm phán cấp cao",
+          "hint": "Cứu hộ cán bộ, duy trì hiện diện kiên cường, phát trực tiếp video chứng cứ ra thế giới.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 1, "economy": 0, "prestige": 3 }, "text": "Đồng loạt lên tiếng phản đối hành vi bắt nạt, ủng hộ Việt Nam bảo vệ công lý." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 0, "prestige": 1 }, "text": "Buộc phải hạ nhiệt, chấp nhận thiết lập đường dây nóng quân sự giải tỏa căng thẳng." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 3 }, "text": "Ủng hộ mạnh mẽ việc sử dụng các biện pháp hòa bình theo Hiến chương LHQ." },
+            "vn_people": { "delta": { "autonomy": 3, "economy": 0, "prestige": 3 }, "text": "Muôn triệu con tim Việt Nam siết chặt hàng ngũ, tin tưởng vào sự lãnh đạo sáng suốt." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Yêu cầu Hạm đội Đệ Thất của nước ngoài đưa tàu chiến vào hộ tống",
+          "hint": "Biến lãnh hải quốc gia thành chiến địa giữa hai siêu cường đối đầu.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -3, "economy": -1, "prestige": 1 }, "text": "Đưa tàu sân bay vào khu vực, yêu cầu chia sẻ quyền sử dụng cảng Cam Ranh." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -4, "prestige": -2 }, "text": "Báo động tên lửa chiến lược, cắt đứt toàn bộ hiệp định kinh tế." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -2 }, "text": "Nguy cơ đối đầu quân sự trực diện đe dọa hòa bình thế giới." },
+            "vn_people": { "delta": { "autonomy": -3, "economy": -2, "prestige": 0 }, "text": "Lo lắng nguy cơ đất nước bị phụ thuộc vào sự bảo hộ của nước ngoài." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Thực lực là cái chiêng mà ngoại giao là cái tiếng. Chiêng có to thì tiếng mới lớn.",
+        "source": "Chủ tịch Hồ Chí Minh nói chuyện với cán bộ ngoại giao, 1945"
+      }
+    },
+    {
       "id": "sc3",
-      "order": 3,
+      "order": 7,
+      "scenarioGroup": 3,
+      "questionIndex": 1,
       "title": "Tái định hình Chuỗi cung ứng Bán dẫn & Thuế quan Đối kháng",
       "principle": "Mục 5.3.3 · Nội lực là quyết định, ngoại lực là quan trọng",
       "citation": "Giáo trình Tư tưởng Hồ Chí Minh, NXB Chính trị quốc gia Sự thật, 2021, tr. 183–186 · WTO & Hiệp định EVFTA",
@@ -190,8 +456,140 @@
       }
     },
     {
+      "id": "sc3_q2",
+      "order": 8,
+      "scenarioGroup": 3,
+      "questionIndex": 2,
+      "title": "Đào tạo 50.000 Kỹ sư Vi mạch & Hợp tác Công nghệ Bán dẫn",
+      "principle": "Mục 5.3.3 · Đầu tư cho con người là gốc rễ của tự cường dân tộc",
+      "citation": "Chiến lược Phát triển Công nghiệp Bán dẫn Việt Nam đến năm 2030, tầm nhìn 2050",
+      "context": "Việt Nam đặt mục tiêu đào tạo 50.000 kỹ sư bán dẫn phục vụ chuỗi cung ứng toàn cầu. Một liên minh công nghệ đề xuất tài trợ học bổng và trang thiết bị phòng thí nghiệm trị giá hàng tỷ USD, đổi lại việc Việt Nam phải cam kết nguồn nhân lực này chỉ phục vụ cho các dự án của riêng khối họ và hạn chế hợp tác với các viện nghiên cứu đối trọng.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Chấp thuận điều khoản cam kết nhân lực độc quyền",
+          "hint": "Được đầu tư trang thiết bị nhanh, nhưng trói buộc tương lai trí thức trẻ vào một khối.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -2, "economy": 2, "prestige": 0 }, "text": "Kiểm soát dòng nhân lực chất lượng cao phục vụ các nhà máy của khối." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -2, "prestige": -1 }, "text": "Hạn chế các chương trình giao lưu học thuật và cấp visa du học." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -1 }, "text": "Khuyến cáo về quyền tự do học thuật và việc làm của thanh niên." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": 1,  "prestige": 0 }, "text": "Băn khoăn vì sinh viên bị biến thành công cụ trong cạnh tranh công nghệ." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Từ chối mọi tài trợ, chỉ đào tạo bằng giáo trình lý thuyết trong nước",
+          "hint": "Độc lập giáo dục nhưng thiếu kinh phí thực hành, kỹ sư ra trường thiếu kỹ năng thực tế.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -3, "prestige": -1 }, "text": "Đánh giá chất lượng nhân lực vi mạch Việt Nam không đáp ứng tiêu chuẩn." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 0,  "prestige": 0 }, "text": "Trung tính — không tác động." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": 0 }, "text": "Khuyến khích hội nhập giáo dục đại học với xu thế toàn cầu." },
+            "vn_people": { "delta": { "autonomy": 1,  "economy": -3, "prestige": -1 }, "text": "Thất vọng vì con em tốt nghiệp không tìm được việc làm công nghệ cao." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Đa dạng hóa hợp tác giáo dục, giữ quyền tự chủ đại học",
+          "hint": "Mở rộng liên kết với Nhật Bản, Hàn Quốc, Mỹ, châu Âu và khu vực; xây dựng trung tâm thiết kế mở.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 1, "economy": 2, "prestige": 2 }, "text": "Hoan nghênh môi trường học thuật cởi mở, sáng tạo và chuẩn quốc tế." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 1, "prestige": 1 }, "text": "Tích cực cử đoàn chuyên gia cùng tham gia hội thảo chia sẻ kinh nghiệm." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 2 }, "text": "Ghi nhận đóng góp vào Mục tiêu Phát triển Bền vững SDG 4 về giáo dục chất lượng." },
+            "vn_people": { "delta": { "autonomy": 2, "economy": 2, "prestige": 2 }, "text": "Thế hệ trẻ phấn khởi, tự tin làm chủ công nghệ và hội nhập năm châu." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Giao toàn bộ các trường đại học công nghệ cho doanh nghiệp tư nhân nước ngoài",
+          "hint": "Thương mại hóa giáo dục cực đoan, đánh mất định hướng phát triển chiến lược quốc gia.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -2, "economy": 1, "prestige": -1 }, "text": "Tối ưu hóa lợi nhuận đào tạo nhưng không cam kết gắn bó lâu dài." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 0, "prestige": -1 }, "text": "Theo dõi sát sao việc chuyển giao công nghệ nhạy cảm." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -1 }, "text": "Cảnh báo gia tăng bất bình đẳng trong tiếp cận giáo dục đại học." },
+            "vn_people": { "delta": { "autonomy": -3, "economy": 0, "prestige": -2 }, "text": "Bất bình vì học phí tăng vọt ngoài tầm với của đại đa số người dân." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Vì lợi ích mười năm thì phải trồng cây, vì lợi ích trăm năm thì phải trồng người.",
+        "source": "Hồ Chí Minh Toàn tập, NXB Chính trị quốc gia Sự thật, Tập 11, tr. 528"
+      }
+    },
+    {
+      "id": "sc3_q3",
+      "order": 9,
+      "scenarioGroup": 3,
+      "questionIndex": 3,
+      "isBlackSwan": true,
+      "category": "THIÊN NGA ĐEN",
+      "title": "⚡ KHỦNG HOẢNG: Đứt gãy nguồn cung Đất hiếm & Cấm vận Thiết bị",
+      "principle": "Mục 5.3.3 · Tự lực tự cường, biến thách thức thành thời cơ chuyển mình",
+      "citation": "Tư tưởng Hồ Chí Minh về phát huy tối đa mọi nguồn lực nội sinh để vượt khó",
+      "context": "BÙNG NỔ TRANH CHẤP NGUYÊN LIỆU: Một cuộc chiến tranh thương mại bất ngờ nổ ra giữa các cường quốc. Nước láng giềng áp đặt lệnh cấm xuất khẩu đất hiếm tinh chế sang các nước trung gian, trong khi phương Tây siết chặt cấp phép xuất khẩu thiết bị quang khắc chip. Các nhà máy chế tạo điện tử tại Việt Nam chỉ còn đủ nguyên liệu hoạt động trong 15 ngày.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Cấm xuất khẩu khoáng sản toàn diện để trả đũa đối đầu",
+          "hint": "Cắt đứt thương mại khiến các hiệp định tự do thương mại (FTA) bị đình chỉ hiệu lực.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -4, "prestige": -2 }, "text": "Khiếu nại Việt Nam vi phạm cam kết chuỗi cung ứng mở tại WTO." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -3, "prestige": -2 }, "text": "Đáp trả bằng cách đình chỉ thông quan tại các cửa khẩu quốc tế." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -2 }, "text": "Cảnh báo chuỗi sản xuất toàn cầu rơi vào hỗn loạn sâu sắc hơn." },
+            "vn_people": { "delta": { "autonomy": 1,  "economy": -4, "prestige": -2 }, "text": "Công nhân ngành điện tử đối mặt nguy cơ mất việc làm hàng loạt." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Thỏa thuận nhượng lại quyền khai thác mỏ đất hiếm cho một bên để được tha",
+          "hint": "Đánh mất tài nguyên chiến lược quý giá của con cháu mai sau.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -3, "economy": 1, "prestige": -3 }, "text": "Chỉ trích hành động vi phạm cam kết an ninh môi trường và tài nguyên." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 2, "prestige": 0 }, "text": "Đạt được quyền kiểm soát trữ lượng khoáng sản chiến lược của Việt Nam." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -3 }, "text": "Quan ngại về vấn đề chủ quyền tài nguyên thiên nhiên quốc gia." },
+            "vn_people": { "delta": { "autonomy": -4, "economy": 0, "prestige": -3 }, "text": "Bức xúc trước sự phung phí tài sản quốc gia không thể tái tạo." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Đột phá công nghệ chế biến sâu, liên minh cung ứng tin cậy",
+          "hint": "Khai thông nguồn lực nội tại, hợp tác đa phương chuyển giao công nghệ tuyển luyện sạch.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 2, "economy": 2, "prestige": 3 }, "text": "Hợp tác thành lập trung tâm chế biến đất hiếm bền vững tại Việt Nam." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 1, "prestige": 2 }, "text": "Thừa nhận vị thế không thể thay thế của Việt Nam trong chuỗi cung ứng." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 3 }, "text": "Biểu dương sáng kiến bảo đảm chuỗi cung ứng xanh và có trách nhiệm." },
+            "vn_people": { "delta": { "autonomy": 3, "economy": 2, "prestige": 3 }, "text": "Kinh tế công nghệ cao vững bước tiến lên, khẳng định tự chủ quốc gia." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Thu mua lậu nguyên liệu trên thị trường chợ đen quốc tế",
+          "hint": "Hàng giả, chất lượng kém và nguy cơ bị trừng phạt pháp lý quốc tế nặng nề.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -1, "economy": -3, "prestige": -3 }, "text": "Đưa các doanh nghiệp liên quan vào danh sách cấm vận toàn cầu." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -2, "prestige": -2 }, "text": "Tăng cường tuần tra biên giới và tịch thu hàng hóa buôn lậu." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -3 }, "text": "Lên án các hành vi buôn bán tài nguyên bất hợp pháp." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": -3, "prestige": -3 }, "text": "Thiệt hại tài chính khổng lồ, uy tín quốc tế của đất nước suy giảm." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Gian nan rèn luyện mới thành công. Thử thách càng lớn, bản lĩnh càng phải vững vàng.",
+        "source": "Nhật ký trong tù, Hồ Chí Minh, 1943"
+      }
+    },
+    {
       "id": "sc4",
-      "order": 4,
+      "order": 10,
+      "scenarioGroup": 4,
+      "questionIndex": 1,
       "title": "Trọng tài Quốc tế & Lá phiếu Lương tri tại LHQ",
       "principle": "Mục 5.2.3 · Đoàn kết quốc tế có lý, có tình; bạn bè là đối tác tin cậy",
       "citation": "Giáo trình Tư tưởng Hồ Chí Minh, NXB Chính trị quốc gia Sự thật, 2021, tr. 178–182 · Hiến chương LHQ",
@@ -249,6 +647,136 @@
       "wisdom": {
         "quote": "Đoàn kết quốc tế phải trên cơ sở có lý, có tình. Việt Nam là bạn, là đối tác tin cậy và là thành viên có trách nhiệm của cộng đồng quốc tế.",
         "source": "Giáo trình Tư tưởng Hồ Chí Minh, NXB Chính trị quốc gia Sự thật, 2021, Mục 5.2.3, tr. 178–182"
+      }
+    },
+    {
+      "id": "sc4_q2",
+      "order": 11,
+      "scenarioGroup": 4,
+      "questionIndex": 2,
+      "title": "Sáng kiến Hòa đàm Trung gian & Viện trợ Nhân đạo Tái thiết",
+      "principle": "Mục 5.2.3 · Việt Nam là nhịp cầu hòa bình, hữu nghị giữa các dân tộc",
+      "citation": "Tư tưởng Hồ Chí Minh về hòa bình, hữu nghị giữa các dân tộc · Hiến chương LHQ",
+      "context": "Cuộc xung đột vũ trang kéo dài gây thảm họa nhân đạo tàn khốc. Cả hai phe đều kiệt quệ nhưng từ chối đối thoại trực tiếp trên lãnh thổ của nhau. Tổng Thư ký LHQ kêu gọi các quốc gia có uy tín trung lập tích cực đứng ra làm trung gian hòa giải và đóng góp phái bộ hỗ trợ nhân đạo khẩn cấp.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Từ chối tham gia để giữ an toàn tuyệt đối cho mình",
+          "hint": "Tránh phiền toái ngoại giao nhưng bỏ lỡ cơ hội nâng tầm vị thế quốc tế của đất nước.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": 0, "prestige": -1 }, "text": "Đánh giá vai trò quốc tế của Việt Nam còn mờ nhạt và khép kín." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 0, "prestige": 0 }, "text": "Trung tính — không có ý kiến." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0, "prestige": -2 }, "text": "Tiếc nuối vì một thành viên có uy tín không phát huy vai trò trách nhiệm." },
+            "vn_people": { "delta": { "autonomy": 0,  "economy": 0, "prestige": -1 }, "text": "Mong muốn đất nước có đóng góp xứng đáng cho hòa bình thế giới." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Đơn phương viện trợ vũ khí cho một bên để thay đổi cục diện chiến trường",
+          "hint": "Vi phạm nghiêm trọng nguyên tắc hòa bình và Hiến chương Liên Hợp Quốc.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -3, "economy": -4, "prestige": -4 }, "text": "Áp đặt trừng phạt toàn diện và cắt đứt mọi hiệp định thương mại." },
+            "neighbor":  { "delta": { "autonomy": -1, "economy": -3, "prestige": -3 }, "text": "Lên án mạnh mẽ hành vi can thiệp quân sự vào xung đột khu vực." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -4 }, "text": "Đưa Việt Nam vào danh sách các quốc gia vi phạm lệnh cấm vận vũ khí." },
+            "vn_people": { "delta": { "autonomy": -4, "economy": -4, "prestige": -4 }, "text": "Phẫn nộ vì chính sách đẩy đất nước vào nguy cơ chiến tranh." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Đề xuất Hà Nội làm địa điểm hòa đàm, cử bệnh viện dã chiến",
+          "hint": "Phát huy truyền thống Thủ đô vì Hòa bình, viện trợ nhân đạo vô tư không phân biệt đối xử.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 1, "economy": 1, "prestige": 3 }, "text": "Đánh giá cao vai trò kiến tạo hòa bình vô tư và chuyên nghiệp của Việt Nam." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 1, "prestige": 2 }, "text": "Ủng hộ nỗ lực xây dựng hòa bình ổn định chung cho toàn cầu." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 4 }, "text": "Vinh danh những chiến sĩ mũ nồi xanh Việt Nam vì sứ mệnh cao cả." },
+            "vn_people": { "delta": { "autonomy": 3, "economy": 1, "prestige": 3 }, "text": "Tự hào về vị thế đất nước: Bạn bè tin cậy, nhịp cầu hòa bình của nhân loại." }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Cho thuê vùng trời và căn cứ cho lực lượng viễn chinh nước ngoài",
+          "hint": "Trái với chính sách quốc phòng 'Bốn Không' và biến đất nước thành mục tiêu trả đũa.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -4, "economy": 1, "prestige": -2 }, "text": "Chiếm lĩnh quyền sử dụng các sân bay quân sự chiến lược." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -4, "prestige": -4 }, "text": "Tuyên bố tình trạng chiến tranh tiềm tàng tại biên giới." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -3 }, "text": "Lên án hành vi tiếp tay cho leo thang xung đột vũ trang quốc tế." },
+            "vn_people": { "delta": { "autonomy": -4, "economy": -2, "prestige": -4 }, "text": "Bất bình gay gắt vì đánh đổi độc lập tự chủ thiêng liêng lấy lợi ích ngắn hạn." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Việt Nam muốn là bạn với tất cả mọi nước dân chủ và không gây thù oán với một ai.",
+        "source": "Hồ Chí Minh: Lời kêu gọi gửi Liên Hợp Quốc, 1946"
+      }
+    },
+    {
+      "id": "sc4_q3",
+      "order": 12,
+      "scenarioGroup": 4,
+      "questionIndex": 3,
+      "isBlackSwan": true,
+      "category": "THIÊN NGA ĐEN",
+      "title": "⚡ KHỦNG HOẢNG: Tối hậu thư Trừng phạt Kinh tế Thứ cấp",
+      "principle": "Mục 5.2.3 · Kiên định độc lập tự chủ trước sức ép đơn phương trái luật",
+      "citation": "Tư tưởng Hồ Chí Minh: Không có gì quý hơn độc lập, tự do (1966)",
+      "context": "CĂNG THẲNG TỘT ĐỘ: Một liên minh tài chính đơn phương gửi 'Tối hậu thư kinh tế' cho Việt Nam: Trong vòng 48 giờ, nếu Việt Nam không lập tức tịch thu tài sản của các doanh nghiệp thuộc quốc gia đối trọng đang đầu tư tại Việt Nam, toàn bộ hệ thống ngân hàng thương mại Việt Nam sẽ bị cắt khỏi mạng thanh toán quốc tế SWIFT và chịu thuế trừng phạt thứ cấp 50%.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Đầu hàng vô điều kiện, tịch thu tài sản của đối tác truyền thống",
+          "hint": "Phá hủy uy tín môi trường đầu tư quốc tế và bội ước luật pháp.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -3, "economy": 1, "prestige": -2 }, "text": "Coi Việt Nam là đối tác phục tùng dễ bị ép buộc bằng tối hậu thư." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -5, "prestige": -4 }, "text": "Cắt đứt toàn bộ quan hệ ngoại giao, phong tỏa tài sản đối ứng." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -3 }, "text": "Cảnh báo vi phạm nghiêm trọng luật đầu tư quốc tế và quyền sở hữu." },
+            "vn_people": { "delta": { "autonomy": -4, "economy": -2, "prestige": -4 }, "text": "Xót xa vì đạo lý truyền thống và danh dự dân tộc bị chà đạp." }
+          }
+        },
+        {
+          "id": "B",
+          "label": "Tuyên bố đoạn tuyệt với phương Tây, rút toàn bộ khỏi hệ thống tài chính toàn cầu",
+          "hint": "Tự sát kinh tế, đưa đất nước rơi vào tình cảnh cô lập và thảm họa lạm phát phi mã.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 0,  "economy": -6, "prestige": -4 }, "text": "Đóng băng tài khoản dự trữ ngoại hối quốc gia của Việt Nam." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": 0,  "prestige": 0 }, "text": "Không thể cứu trợ được quy mô thâm hụt kinh tế khổng lồ." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -3 }, "text": "Cảnh báo nguy cơ khủng hoảng nhân đạo do kinh tế kiệt quệ." },
+            "vn_people": { "delta": { "autonomy": 1,  "economy": -6, "prestige": -3 }, "text": "Kinh tế kiệt quệ, đời sống nhân dân quay về thời kỳ vô cùng cơ cực." }
+          }
+        },
+        {
+          "id": "C",
+          "label": "Ngoại giao Cây Tre — Vận dụng pháp lý quốc tế, bảo vệ nhà đầu tư, đa dạng hóa thanh toán",
+          "hint": "Khẳng định Việt Nam thượng tôn luật pháp; liên minh các nước không liên kết phản đối trừng phạt đơn phương.",
+          "isBalanced": true,
+          "reactions": {
+            "west":      { "delta": { "autonomy": 2, "economy": 1, "prestige": 4 }, "text": "Buộc phải rút lại tối hậu thư, chấp nhận giải pháp đàm phán từng dự án cụ thể." },
+            "neighbor":  { "delta": { "autonomy": 0, "economy": 2, "prestige": 3 }, "text": "Khâm phục bản lĩnh kiên cường, giữ trọn chữ tín và tình nghĩa của Việt Nam." },
+            "un":        { "delta": { "autonomy": 0, "economy": 0, "prestige": 4 }, "text": "Biểu dương Việt Nam là pháo đài bảo vệ trật tự quốc tế dựa trên luật pháp." },
+            "vn_people": { "delta": { "autonomy": 4, "economy": 2, "prestige": 4 }, "text": "Hào khí non sông rạng ngời! Cây Tre Việt Nam vững vàng trước phong ba bão táp!" }
+          }
+        },
+        {
+          "id": "D",
+          "label": "Trì hoãn im lặng, chuyển tiền vào các quỹ tín thác mập mờ né tránh",
+          "hint": "Thiếu bản lĩnh chính trị khiến cả hai bên nghi ngờ và tăng gấp đôi sức ép.",
+          "isBalanced": false,
+          "reactions": {
+            "west":      { "delta": { "autonomy": -1, "economy": -3, "prestige": -2 }, "text": "Hết hạn tối hậu thư — tự động kích hoạt lệnh trừng phạt thứ cấp." },
+            "neighbor":  { "delta": { "autonomy": 0,  "economy": -2, "prestige": -2 }, "text": "Coi hành vi trốn tránh là biểu hiện không đáng tin cậy." },
+            "un":        { "delta": { "autonomy": 0,  "economy": 0,  "prestige": -2 }, "text": "Khuyến cáo sự mập mờ tài chính gây rủi ro rửa tiền quốc tế." },
+            "vn_people": { "delta": { "autonomy": -2, "economy": -3, "prestige": -2 }, "text": "Hoang mang lo sợ vì nguy cơ nền tài chính quốc gia bị phong tỏa bất ngờ." }
+          }
+        }
+      ],
+      "wisdom": {
+        "quote": "Không có gì quý hơn độc lập, tự do! Nước Việt Nam là một, dân tộc Việt Nam là một. Sông có thể cạn, núi có thể mòn, song chân lý ấy không bao giờ thay đổi.",
+        "source": "Lời kêu gọi đồng bào và chiến sĩ cả nước của Chủ tịch Hồ Chí Minh, ngày 17-7-1966"
       }
     }
   ]

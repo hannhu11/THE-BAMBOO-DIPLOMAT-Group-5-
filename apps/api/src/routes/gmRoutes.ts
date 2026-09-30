@@ -65,12 +65,40 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
     const { force } = parseResult.data;
     const session = sessionService.lockRound(force);
 
+    // Auto-reveal round results and broadcast leaderboard in real-time
+    let revealResult: any = null;
+    try {
+      revealResult = sessionService.revealRound();
+    } catch (e) {
+      console.warn('Could not auto-reveal on lock:', e);
+    }
+
     const io = getIo();
     if (io) {
       io.emit('round.locked', { session, force });
+      if (revealResult) {
+        io.emit('round.revealed', revealResult);
+        io.emit('leaderboard.updated', revealResult.leaderboard);
+      }
     }
 
-    return reply.status(200).send({ success: true, session });
+    return reply.status(200).send({ success: true, session, ...(revealResult || {}) });
+  });
+
+  fastify.post('/round/next', async (request, reply) => {
+    const durationSeconds = 30;
+    const { session, scenario } = sessionService.nextRound(durationSeconds);
+
+    const io = getIo();
+    if (io) {
+      io.emit('round.opened', {
+        session,
+        scenario,
+        durationSeconds,
+      });
+    }
+
+    return reply.status(200).send({ success: true, session, scenario });
   });
 
   fastify.post('/round/reveal', async (request, reply) => {

@@ -45,6 +45,7 @@ export const DraftVoteSchema = z
     allInEnabled: z.boolean().default(false),
     selectedCard: CardTypeSchema.optional(),
     selectedAllianceTarget: z.string().optional(),
+    targetGroupId: z.string().optional(),
   })
   .strict();
 
@@ -55,6 +56,7 @@ export const CaptainLockVoteSchema = z
     allInArmed: z.boolean().default(false),
     activeCard: CardTypeSchema.optional(),
     allianceTargetGroupId: z.string().optional(),
+    targetGroupId: z.string().optional(),
   })
   .strict();
 

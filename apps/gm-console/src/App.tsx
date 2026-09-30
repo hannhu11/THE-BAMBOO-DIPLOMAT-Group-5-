@@ -37,7 +37,7 @@ export function App() {
   const [scenario, setScenario] = useState<any>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [roundDecisions, setRoundDecisions] = useState<Record<string, any>>({});
-  const [remainingSec, setRemainingSec] = useState(45);
+  const [remainingSec, setRemainingSec] = useState(30);
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('sc1');
   const [activeBlackSwan, setActiveBlackSwan] = useState<any>(null);
   const [resolutions, setResolutions] = useState<any>(null);
@@ -81,7 +81,7 @@ export function App() {
       setSession(data.session);
       setScenario(data.scenario);
       if (data.scenario) setSelectedScenarioId(data.scenario.id);
-      setRemainingSec(data.durationSeconds || 45);
+      setRemainingSec(data.durationSeconds || 30);
       setRoundDecisions({});
       setResolutions(null);
       setActiveBlackSwan(null);
@@ -176,12 +176,30 @@ export function App() {
         },
         body: JSON.stringify({
           scenarioId: selectedScenarioId,
-          durationSeconds: 45,
+          durationSeconds: 30,
         }),
       });
       if (!res.ok) {
         const d = await res.json();
         alert(d.error || 'Lỗi mở biểu quyết');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleNextRound = async () => {
+    try {
+      const res = await fetch('/api/gm/round/next', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        alert(d.error || 'Lỗi chuyển câu hỏi tiếp theo');
       }
     } catch (err) {
       console.error(err);
@@ -650,7 +668,7 @@ export function App() {
         {/* Scenario Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <label style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 800, color: '#0E281E' }}>
-            CHỌN KỊCH BẢN:
+            CHỌN CÂU HỎI (12 CÂU):
           </label>
           <select
             value={selectedScenarioId}
@@ -667,11 +685,13 @@ export function App() {
               color: '#0E281E',
               outline: 'none',
               cursor: 'pointer',
+              maxWidth: 420,
             }}
           >
             {(scenariosList as any[]).map((sc: any) => (
               <option key={sc.id} value={sc.id}>
-                Kịch bản 0{sc.order}: {sc.title}
+                {sc.isBlackSwan ? '⚡ [THIÊN NGA ĐEN] ' : `[Q${sc.order}] `}
+                {sc.title}
               </option>
             ))}
           </select>
@@ -685,7 +705,7 @@ export function App() {
               className="gm-control-btn primary"
               onClick={handleOpenRound}
             >
-              MỞ BIỂU QUYẾT (45S) →
+              MỞ BIỂU QUYẾT (30S) ▶
             </button>
           )}
 
@@ -695,24 +715,16 @@ export function App() {
               className="gm-control-btn warning"
               onClick={handleLockRound}
             >
-              KHÓA BIỂU QUYẾT NGAY ⏹
+              KHÓA BIỂU QUYẾT ⏹
             </button>
           )}
 
           <button
             type="button"
-            className="gm-control-btn"
-            onClick={handleRevealRound}
+            className="gm-control-btn primary"
+            onClick={handleNextRound}
           >
-            CÔNG BỐ & CẬP NHẬT BXH ★
-          </button>
-
-          <button
-            type="button"
-            className="gm-control-btn warning"
-            onClick={handleTriggerBlackSwan}
-          >
-            THIÊN NGA ĐEN ⚡
+            CÂU HỎI TIẾP THEO ➔
           </button>
 
           <button

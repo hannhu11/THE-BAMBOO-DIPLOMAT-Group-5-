@@ -163,7 +163,11 @@ export class SessionService {
     return scenarios[this.session.currentRound - 1];
   }
 
-  public openRound(scenarioId: string, durationSeconds: number = 45): GameSession {
+  public getAllScenarios(): ScenarioItem[] {
+    return scenarios;
+  }
+
+  public openRound(scenarioId: string, durationSeconds: number = 30): GameSession {
     const targetScenario = scenarios.find((s) => s.id === scenarioId) ?? scenarios[0]!;
     const roundOrder = targetScenario.order;
 
@@ -186,6 +190,14 @@ export class SessionService {
     );
 
     return { ...this.session };
+  }
+
+  public nextRound(durationSeconds: number = 30): { session: GameSession; scenario: ScenarioItem } {
+    const currentOrder = this.session.currentRound;
+    const nextOrder = currentOrder < scenarios.length ? currentOrder + 1 : 1;
+    const nextScenario = scenarios.find((s) => s.order === nextOrder) ?? scenarios[0]!;
+    const session = this.openRound(nextScenario.id, durationSeconds);
+    return { session, scenario: nextScenario };
   }
 
   public lockRound(force: boolean = false): GameSession {
