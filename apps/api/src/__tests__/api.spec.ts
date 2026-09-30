@@ -48,15 +48,14 @@ describe('@bamboo/api - Integration Test Suite', () => {
     expect(body.error).toBe('INVALID_PIN');
   });
 
-  it('POST /api/session/join rejects invalid memberIndex (> 5)', async () => {
+  it('POST /api/session/join rejects invalid PIN', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/session/join',
       payload: {
-        sessionPin: 'HCM202',
+        sessionPin: 'WRONG_PIN_HERE',
         studentName: 'Nguyễn Văn A',
-        groupId: 'G01',
-        memberIndex: 9,
+        teamName: 'Bàn 1',
       },
     });
 

@@ -170,7 +170,7 @@ export class VoteService {
 
     // Validate Card constraints
     if (input.activeCard) {
-      const cardStatus = group.activeCards[input.activeCard];
+      const cardStatus = (group.activeCards as any)?.[input.activeCard] ?? group.cardStatuses?.[input.activeCard] ?? 'ready';
       if (cardStatus !== 'ready') {
         throw new Error(`Thẻ ${input.activeCard} không khả dụng (trạng thái: ${cardStatus})`);
       }

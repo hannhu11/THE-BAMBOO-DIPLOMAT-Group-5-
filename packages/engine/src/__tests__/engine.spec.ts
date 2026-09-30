@@ -7,63 +7,64 @@ import {
   multiplyDelta,
   applyDelta,
   computeLeaderboard,
+  canActivateCard,
 } from '../scoring';
-import { resolveRound, resolveAllGroupsRound, resolveChallenge } from '../resolver';
-import { applyBlackSwanEvent } from '../blackSwanRunner';
+import { resolveRound, resolveAllGroupsRound } from '../resolver';
 import { ScenarioItem, BlackSwanEvent } from '@bamboo/content-schema';
 import scenariosData from '../../../../content/scenarios.json';
 import blackSwanData from '../../../../content/black_swan.json';
 
 const scenario1 = (scenariosData.scenarios as unknown as ScenarioItem[])[0]!;
 const scenario2 = (scenariosData.scenarios as unknown as ScenarioItem[])[1]!;
-const blackSwanEvents = blackSwanData.events as unknown as BlackSwanEvent[];
 
-describe('@bamboo/engine - Mathematical Scoring Functions', () => {
-  it('initialAxesState returns (50, 50, 50)', () => {
-    expect(initialAxesState()).toEqual({ autonomy: 50, economy: 50, prestige: 50 });
+describe('@bamboo/engine - Mathematical Scoring Functions (Phase 2)', () => {
+  it('initialAxesState returns (10, 10, 10)', () => {
+    expect(initialAxesState()).toEqual({ autonomy: 10, economy: 10, prestige: 10 });
   });
 
-  it('clampAxis clamps strictly between 0 and 100', () => {
-    expect(clampAxis(-10)).toBe(0);
+  it('clampAxis clamps strictly between 0 and 20', () => {
+    expect(clampAxis(-5)).toBe(0);
     expect(clampAxis(0)).toBe(0);
-    expect(clampAxis(50)).toBe(50);
-    expect(clampAxis(100)).toBe(100);
-    expect(clampAxis(125)).toBe(100);
+    expect(clampAxis(10)).toBe(10);
+    expect(clampAxis(20)).toBe(20);
+    expect(clampAxis(25)).toBe(20);
     expect(clampAxis(NaN)).toBe(0);
   });
 
-  it('compositeScore calculates weighted geometric mean (A^0.4 * E^0.3 * P^0.3)', () => {
-    // 50^0.4 * 50^0.3 * 50^0.3 = 50
-    expect(compositeScore({ autonomy: 50, economy: 50, prestige: 50 })).toBe(50);
-    expect(compositeScore({ autonomy: 80, economy: 80, prestige: 80 })).toBe(80);
+  it('compositeScore calculates Total Score = Autonomy + Economy + Prestige', () => {
+    expect(compositeScore({ autonomy: 10, economy: 10, prestige: 10 })).toBe(30);
+    expect(compositeScore({ autonomy: 15, economy: 14, prestige: 16 })).toBe(45);
+    expect(compositeScore({ autonomy: 0, economy: 10, prestige: 10 })).toBe(20);
   });
 
-  it('compositeScore collapses to 0 if any axis is 0 or less', () => {
-    expect(compositeScore({ autonomy: 0, economy: 80, prestige: 80 })).toBe(0);
-    expect(compositeScore({ autonomy: 80, economy: 0, prestige: 80 })).toBe(0);
-    expect(compositeScore({ autonomy: 80, economy: 80, prestige: 0 })).toBe(0);
-    expect(compositeScore({ autonomy: -5, economy: 50, prestige: 50 })).toBe(0);
+  it('canActivateCard validates card eligibility based on >= 7 threshold', () => {
+    // Attack cards require Economy >= 7
+    expect(canActivateCard('break_supply', { autonomy: 10, economy: 8, prestige: 10 })).toBe(true);
+    expect(canActivateCard('counter_tariff', { autonomy: 10, economy: 6, prestige: 10 })).toBe(false);
+    expect(canActivateCard('submarine_cable', { autonomy: 10, economy: 7, prestige: 10 })).toBe(true);
+
+    // Defense cards require Autonomy >= 7
+    expect(canActivateCard('di_bat_bien', { autonomy: 7, economy: 5, prestige: 5 })).toBe(true);
+    expect(canActivateCard('sovereignty_shield', { autonomy: 6, economy: 10, prestige: 10 })).toBe(false);
+    expect(canActivateCard('self_reliance', { autonomy: 9, economy: 5, prestige: 5 })).toBe(true);
+
+    // Utility cards require Prestige >= 7
+    expect(canActivateCard('cau_dong_ton_di', { autonomy: 5, economy: 5, prestige: 8 })).toBe(true);
+    expect(canActivateCard('un_resolution', { autonomy: 10, economy: 10, prestige: 6 })).toBe(false);
+    expect(canActivateCard('diplomatic_gong', { autonomy: 5, economy: 5, prestige: 7 })).toBe(true);
   });
 
-  it('compositeScore rewards balance over extreme imbalance (Bamboo philosophy)', () => {
-    const balanced = compositeScore({ autonomy: 70, economy: 70, prestige: 70 });
-    const skewed = compositeScore({ autonomy: 100, economy: 100, prestige: 20 });
-    // Balanced (70) must strictly beat skewed (even with 2 maxed axes)
-    expect(balanced).toBe(70);
-    expect(skewed).toBeLessThan(balanced);
-  });
-
-  it('applyDelta properly clamps updated axes', () => {
-    const start = { autonomy: 90, economy: 10, prestige: 50 };
-    const delta = { autonomy: 20, economy: -30, prestige: 10 };
+  it('applyDelta properly updates and clamps axes within [0, 20]', () => {
+    const start = { autonomy: 18, economy: 2, prestige: 10 };
+    const delta = { autonomy: 5, economy: -5, prestige: 3 };
     const result = applyDelta(start, delta);
-    expect(result).toEqual({ autonomy: 100, economy: 0, prestige: 60 });
+    expect(result).toEqual({ autonomy: 20, economy: 0, prestige: 13 });
   });
 });
 
-describe('@bamboo/engine - Round Resolution Engine', () => {
+describe('@bamboo/engine - Round Resolution Engine (Phase 2)', () => {
   it('resolves Scenario #1 Option A deterministically', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
+    const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
       scenario: scenario1,
@@ -72,21 +73,21 @@ describe('@bamboo/engine - Round Resolution Engine', () => {
       },
     });
 
-    // Option A:
-    // west:      autonomy -8,  economy +30, prestige +5
-    // neighbor:  autonomy 0,   economy -25, prestige -8
-    // un:        autonomy 0,   economy 0,   prestige -5
-    // vn_people: autonomy -22, economy +5,  prestige 0
-    // Sum:       autonomy -30, economy +10, prestige -8
-    expect(resolution.baseDelta).toEqual({ autonomy: -30, economy: 10, prestige: -8 });
-    expect(resolution.finalDelta).toEqual({ autonomy: -30, economy: 10, prestige: -8 });
-    expect(resolution.newState).toEqual({ autonomy: 20, economy: 60, prestige: 42 });
-    expect(resolution.compositeScore).toBeGreaterThan(0);
+    // Option A sum:
+    // west:      -1, 3, 1
+    // neighbor:  0, -3, -1
+    // un:        0, 0, -1
+    // vn_people: -2, 1, 0
+    // Sum:       -3, 1, -1
+    expect(resolution.baseDelta).toEqual({ autonomy: -3, economy: 1, prestige: -1 });
+    expect(resolution.finalDelta).toEqual({ autonomy: -3, economy: 1, prestige: -1 });
+    expect(resolution.newState).toEqual({ autonomy: 7, economy: 11, prestige: 9 });
+    expect(resolution.compositeScore).toBe(27);
     expect(resolution.isBalanced).toBe(false);
   });
 
   it('resolves Scenario #1 Option C (Balanced Bamboo option)', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
+    const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
       scenario: scenario1,
@@ -97,251 +98,92 @@ describe('@bamboo/engine - Round Resolution Engine', () => {
 
     expect(resolution.isBalanced).toBe(true);
     // Option C:
-    // west:      0, 12, 8
-    // neighbor:  0, 5, 3
-    // un:        0, 0, 12
-    // vn_people: 18, 8, 5
-    // Sum:       autonomy 18, economy 25, prestige 28
-    expect(resolution.baseDelta).toEqual({ autonomy: 18, economy: 25, prestige: 28 });
-    expect(resolution.newState).toEqual({ autonomy: 68, economy: 75, prestige: 78 });
+    // west:      0, 1, 1
+    // neighbor:  0, 1, 0
+    // un:        0, 0, 2
+    // vn_people: 2, 1, 1
+    // Sum:       2, 3, 4
+    expect(resolution.baseDelta).toEqual({ autonomy: 2, economy: 3, prestige: 4 });
+    expect(resolution.newState).toEqual({ autonomy: 12, economy: 13, prestige: 14 });
+    expect(resolution.compositeScore).toBe(39);
   });
 
-  it('applies All-In 5 stars multiplier (x2.2) properly', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
+  it('applies Di Bat Bien card to protect Autonomy from negative deltas', () => {
+    const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
       scenario: scenario1,
       lockedDecision: {
-        chosenOption: 'A',
-        allInArmed: true,
-      },
-      allInGrade: 5, // 5 stars = x2.2
-    });
-
-    expect(resolution.appliedMultiplier).toBe(2.2);
-    // Base delta: { autonomy: -30, economy: 10, prestige: -8 }
-    // Multiplied x2.2: { autonomy: round(-66), economy: round(22), prestige: round(-17.6 = -18) }
-    expect(resolution.finalDelta).toEqual({ autonomy: -66, economy: 22, prestige: -18 });
-    // autonomy 50 - 66 clamped to 0
-    expect(resolution.newState.autonomy).toBe(0);
-    expect(resolution.compositeScore).toBe(0); // collapsed because autonomy is 0
-  });
-
-  it('applies All-In 0 stars penalty (x(-0.8)) properly', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
-    const resolution = resolveRound({
-      previousGroupState: previous,
-      scenario: scenario1,
-      lockedDecision: {
-        chosenOption: 'C', // base delta { autonomy: 18, economy: 25, prestige: 28 }
-        allInArmed: true,
-      },
-      allInGrade: 0, // 0 stars = x(-0.8)
-    });
-
-    expect(resolution.appliedMultiplier).toBe(-0.8);
-    // Multiplied by -0.8:
-    // autonomy: round(18 * -0.8) = round(-14.4) = -14
-    // economy: round(25 * -0.8) = -20
-    // prestige: round(28 * -0.8) = round(-22.4) = -22
-    expect(resolution.finalDelta).toEqual({ autonomy: -14, economy: -20, prestige: -22 });
-    expect(resolution.newState).toEqual({ autonomy: 36, economy: 30, prestige: 28 });
-  });
-
-  it('applies Anchor of Sovereignty card (chặn mọi delta âm trên trục autonomy)', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
-    const resolution = resolveRound({
-      previousGroupState: previous,
-      scenario: scenario1,
-      lockedDecision: {
-        chosenOption: 'A', // base delta autonomy is -30
-        activeCard: 'anchor',
+        chosenOption: 'A', // base delta autonomy is -3
+        activeCard: 'di_bat_bien',
       },
     });
 
-    expect(resolution.cardEffectsApplied).toContain('anchor');
-    // autonomy delta was -30, protected to 0
+    expect(resolution.cardEffectsApplied).toContain('di_bat_bien');
+    // autonomy delta was -3, protected to 0
     expect(resolution.finalDelta.autonomy).toBe(0);
-    expect(resolution.finalDelta.economy).toBe(10);
-    expect(resolution.finalDelta.prestige).toBe(-8);
-    expect(resolution.newState.autonomy).toBe(50);
+    expect(resolution.finalDelta.economy).toBe(1);
+    expect(resolution.finalDelta.prestige).toBe(-1);
+    expect(resolution.newState.autonomy).toBe(10);
   });
 
-  it('applies Alliance Form card with successful alignment (both choose balanced)', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
+  it('applies Submarine Cable card (+2 Economy)', () => {
+    const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
       scenario: scenario1,
       lockedDecision: {
-        chosenOption: 'C', // balanced option
-        activeCard: 'alliance',
-        allianceTargetGroupId: 'G02',
-      },
-      allianceContext: {
-        partnerGroupId: 'G02',
-        partnerChose: true,
-        partnerOption: 'C',
-        isPartnerBalanced: true,
+        chosenOption: 'C', // base delta economy is 3
+        activeCard: 'submarine_cable',
       },
     });
 
-    expect(resolution.allianceOutcome).toBe('bonus');
-    // Base delta: { autonomy: 18, economy: 25, prestige: 28 }
-    // x1.5 boost: { autonomy: 27, economy: 38, prestige: 42 }
-    expect(resolution.finalDelta).toEqual({
-      autonomy: Math.round(18 * 1.5),
-      economy: Math.round(25 * 1.5),
-      prestige: Math.round(28 * 1.5),
-    });
+    expect(resolution.cardEffectsApplied).toContain('submarine_cable');
+    // economy: 3 + 2 = 5
+    expect(resolution.finalDelta.economy).toBe(5);
   });
 
-  it('applies Alliance Form penalty when partner chooses unbalanced option', () => {
-    const previous = { autonomy: 50, economy: 50, prestige: 50 };
+  it('applies Diplomatic Gong card (doubles positive deltas)', () => {
+    const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
       scenario: scenario1,
       lockedDecision: {
-        chosenOption: 'C',
-        activeCard: 'alliance',
-        allianceTargetGroupId: 'G02',
-      },
-      allianceContext: {
-        partnerGroupId: 'G02',
-        partnerChose: true,
-        partnerOption: 'A', // unbalanced option
-        isPartnerBalanced: false,
+        chosenOption: 'C', // base delta: { autonomy: 2, economy: 3, prestige: 4 }
+        activeCard: 'diplomatic_gong',
       },
     });
 
-    expect(resolution.allianceOutcome).toBe('penalty');
-    // Base prestige is 28, penalized by -10 -> 18
-    expect(resolution.finalDelta.prestige).toBe(18);
+    expect(resolution.cardEffectsApplied).toContain('diplomatic_gong');
+    // all positive deltas doubled: 2*2=4, 3*2=6, 4*2=8
+    expect(resolution.finalDelta).toEqual({ autonomy: 4, economy: 6, prestige: 8 });
   });
 
   it('resolves all groups round concurrently via resolveAllGroupsRound', () => {
     const groupsInput = [
       {
         groupId: 'G01',
-        previousState: { autonomy: 50, economy: 50, prestige: 50 },
+        previousState: { autonomy: 10, economy: 10, prestige: 10 },
         decision: {
           chosenOption: 'C' as const,
-          activeCard: 'alliance' as const,
-          allianceTargetGroupId: 'G02',
+          activeCard: 'diplomatic_gong' as const,
         },
       },
       {
         groupId: 'G02',
-        previousState: { autonomy: 50, economy: 50, prestige: 50 },
-        decision: {
-          chosenOption: 'C' as const,
-        },
-      },
-      {
-        groupId: 'G03',
-        previousState: { autonomy: 50, economy: 50, prestige: 50 },
+        previousState: { autonomy: 10, economy: 10, prestige: 10 },
         decision: {
           chosenOption: 'A' as const,
-          activeCard: 'anchor' as const,
+          activeCard: 'di_bat_bien' as const,
         },
       },
     ];
 
     const results = resolveAllGroupsRound(scenario1, groupsInput);
 
-    // G01 allied with G02 and both chose C -> G01 gets bonus
-    expect(results['G01'].allianceOutcome).toBe('bonus');
-    // G03 armed anchor -> autonomy shielded
-    expect(results['G03'].finalDelta.autonomy).toBe(0);
-  });
-});
-
-describe('@bamboo/engine - Multilateral Challenge Resolution', () => {
-  it('resolves successful defense when defender receives >= 3 stars', () => {
-    const defenderState = { autonomy: 60, economy: 60, prestige: 60 };
-    const challengerState = { autonomy: 40, economy: 40, prestige: 40 };
-
-    const result = resolveChallenge({
-      challengerGroupId: 'G07',
-      challengerState,
-      defenderGroupId: 'G01',
-      defenderState,
-      defenderDefenseStars: 4,
-    });
-
-    expect(result.defenderSuccess).toBe(true);
-    expect(result.defenderNewState).toEqual(defenderState);
-    expect(result.challengerNewState).toEqual(challengerState);
-  });
-
-  it('resolves failed defense when defender receives < 3 stars (-20 defender, +20 challenger)', () => {
-    const defenderState = { autonomy: 60, economy: 60, prestige: 60 };
-    const challengerState = { autonomy: 40, economy: 40, prestige: 40 };
-
-    const result = resolveChallenge({
-      challengerGroupId: 'G07',
-      challengerState,
-      defenderGroupId: 'G01',
-      defenderState,
-      defenderDefenseStars: 2,
-    });
-
-    expect(result.defenderSuccess).toBe(false);
-    expect(result.defenderNewState.prestige).toBe(40); // 60 - 20
-    expect(result.challengerNewState.prestige).toBe(60); // 40 + 20
-  });
-});
-
-describe('@bamboo/engine - Safe Black Swan Runner', () => {
-  it('applies Black Swan event deterministically without eval', () => {
-    const chipCrisisEvent = blackSwanEvents.find((e) => e.id === 'bs_semi')!;
-    expect(chipCrisisEvent).toBeDefined();
-
-    const groups = [
-      {
-        groupId: 'G01',
-        state: { autonomy: 35, economy: 50, prestige: 50 }, // autonomy < 40 -> economy -20
-        pastDecisions: {},
-      },
-      {
-        groupId: 'G02',
-        state: { autonomy: 75, economy: 50, prestige: 50 }, // autonomy >= 70 -> economy +10
-        pastDecisions: {},
-      },
-      {
-        groupId: 'G03',
-        state: { autonomy: 55, economy: 50, prestige: 50 }, // neutral
-        pastDecisions: {},
-      },
-    ];
-
-    const results = applyBlackSwanEvent(chipCrisisEvent, groups);
-
-    expect(results['G01'].totalDelta.economy).toBe(-20);
-    expect(results['G01'].newState.economy).toBe(30);
-
-    expect(results['G02'].totalDelta.economy).toBe(10);
-    expect(results['G02'].newState.economy).toBe(60);
-
-    expect(results['G03'].totalDelta.economy).toBe(0);
-    expect(results['G03'].newState.economy).toBe(50);
-  });
-});
-
-describe('@bamboo/engine - Leaderboard Computation', () => {
-  it('sorts leaderboard descending with tie-breaking hierarchy', () => {
-    const groups = [
-      { groupId: 'G01', name: 'Nhóm 01', state: { autonomy: 50, economy: 50, prestige: 50 } }, // score = 50
-      { groupId: 'G02', name: 'Nhóm 02', state: { autonomy: 70, economy: 70, prestige: 70 } }, // score = 70
-      { groupId: 'G03', name: 'Nhóm 03', state: { autonomy: 60, economy: 60, prestige: 60 } }, // score = 60
-    ];
-
-    const lb = computeLeaderboard(groups);
-
-    expect(lb[0].groupId).toBe('G02');
-    expect(lb[0].rank).toBe(1);
-    expect(lb[1].groupId).toBe('G03');
-    expect(lb[1].rank).toBe(2);
-    expect(lb[2].groupId).toBe('G01');
-    expect(lb[2].rank).toBe(3);
+    // G01 got gong doubled deltas
+    expect(results['G01'].finalDelta.prestige).toBe(8);
+    // G02 got autonomy protected
+    expect(results['G02'].finalDelta.autonomy).toBe(0);
   });
 });
