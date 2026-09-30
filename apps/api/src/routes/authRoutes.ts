@@ -22,7 +22,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
       });
     }
 
-    const { sessionPin, studentName, groupId, memberIndex } = parseResult.data;
+    const { sessionPin, teamName, studentName, groupId: rawGroupId, memberIndex } = parseResult.data;
 
     if (sessionPin !== config.SESSION_PIN) {
       return reply.status(401).send({
@@ -32,12 +32,14 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
     }
 
     const session = sessionService.getSession();
+    const effectiveTeamName = (teamName || studentName || 'Đội Ngoại Giao').trim();
+    const group = sessionService.registerOrGetTeam(effectiveTeamName, rawGroupId);
 
     const { seat, isReconnect } = seatService.joinSeat({
       sessionId: session.id,
-      studentName,
-      groupId,
-      memberIndex,
+      studentName: effectiveTeamName,
+      groupId: group.id,
+      memberIndex: memberIndex || 1,
     });
 
     const token = fastify.jwt.sign({
@@ -53,12 +55,30 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
       isReconnect,
       token,
       seat,
+      group,
       session: {
         id: session.id,
         status: session.status,
         currentRound: session.currentRound,
       },
     });
+  });
+
+  fastify.post('/session/gacha', async (request, reply) => {
+    const body = request.body as { groupId?: string };
+    if (!body?.groupId) {
+      return reply.status(400).send({ error: 'Mã nhóm không hợp lệ' });
+    }
+    try {
+      const cards = sessionService.drawGachaCards(body.groupId);
+      return reply.status(200).send({
+        success: true,
+        groupId: body.groupId,
+        cards,
+      });
+    } catch (err: any) {
+      return reply.status(400).send({ error: err.message });
+    }
   });
 
   fastify.post('/gm/login', async (request, reply) => {

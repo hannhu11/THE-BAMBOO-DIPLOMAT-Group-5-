@@ -148,4 +148,18 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
 
     return reply.status(200).send({ success: true, ...outcome });
   });
+
+  fastify.post('/session/reset', async (request, reply) => {
+    sessionService.resetSession();
+    const session = sessionService.getSession();
+    const bootstrap = sessionService.getBootstrap();
+
+    const io = getIo();
+    if (io) {
+      io.emit('session.synced', bootstrap);
+      io.emit('leaderboard.updated', bootstrap.leaderboard);
+    }
+
+    return reply.status(200).send({ success: true, session });
+  });
 };

@@ -66,28 +66,73 @@ export function resolveRound(params: ResolveRoundParams): RoundResolution {
   const cardEffectsApplied: CardType[] = [];
   let allianceOutcome: 'bonus' | 'penalty' | 'none' | undefined = undefined;
 
-  // 3.1 Anchor of Sovereignty (Dĩ Bất Biến) - Defensive card
-  if (cardsToApply.has('anchor')) {
-    cardEffectsApplied.push('anchor');
+  // 3.1 Nhóm Phòng Thủ & Tự Chủ
+  // Dĩ Bất Biến (di_bat_bien / anchor): Không bị trừ điểm Tự Chủ
+  if (cardsToApply.has('di_bat_bien') || cardsToApply.has('anchor')) {
+    cardEffectsApplied.push('di_bat_bien');
     if (workingDelta.autonomy < 0) {
       workingDelta.autonomy = 0;
     }
   }
 
-  // 3.2 Alliance Form (Cầu Đồng Tồn Dị) - Diplomatic synergy card
-  if (cardsToApply.has('alliance')) {
-    cardEffectsApplied.push('alliance');
-    if (allianceContext?.isPartnerBalanced && option.isBalanced) {
-      // Both groups aligned on the balanced path
-      workingDelta = multiplyDelta(workingDelta, 1.5);
-      allianceOutcome = 'bonus';
-    } else if (allianceContext?.partnerChose) {
-      // Partner voted, but divergence occurred (not both balanced)
-      workingDelta.prestige -= 10;
-      allianceOutcome = 'penalty';
-    } else {
-      allianceOutcome = 'none';
+  // Vành Đai Độc Lập (sovereignty_shield): Miễn nhiễm khỏi các chỉ số âm
+  if (cardsToApply.has('sovereignty_shield')) {
+    cardEffectsApplied.push('sovereignty_shield');
+    if (workingDelta.autonomy < 0) workingDelta.autonomy = 0;
+    if (workingDelta.economy < 0) workingDelta.economy = 0;
+    if (workingDelta.prestige < 0) workingDelta.prestige = 0;
+  }
+
+  // Tự Lực Cánh Sinh (self_reliance): Cứu nguy Tự Chủ nếu dưới 7
+  if (cardsToApply.has('self_reliance')) {
+    cardEffectsApplied.push('self_reliance');
+    if (previousGroupState.autonomy + workingDelta.autonomy < 7) {
+      workingDelta.autonomy += 2;
+      workingDelta.economy = Math.max(0, workingDelta.economy - 1);
     }
+  }
+
+  // 3.2 Nhóm Tấn Công Ngoại Giao
+  // Áp Đặt Thuế Đối Kháng (counter_tariff): Nhân đôi lợi ích kinh tế
+  if (cardsToApply.has('counter_tariff')) {
+    cardEffectsApplied.push('counter_tariff');
+    if (workingDelta.economy > 0) {
+      workingDelta.economy *= 2;
+    } else {
+      workingDelta.economy += 1;
+    }
+  }
+
+  // Chiếm Lĩnh Cáp Quang Biển (submarine_cable): Tăng 2 điểm KT
+  if (cardsToApply.has('submarine_cable')) {
+    cardEffectsApplied.push('submarine_cable');
+    workingDelta.economy += 2;
+  }
+
+  // Bẻ Gãy Chuỗi Cung Ứng (break_supply)
+  if (cardsToApply.has('break_supply')) {
+    cardEffectsApplied.push('break_supply');
+  }
+
+  // 3.3 Nhóm Chức Năng & Uy Tín
+  // Cầu Đồng Tồn Dị (cau_dong_ton_di / alliance): Tăng Uy Tín
+  if (cardsToApply.has('cau_dong_ton_di') || cardsToApply.has('alliance')) {
+    cardEffectsApplied.push('cau_dong_ton_di');
+    workingDelta.prestige += 2;
+  }
+
+  // Nghị Quyết Đại Hội Đồng LHQ (un_resolution): Tăng Uy Tín
+  if (cardsToApply.has('un_resolution')) {
+    cardEffectsApplied.push('un_resolution');
+    workingDelta.prestige += 2;
+  }
+
+  // Tiếng Chiêng Ngoại Giao (diplomatic_gong): Nhân đôi toàn bộ điểm cộng
+  if (cardsToApply.has('diplomatic_gong')) {
+    cardEffectsApplied.push('diplomatic_gong');
+    if (workingDelta.autonomy > 0) workingDelta.autonomy *= 2;
+    if (workingDelta.economy > 0) workingDelta.economy *= 2;
+    if (workingDelta.prestige > 0) workingDelta.prestige *= 2;
   }
 
   // 4. Calculate new state

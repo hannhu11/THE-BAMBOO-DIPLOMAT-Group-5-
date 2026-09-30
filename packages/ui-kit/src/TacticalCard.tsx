@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { audioEngine } from './AudioEngine';
 import { CardAnchorArt, CardAllianceArt, CardChallengeArt } from './Sigils';
 
-export type CardType = 'anchor' | 'alliance' | 'challenge';
+import { CardType } from '@bamboo/domain-types';
 
 export interface TacticalCardProps {
   type: CardType;
@@ -24,6 +24,7 @@ interface CardMeta {
   usage: string;
   lore: string;
   quote: string;
+  requirement: string;
   colors: {
     bg: string;
     border: string;
@@ -34,36 +35,81 @@ interface CardMeta {
   };
 }
 
-const CARD_DATA: Record<CardType, CardMeta> = {
-  anchor: {
-    title: 'DĨ BẤT BIẾN',
-    sub: 'Anchor of Sovereignty',
-    category: 'PHÒNG THỦ CHIẾN LƯỢC',
-    tier: 'TIER I · GOLD',
+const CARD_DATA: Record<string, CardMeta> = {
+  // === NHÓM 1: TẤN CÔNG NGOẠI GIAO (Yêu cầu Kinh Tế >= 7) ===
+  break_supply: {
+    title: 'BẺ GÃY CHUỖI CUNG ỨNG',
+    sub: 'Supply Chain Interdiction',
+    category: 'TẤN CÔNG NGOẠI GIAO',
+    tier: 'TIER I · VÀNG',
     rarity: 'HOÀNG GIA',
-    effect: 'Vô hiệu hóa toàn bộ delta âm (Δ-) của trục Tự Chủ trong vòng chơi hiện tại.',
+    requirement: 'YÊU CẦU: KINH TẾ ≥ 7',
+    effect: 'Phong tỏa đối trọng: Đóng băng quyền kích hoạt thẻ bài chiến lược của 1 đội đối thủ trong câu hỏi hiện tại.',
     usage: '1 LẦN / TOÀN TRẬN ĐẤU',
-    lore: 'Nguyên lý cốt lõi của Chủ tịch Hồ Chí Minh: "Dĩ bất biến, ứng vạn biến" — Giữ vững độc lập, chủ quyền làm gốc rễ, phương pháp và sách lược uyển chuyển linh hoạt.',
-    quote: '« Dĩ bất biến, ứng vạn biến. Lợi ích tối cao của dân tộc là bất biến. »',
+    lore: 'Ngoại giao kinh tế là mũi nhọn: Khi đối thủ dùng sức mạnh độc quyền áp đặt, việc chủ động phân tán chuỗi cung ứng là thế trận phản công sắc bén.',
+    quote: '« Muốn người ta giúp cho thì trước hết phải tự giúp lấy mình. Đa dạng hóa chuỗi huyết mạch kinh tế. »',
     colors: {
-      bg: 'linear-gradient(145deg, #18231C 0%, #0D1612 50%, #070F0B 100%)',
-      border: '#D8B46D',
-      glow: 'rgba(216, 180, 109, 0.35)',
+      bg: 'linear-gradient(145deg, #241D12 0%, #17120A 50%, #0A0805 100%)',
+      border: '#D4AF37',
+      glow: 'rgba(212, 175, 55, 0.4)',
       badgeBg: 'linear-gradient(180deg, #8E6A24, #5C4314)',
-      badgeText: '#F3EEDC',
+      badgeText: '#FBF8EE',
       accent: '#F3CA68',
     },
   },
-  alliance: {
-    title: 'CẦU ĐỒNG TỒN DỊ',
-    sub: 'Alliance Form',
-    category: 'NGOẠI GIAO ĐA PHƯƠNG',
-    tier: 'TIER I · JADE',
-    rarity: 'NGỌC BÍCH',
-    effect: 'Chỉ định 1 nhóm đối tác. Nếu cả 2 cùng chọn phương án đa phương cân bằng → +50% điểm thưởng.',
+  counter_tariff: {
+    title: 'ÁP ĐẶT THUẾ ĐỐI KHÁNG',
+    sub: 'Countervailing Tariff Defense',
+    category: 'TẤN CÔNG NGOẠI GIAO',
+    tier: 'TIER II · VÀNG',
+    rarity: 'HOÀNG GIA',
+    requirement: 'YÊU CẦU: KINH TẾ ≥ 7',
+    effect: 'Tận dụng công cụ pháp lý quốc tế: Nhân đôi toàn bộ điểm Kinh Tế (+KT) đạt được trong câu hỏi này nếu chọn phương án có lợi ích kinh tế.',
     usage: '1 LẦN / TOÀN TRẬN ĐẤU',
-    lore: 'Tìm kiếm điểm tương đồng lớn nhất, gác lại bất đồng thứ yếu để kiến tạo hòa bình, cùng hợp tác phát triển bền vững.',
-    quote: '« Tìm cái đồng, gác cái dị; thêm bạn bớt thù, đa phương hóa quan hệ. »',
+    lore: 'Sử dụng rào cản kỹ thuật và các phán quyết của WTO để bảo hộ nền sản xuất nội địa trước các đòn phá giá bất bình đẳng.',
+    quote: '« Tự lực cánh sinh, kết hợp phòng vệ thương mại có lý có tình. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #241D12 0%, #17120A 50%, #0A0805 100%)',
+      border: '#D4AF37',
+      glow: 'rgba(212, 175, 55, 0.4)',
+      badgeBg: 'linear-gradient(180deg, #8E6A24, #5C4314)',
+      badgeText: '#FBF8EE',
+      accent: '#F3CA68',
+    },
+  },
+  submarine_cable: {
+    title: 'CHIẾM LĨNH CÁP QUANG BIỂN',
+    sub: 'Subsea Cable Supremacy',
+    category: 'TẤN CÔNG NGOẠI GIAO',
+    tier: 'TIER III · VÀNG',
+    rarity: 'HOÀNG GIA',
+    requirement: 'YÊU CẦU: KINH TẾ ≥ 7',
+    effect: 'Chớp thời cơ hạ tầng số: Cộng ngay +2 điểm Kinh Tế và hút 1 điểm KT từ đội có tổng điểm cao nhất nếu đội biểu quyết sớm nhất.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Ai làm chủ huyết mạch thông tin số dưới lòng đại dương, người đó nắm giữ huyết mạch kinh tế của thế kỷ 21.',
+    quote: '« Tương lai thuộc về công nghệ và tự chủ thông tin liên lạc quốc gia. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #241D12 0%, #17120A 50%, #0A0805 100%)',
+      border: '#D4AF37',
+      glow: 'rgba(212, 175, 55, 0.4)',
+      badgeBg: 'linear-gradient(180deg, #8E6A24, #5C4314)',
+      badgeText: '#FBF8EE',
+      accent: '#F3CA68',
+    },
+  },
+
+  // === NHÓM 2: PHÒNG THỦ & TỰ CHỦ (Yêu cầu Tự Chủ >= 7) ===
+  di_bat_bien: {
+    title: 'DĨ BẤT BIẾN, ỨNG VẠN BIẾN',
+    sub: 'Anchor of Sovereignty',
+    category: 'PHÒNG THỦ CHIẾN LƯỢC',
+    tier: 'TIER I · NGỌC BÍCH',
+    rarity: 'BẢO VẬT',
+    requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
+    effect: 'Vô hiệu hóa 100% mọi delta âm (Δ-) của trục Tự Chủ trong câu hỏi hiện tại dù phương án có chịu sức ép chính trị.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Nguyên lý cốt lõi của Chủ tịch Hồ Chí Minh: "Dĩ bất biến, ứng vạn biến" — Giữ vững độc lập, chủ quyền làm gốc rễ, phương pháp và sách lược uyển chuyển linh hoạt.',
+    quote: '« Dĩ bất biến, ứng vạn biến. Lợi ích tối cao của dân tộc là bất biến. »',
     colors: {
       bg: 'linear-gradient(145deg, #13271F 0%, #0C1A14 50%, #06110D 100%)',
       border: '#2F7D62',
@@ -73,25 +119,190 @@ const CARD_DATA: Record<CardType, CardMeta> = {
       accent: '#68A98F',
     },
   },
-  challenge: {
-    title: 'CHẤT VẤN ĐA PHƯƠNG',
-    sub: 'Multilateral Challenge',
-    category: 'ĐỐI ĐẦU NGHỊ TRƯỜNG',
-    tier: 'TIER II · CRIMSON',
-    rarity: 'SƠN SON',
-    effect: 'Kích hoạt phiên điều trần 45s buộc nhóm dẫn đầu giải trình. Thất bại → Chuyển 20 điểm Uy tín sang nhóm bạn.',
-    usage: '1 LẦN / CẢ LỚP HỌC',
-    lore: 'Nghị trường Liên Hợp Quốc là vũ đài ngoại giao quốc tế: Dùng luật pháp và lẽ phải để chất vấn các quyết sách áp đặt.',
-    quote: '« Thượng tôn công lý, kiên quyết bảo vệ chân lý và chuẩn mực quốc tế. »',
+  sovereignty_shield: {
+    title: 'VÀNH ĐAI ĐỘC LẬP',
+    sub: 'Sovereignty Shield',
+    category: 'PHÒNG THỦ CHIẾN LƯỢC',
+    tier: 'TIER II · NGỌC BÍCH',
+    rarity: 'BẢO VẬT',
+    requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
+    effect: 'Lá chắn chủ quyền: Miễn nhiễm hoàn toàn khỏi mọi tác động tiêu cực hoặc biến động trừ điểm từ Thiên Nga Đen trong câu này.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Xây dựng thế trận lòng dân kết hợp củng cố quốc phòng toàn dân, tạo vành đai bảo vệ bất khả xâm phạm.',
+    quote: '« Nước Việt Nam là một, dân tộc Việt Nam là một. Sông có thể cạn, núi có thể mòn, song chân lý ấy không bao giờ thay đổi. »',
     colors: {
-      bg: 'linear-gradient(145deg, #2A1316 0%, #1A0C0E 50%, #0D0506 100%)',
-      border: '#A9474F',
-      glow: 'rgba(169, 71, 79, 0.45)',
-      badgeBg: 'linear-gradient(180deg, #8A2F37, #4D151B)',
-      badgeText: '#FCA5A5',
-      accent: '#EF4444',
+      bg: 'linear-gradient(145deg, #13271F 0%, #0C1A14 50%, #06110D 100%)',
+      border: '#2F7D62',
+      glow: 'rgba(47, 125, 98, 0.4)',
+      badgeBg: 'linear-gradient(180deg, #1C5C47, #0F3628)',
+      badgeText: '#B5D6C6',
+      accent: '#68A98F',
     },
   },
+  self_reliance: {
+    title: 'TỰ LỰC CÁNH SINH',
+    sub: 'Strategic Self-Reliance',
+    category: 'PHÒNG THỦ CHIẾN LƯỢC',
+    tier: 'TIER III · NGỌC BÍCH',
+    rarity: 'BẢO VẬT',
+    requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
+    effect: 'Vận dụng nội lực dân tộc: Nếu điểm Tự Chủ bị giảm xuống dưới 7, tự động chuyển đổi 2 điểm KT thành 2 điểm TC để giữ ngưỡng an toàn.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Chủ tịch Hồ Chí Minh chỉ rõ: "Một dân tộc không tự lực cánh sinh mà cứ ngồi chờ dân tộc khác giúp đỡ thì không xứng đáng được độc lập."',
+    quote: '« Độc lập tự do là quyền thiêng liêng bất khả xâm phạm; nội lực là gốc rễ của tự cường. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #13271F 0%, #0C1A14 50%, #06110D 100%)',
+      border: '#2F7D62',
+      glow: 'rgba(47, 125, 98, 0.4)',
+      badgeBg: 'linear-gradient(180deg, #1C5C47, #0F3628)',
+      badgeText: '#B5D6C6',
+      accent: '#68A98F',
+    },
+  },
+
+  // === NHÓM 3: CHỨC NĂNG & UY TÍN (Yêu cầu Uy Tín >= 7) ===
+  cau_dong_ton_di: {
+    title: 'CẦU ĐỒNG TỒN DỊ',
+    sub: 'Multilateral Concord',
+    category: 'NGOẠI GIAO ĐA PHƯƠNG',
+    tier: 'TIER I · LAM NGỌC',
+    rarity: 'CAO QUÝ',
+    requirement: 'YÊU CẦU: UY TÍN ≥ 7',
+    effect: 'Hòa giải đa phương: Cộng thêm +2 điểm Uy Tín nếu phương án nhóm lựa chọn ưu tiên đàm phán hòa bình và hợp tác cùng có lợi.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Tìm kiếm điểm tương đồng lớn nhất, gác lại bất đồng thứ yếu để kiến tạo hòa bình, cùng hợp tác phát triển bền vững.',
+    quote: '« Tìm cái đồng, gác cái dị; thêm bạn bớt thù, đa phương hóa quan hệ quốc tế. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #10212E 0%, #0A1620 50%, #050B10 100%)',
+      border: '#4E7EA7',
+      glow: 'rgba(78, 126, 167, 0.45)',
+      badgeBg: 'linear-gradient(180deg, #2E5C8A, #183756)',
+      badgeText: '#C7DCEF',
+      accent: '#6B9DC4',
+    },
+  },
+  un_resolution: {
+    title: 'NGHỊ QUYẾT ĐHĐ LIÊN HỢP QUỐC',
+    sub: 'UN General Assembly Mandate',
+    category: 'NGOẠI GIAO ĐA PHƯƠNG',
+    tier: 'TIER II · LAM NGỌC',
+    rarity: 'CAO QUÝ',
+    requirement: 'YÊU CẦU: UY TÍN ≥ 7',
+    effect: 'Chính danh quốc tế: Soi sáng phương án tối ưu hóa chỉ số Uy Tín nhất trước khi nhóm quyết định nộp bài (+2 Uy Tín khi hoàn thành).',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Đại hội đồng LHQ là vũ đài pháp lý tối cao: Tranh thủ sự ủng hộ của công lý quốc tế để bảo vệ các lợi ích chính đáng.',
+    quote: '« Thượng tôn Hiến chương Liên Hợp Quốc và luật pháp quốc tế, bình đẳng giữa các quốc gia. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #10212E 0%, #0A1620 50%, #050B10 100%)',
+      border: '#4E7EA7',
+      glow: 'rgba(78, 126, 167, 0.45)',
+      badgeBg: 'linear-gradient(180deg, #2E5C8A, #183756)',
+      badgeText: '#C7DCEF',
+      accent: '#6B9DC4',
+    },
+  },
+  diplomatic_gong: {
+    title: 'TIẾNG CHIÊNG NGOẠI GIAO',
+    sub: 'Diplomatic Resonator',
+    category: 'NGOẠI GIAO ĐA PHƯƠNG',
+    tier: 'TIER III · LAM NGỌC',
+    rarity: 'CAO QUÝ',
+    requirement: 'YÊU CẦU: UY TÍN ≥ 7',
+    effect: 'Tuyên cáo chính nghĩa: Nhân đôi toàn bộ điểm số tổng (TC + KT + UT) nhận được trong lượt biểu quyết hiện tại!',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Khí phách ngoại giao Hồ Chí Minh vang vọng khắp năm châu: Đem lẽ phải và hòa bình cảm hóa thế giới.',
+    quote: '« Văn hóa là ngọn đuốc soi đường cho quốc dân đi; chính nghĩa ngoại giao quy tụ lòng người. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #10212E 0%, #0A1620 50%, #050B10 100%)',
+      border: '#4E7EA7',
+      glow: 'rgba(78, 126, 167, 0.45)',
+      badgeBg: 'linear-gradient(180deg, #2E5C8A, #183756)',
+      badgeText: '#C7DCEF',
+      accent: '#6B9DC4',
+    },
+  },
+
+  // Aliases cho tương thích ngược
+  anchor: {
+    title: 'DĨ BẤT BIẾN, ỨNG VẠN BIẾN',
+    sub: 'Anchor of Sovereignty',
+    category: 'PHÒNG THỦ CHIẾN LƯỢC',
+    tier: 'TIER I · NGỌC BÍCH',
+    rarity: 'BẢO VẬT',
+    requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
+    effect: 'Vô hiệu hóa 100% mọi delta âm (Δ-) của trục Tự Chủ trong câu hỏi hiện tại.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Nguyên lý cốt lõi của Chủ tịch Hồ Chí Minh: Giữ vững độc lập, chủ quyền làm gốc rễ.',
+    quote: '« Dĩ bất biến, ứng vạn biến. Lợi ích tối cao của dân tộc là bất biến. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #13271F 0%, #0C1A14 50%, #06110D 100%)',
+      border: '#2F7D62',
+      glow: 'rgba(47, 125, 98, 0.4)',
+      badgeBg: 'linear-gradient(180deg, #1C5C47, #0F3628)',
+      badgeText: '#B5D6C6',
+      accent: '#68A98F',
+    },
+  },
+  alliance: {
+    title: 'CẦU ĐỒNG TỒN DỊ',
+    sub: 'Multilateral Concord',
+    category: 'NGOẠI GIAO ĐA PHƯƠNG',
+    tier: 'TIER I · LAM NGỌC',
+    rarity: 'CAO QUÝ',
+    requirement: 'YÊU CẦU: UY TÍN ≥ 7',
+    effect: 'Hòa giải đa phương: Cộng thêm +2 điểm Uy Tín nếu lựa chọn đối thoại hòa bình.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Tìm kiếm điểm tương đồng lớn nhất, gác lại bất đồng thứ yếu.',
+    quote: '« Tìm cái đồng, gác cái dị; thêm bạn bớt thù. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #10212E 0%, #0A1620 50%, #050B10 100%)',
+      border: '#4E7EA7',
+      glow: 'rgba(78, 126, 167, 0.45)',
+      badgeBg: 'linear-gradient(180deg, #2E5C8A, #183756)',
+      badgeText: '#C7DCEF',
+      accent: '#6B9DC4',
+    },
+  },
+  challenge: {
+    title: 'TIẾNG CHIÊNG NGOẠI GIAO',
+    sub: 'Diplomatic Resonator',
+    category: 'NGOẠI GIAO ĐA PHƯƠNG',
+    tier: 'TIER III · LAM NGỌC',
+    rarity: 'CAO QUÝ',
+    requirement: 'YÊU CẦU: UY TÍN ≥ 7',
+    effect: 'Nhân đôi toàn bộ điểm số tổng (TC + KT + UT) nhận được trong lượt hiện tại.',
+    usage: '1 LẦN / TOÀN TRẬN ĐẤU',
+    lore: 'Khí phách ngoại giao Hồ Chí Minh đem lẽ phải và hòa bình cảm hóa thế giới.',
+    quote: '« Văn hóa là ngọn đuốc soi đường cho quốc dân đi. »',
+    colors: {
+      bg: 'linear-gradient(145deg, #10212E 0%, #0A1620 50%, #050B10 100%)',
+      border: '#4E7EA7',
+      glow: 'rgba(78, 126, 167, 0.45)',
+      badgeBg: 'linear-gradient(180deg, #2E5C8A, #183756)',
+      badgeText: '#C7DCEF',
+      accent: '#6B9DC4',
+    },
+  },
+};
+
+const renderCardArtwork = (cardType: CardType, size: number) => {
+  if (
+    cardType === 'break_supply' ||
+    cardType === 'counter_tariff' ||
+    cardType === 'submarine_cable' ||
+    cardType === 'challenge'
+  ) {
+    return <CardChallengeArt size={size} />;
+  }
+  if (
+    cardType === 'cau_dong_ton_di' ||
+    cardType === 'un_resolution' ||
+    cardType === 'diplomatic_gong' ||
+    cardType === 'alliance'
+  ) {
+    return <CardAllianceArt size={size} />;
+  }
+  return <CardAnchorArt size={size} />;
 };
 
 export const TacticalCard: React.FC<TacticalCardProps> = ({
@@ -102,7 +313,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
   canActivate = true,
   className = '',
 }) => {
-  const meta: CardMeta = type === 'alliance' ? CARD_DATA.alliance : type === 'challenge' ? CARD_DATA.challenge : CARD_DATA.anchor;
+  const meta: CardMeta = (CARD_DATA[type] || CARD_DATA.di_bat_bien || CARD_DATA.anchor)!;
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
@@ -378,13 +589,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
                         boxShadow: `0 0 25px ${meta.colors.glow}`,
                       }}
                     >
-                      {type === 'anchor' ? (
-                        <CardAnchorArt size={74} />
-                      ) : type === 'alliance' ? (
-                        <CardAllianceArt size={74} />
-                      ) : (
-                        <CardChallengeArt size={74} />
-                      )}
+                      {renderCardArtwork(type, 74)}
                     </div>
                   </div>
 
@@ -576,13 +781,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
               boxShadow: `0 0 25px ${meta.colors.glow}`,
             }}
           >
-            {type === 'anchor' ? (
-              <CardAnchorArt size={96} />
-            ) : type === 'alliance' ? (
-              <CardAllianceArt size={96} />
-            ) : (
-              <CardChallengeArt size={96} />
-            )}
+            {renderCardArtwork(type, 96)}
           </div>
           <span style={{ fontSize: 10, fontFamily: 'var(--font-mono, monospace)', color: 'rgba(203,213,225,0.6)', marginTop: 12, letterSpacing: 1.5 }}>
             CHẠM ĐỂ LẬT XEM ĐIỂN TÍCH

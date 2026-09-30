@@ -76,13 +76,15 @@ export class SessionService {
       this.groups.set(gid, {
         id: gid,
         name: groupNames[i - 1] ?? `Nhóm 0${i}`,
-        classCode: 'SE1802',
+        classCode: 'HCM202',
         rank: i,
-        totalScore: 50.0,
-        autonomy: 50,
-        economy: 50,
-        prestige: 50,
+        totalScore: 30.0,
+        autonomy: 10,
+        economy: 10,
+        prestige: 10,
         allInUses: 0,
+        assignedCards: [],
+        cardStatuses: {},
         activeCards: {
           anchor: 'ready',
           alliance: 'ready',
@@ -91,6 +93,57 @@ export class SessionService {
       });
       this.pastDecisions[gid] = {};
     }
+  }
+
+  public registerOrGetTeam(teamName: string, customId?: string): Group {
+    const trimmed = teamName.trim();
+    for (const g of this.groups.values()) {
+      if (g.name.toLowerCase() === trimmed.toLowerCase()) {
+        return g;
+      }
+    }
+    const gid = customId || `team_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const newGroup: Group = {
+      id: gid,
+      name: trimmed,
+      classCode: 'HCM202',
+      rank: this.groups.size + 1,
+      totalScore: 30.0,
+      autonomy: 10,
+      economy: 10,
+      prestige: 10,
+      assignedCards: [],
+      cardStatuses: {},
+      activeCards: {},
+    };
+    this.groups.set(gid, newGroup);
+    this.pastDecisions[gid] = {};
+    return newGroup;
+  }
+
+  public drawGachaCards(groupId: string): CardType[] {
+    const group = this.groups.get(groupId);
+    if (!group) throw new Error('Group not found');
+    if (group.assignedCards && group.assignedCards.length > 0) {
+      return group.assignedCards;
+    }
+
+    const attackPool: CardType[] = ['break_supply', 'counter_tariff', 'submarine_cable'];
+    const defensePool: CardType[] = ['di_bat_bien', 'sovereignty_shield', 'self_reliance'];
+    const utilityPool: CardType[] = ['cau_dong_ton_di', 'un_resolution', 'diplomatic_gong'];
+
+    const attackCard = attackPool[Math.floor(Math.random() * attackPool.length)]!;
+    const defenseCard = defensePool[Math.floor(Math.random() * defensePool.length)]!;
+    const utilityCard = utilityPool[Math.floor(Math.random() * utilityPool.length)]!;
+
+    const assigned = [attackCard, defenseCard, utilityCard];
+    group.assignedCards = assigned;
+    group.cardStatuses = {
+      [attackCard]: 'ready',
+      [defenseCard]: 'ready',
+      [utilityCard]: 'ready',
+    };
+    return assigned;
   }
 
   public getSession(): GameSession {
@@ -238,6 +291,12 @@ export class SessionService {
         group.economy = res.newState.economy;
         group.prestige = res.newState.prestige;
         group.totalScore = res.compositeScore;
+
+        const dec = decisionsMap.get(gid);
+        if (dec?.activeCard) {
+          if (!group.cardStatuses) group.cardStatuses = {};
+          group.cardStatuses[dec.activeCard] = 'used';
+        }
       }
     }
 
