@@ -64,7 +64,7 @@ function GachaInteractiveEnvelope({
   isRevealed: boolean;
   onReveal: () => void;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const flipperRef = useRef<HTMLDivElement>(null);
   const sealRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
 
@@ -73,10 +73,10 @@ function GachaInteractiveEnvelope({
     audioEngine.playCardFlip();
 
     const seal = sealRef.current;
-    const card = cardRef.current;
+    const flipper = flipperRef.current;
     const particles = particlesRef.current;
 
-    if (seal && card && particles) {
+    if (seal && flipper && particles) {
       particles.innerHTML = '';
       for (let i = 0; i < 14; i++) {
         const p = document.createElement('div');
@@ -112,7 +112,7 @@ function GachaInteractiveEnvelope({
         duration: 0.22,
         ease: 'power2.in',
       })
-      .to(card, {
+      .to(flipper, {
         rotationY: 180,
         duration: 0.75,
         ease: 'back.out(1.4)',
@@ -124,11 +124,10 @@ function GachaInteractiveEnvelope({
 
   return (
     <div
-      ref={cardRef}
       className={`gacha-interactive-card ${isRevealed ? 'flipped' : ''}`}
       onClick={handleClick}
     >
-      <div className="card-flipper">
+      <div ref={flipperRef} className="card-flipper">
         {/* Front Side: Sealed Wax Envelope */}
         <div className="card-face front-envelope">
           <div ref={particlesRef} className="particles-burst-container" />
