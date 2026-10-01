@@ -206,6 +206,13 @@ export function App() {
   const [inspectedCard, setInspectedCard] = useState<CardType | null>(null);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
 
+  const isVotingLocked =
+    isLocked ||
+    session?.status === 'round_locked' ||
+    session?.status === 'round_reveal' ||
+    session?.status === 'final_results' ||
+    remainingSec <= 0;
+
   // Browser History Navigation (popstate)
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
@@ -395,8 +402,8 @@ export function App() {
         }
       }
 
-      // Show leaderboard automatically upon round conclusion
-      setShowLeaderboardModal(true);
+      // Keep focus on battlefield so players can study the disclosed option scores & stakeholder breakdown
+      // Players can view leaderboard anytime via the prominent header or banner button
     });
 
     s.on('leaderboard.updated', (lb: LeaderboardEntry[]) => {
@@ -1210,18 +1217,36 @@ export function App() {
               {/* Context Narrative */}
               <div className="scenario-context-box">{scenario.context}</div>
 
+              {/* Locked Disclosure Banner */}
+              {isVotingLocked && (
+                <div className="player-locked-disclosure-banner">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span className="disclosure-badge-pulse">📢 CÔNG KHAI ĐIỂM SỐ</span>
+                    <div>
+                      <div style={{ fontWeight: 800, color: '#0E281E', fontSize: 13.5 }}>
+                        BIỂU QUYẾT ĐÃ KHÓA · BẢNG PHÂN BỔ ĐIỂM CHIẾN LƯỢC VÀ PHẢN ỨNG QUỐC TẾ
+                      </div>
+                      <div style={{ color: '#4A5B53', fontSize: 12, marginTop: 2 }}>
+                        Mỗi phương án đem lại tác động chiến lược khác nhau trên 3 trục: Tự Chủ (TC), Kinh Tế (KT), Uy Tín (UT). Hãy phân tích kỹ các phản ứng bên dưới!
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-open-leaderboard-pill"
+                    onClick={() => setShowLeaderboardModal(true)}
+                  >
+                    🏆 BẢNG XẾP HẠNG TOÀN LỚP ➔
+                  </button>
+                </div>
+              )}
+
               {/* 4 Options Grid */}
               <div className="options-grid">
                 {scenario.options.map((opt: any) => {
                   const isSelected = selectedChoice === opt.id;
                   const optionResolution = resolutionData?.chosenOption === opt.id;
                   const deltas = computeOptionDeltas(opt.reactions);
-                  const isVotingLocked =
-                    isLocked ||
-                    session?.status === 'round_locked' ||
-                    session?.status === 'round_reveal' ||
-                    session?.status === 'final_results' ||
-                    remainingSec <= 0;
 
                   return (
                     <div
@@ -1238,20 +1263,76 @@ export function App() {
                         {/* Option Impact Matrix (TC, KT, UT deltas) on Locked Round */}
                         {isVotingLocked && (
                           <div className="player-option-impact-matrix">
-                            <div className="player-impact-pills">
-                              <span className={`player-impact-badge tc ${deltas.autonomy >= 0 ? 'pos' : 'neg'}`}>
-                                <AxisIcon3D axis="tc" size={14} variant="vector" /> TC: {deltas.autonomy > 0 ? `+${deltas.autonomy}` : deltas.autonomy}
-                              </span>
-                              <span className={`player-impact-badge kt ${deltas.economy >= 0 ? 'pos' : 'neg'}`}>
-                                <AxisIcon3D axis="kt" size={14} variant="vector" /> KT: {deltas.economy > 0 ? `+${deltas.economy}` : deltas.economy}
-                              </span>
-                              <span className={`player-impact-badge ut ${deltas.prestige >= 0 ? 'pos' : 'neg'}`}>
-                                <AxisIcon3D axis="ut" size={14} variant="vector" /> UT: {deltas.prestige > 0 ? `+${deltas.prestige}` : deltas.prestige}
-                              </span>
-                              {opt.isBalanced && (
-                                <span className="player-balanced-pill">🌿 CÂN BẰNG</span>
-                              )}
+                            <div className="player-impact-header">
+                              <span className="player-impact-title">PHÂN BỔ ĐIỂM:</span>
+                              <div className="player-impact-pills">
+                                <span className={`player-impact-badge tc ${deltas.autonomy >= 0 ? 'pos' : 'neg'}`}>
+                                  <AxisIcon3D axis="tc" size={14} variant="vector" /> TC: {deltas.autonomy > 0 ? `+${deltas.autonomy}` : deltas.autonomy}
+                                </span>
+                                <span className={`player-impact-badge kt ${deltas.economy >= 0 ? 'pos' : 'neg'}`}>
+                                  <AxisIcon3D axis="kt" size={14} variant="vector" /> KT: {deltas.economy > 0 ? `+${deltas.economy}` : deltas.economy}
+                                </span>
+                                <span className={`player-impact-badge ut ${deltas.prestige >= 0 ? 'pos' : 'neg'}`}>
+                                  <AxisIcon3D axis="ut" size={14} variant="vector" /> UT: {deltas.prestige > 0 ? `+${deltas.prestige}` : deltas.prestige}
+                                </span>
+                                {opt.isBalanced && (
+                                  <span className="player-balanced-pill">🌿 CHIẾN LƯỢC TOÀN DIỆN CÂN BẰNG</span>
+                                )}
+                              </div>
                             </div>
+
+                            {/* Stakeholder Reactions Breakdown */}
+                            {opt.reactions && (
+                              <div className="player-stakeholder-disclosure-list">
+                                <div className="disclosure-subheading">CHI TIẾT PHẢN ỨNG CỦA 4 BÊN LIÊN QUAN:</div>
+                                <div className="disclosure-grid">
+                                  {opt.reactions.west && (
+                                    <div className="disclosure-item west">
+                                      <div className="item-actor">🏛️ Phương Tây & FDI</div>
+                                      <div className="item-text">{opt.reactions.west.text}</div>
+                                      <div className="item-delta">
+                                        Δ TC: {opt.reactions.west.delta.autonomy > 0 ? `+${opt.reactions.west.delta.autonomy}` : opt.reactions.west.delta.autonomy} | 
+                                        KT: {opt.reactions.west.delta.economy > 0 ? `+${opt.reactions.west.delta.economy}` : opt.reactions.west.delta.economy} | 
+                                        UT: {opt.reactions.west.delta.prestige > 0 ? `+${opt.reactions.west.delta.prestige}` : opt.reactions.west.delta.prestige}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {opt.reactions.neighbor && (
+                                    <div className="disclosure-item neighbor">
+                                      <div className="item-actor">🌏 Láng giềng & Khu vực</div>
+                                      <div className="item-text">{opt.reactions.neighbor.text}</div>
+                                      <div className="item-delta">
+                                        Δ TC: {opt.reactions.neighbor.delta.autonomy > 0 ? `+${opt.reactions.neighbor.delta.autonomy}` : opt.reactions.neighbor.delta.autonomy} | 
+                                        KT: {opt.reactions.neighbor.delta.economy > 0 ? `+${opt.reactions.neighbor.delta.economy}` : opt.reactions.neighbor.delta.economy} | 
+                                        UT: {opt.reactions.neighbor.delta.prestige > 0 ? `+${opt.reactions.neighbor.delta.prestige}` : opt.reactions.neighbor.delta.prestige}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {opt.reactions.un && (
+                                    <div className="disclosure-item un">
+                                      <div className="item-actor">🇺🇳 Liên Hợp Quốc & Pháp lý</div>
+                                      <div className="item-text">{opt.reactions.un.text}</div>
+                                      <div className="item-delta">
+                                        Δ TC: {opt.reactions.un.delta.autonomy > 0 ? `+${opt.reactions.un.delta.autonomy}` : opt.reactions.un.delta.autonomy} | 
+                                        KT: {opt.reactions.un.delta.economy > 0 ? `+${opt.reactions.un.delta.economy}` : opt.reactions.un.delta.economy} | 
+                                        UT: {opt.reactions.un.delta.prestige > 0 ? `+${opt.reactions.un.delta.prestige}` : opt.reactions.un.delta.prestige}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {opt.reactions.vn_people && (
+                                    <div className="disclosure-item vn_people">
+                                      <div className="item-actor">🇻🇳 Nhân dân trong nước</div>
+                                      <div className="item-text">{opt.reactions.vn_people.text}</div>
+                                      <div className="item-delta">
+                                        Δ TC: {opt.reactions.vn_people.delta.autonomy > 0 ? `+${opt.reactions.vn_people.delta.autonomy}` : opt.reactions.vn_people.delta.autonomy} | 
+                                        KT: {opt.reactions.vn_people.delta.economy > 0 ? `+${opt.reactions.vn_people.delta.economy}` : opt.reactions.vn_people.delta.economy} | 
+                                        UT: {opt.reactions.vn_people.delta.prestige > 0 ? `+${opt.reactions.vn_people.delta.prestige}` : opt.reactions.vn_people.delta.prestige}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

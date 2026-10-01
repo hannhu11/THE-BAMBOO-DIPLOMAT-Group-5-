@@ -5,12 +5,12 @@
       "id": "bs_cyber",
       "title": "Tấn công mạng quy mô lớn vào hạ tầng dữ liệu số",
       "banner": "THIÊN NGA ĐEN — Khủng hoảng mã độc Zero-Day trạm trung chuyển",
-      "narrative": "Một đợt tấn công mạng phối hợp nhắm thẳng vào các nút mạng quốc tế. Đội ngũ nào đánh đổi tự chủ dữ liệu số sẽ chịu tổn thất nặng nề.",
+      "narrative": "Một đợt tấn công mạng phối hợp nhắm thẳng vào các nút mạng quốc tế. Đội ngũ nào đánh đổi tự chủ dữ liệu số cho phần mềm ngoại độc quyền sẽ chịu tổn thất nặng nề.",
       "tier": "I",
       "rules": [
         {
           "id": "rule_cyber_choice_a",
-          "description": "Nếu chọn A ở Kịch bản 1: Tự Chủ -2, Kinh Tế -1",
+          "description": "Nếu chọn A ở Kịch bản 1 (phụ thuộc hạ tầng độc quyền): Tự Chủ -2, Kinh Tế -1",
           "when": {
             "type": "choice_match",
             "scenarioId": "sc1",
@@ -24,7 +24,7 @@
         },
         {
           "id": "rule_cyber_choice_c",
-          "description": "Nếu chọn C ở Kịch bản 1: Tự Chủ +1, Uy Tín +1",
+          "description": "Nếu chọn C ở Kịch bản 1 (giữ trạm cập bờ độc lập): Tự Chủ +1, Uy Tín +1",
           "when": {
             "type": "choice_match",
             "scenarioId": "sc1",
@@ -43,16 +43,16 @@
       "id": "bs_maritime",
       "title": "Va chạm hàng hải & Phong tỏa thực địa vùng xám",
       "banner": "THIÊN NGA ĐEN — Báo động đỏ tự do hàng hải Biển Đông",
-      "narrative": "Tàu khảo sát và dân quân biển phong tỏa ngư trường trọng điểm. Đội ngũ nào mất bình tĩnh hoặc đơn phương ngả về một phe sẽ chịu sức ép đối đầu.",
+      "narrative": "Tàu khảo sát và dân quân biển phong tỏa ngư trường trọng điểm. Đội ngũ nào nhượng bộ đơn phương hoặc manh động quân sự sẽ chịu sức ép đối đầu nặng nề.",
       "tier": "I",
       "rules": [
         {
-          "id": "rule_maritime_choice_a",
-          "description": "Nếu chọn A ở Kịch bản 2: Kinh Tế -2, Tự Chủ -1",
+          "id": "rule_maritime_concession_c",
+          "description": "Nếu chọn C ở Kịch bản 2 (nhượng bộ dừng dự án): Kinh Tế -2, Tự Chủ -1",
           "when": {
             "type": "choice_match",
             "scenarioId": "sc2",
-            "choice": "A"
+            "choice": "C"
           },
           "effect": {
             "autonomy": -1,
@@ -61,12 +61,12 @@
           }
         },
         {
-          "id": "rule_maritime_choice_c",
-          "description": "Nếu chọn C ở Kịch bản 2: Tự Chủ +1, Uy Tín +1",
+          "id": "rule_maritime_resolute_a",
+          "description": "Nếu chọn A ở Kịch bản 2 (kiên trì thực địa & công hàm UNCLOS): Tự Chủ +1, Uy Tín +1",
           "when": {
             "type": "choice_match",
             "scenarioId": "sc2",
-            "choice": "C"
+            "choice": "A"
           },
           "effect": {
             "autonomy": 1,
@@ -81,7 +81,7 @@
       "id": "bs_semi",
       "title": "Đứt gãy chuỗi cung ứng bán dẫn toàn cầu",
       "banner": "THIÊN NGA ĐEN — Lệnh cấm xuất khẩu nguyên liệu bán dẫn",
-      "narrative": "Một cuộc đối đầu thương mại bất ngờ khiến nguồn cung nguyên liệu và thiết bị bán dẫn bị đình trệ. Đội ngũ nào độc quyền phụ thuộc một cực sẽ bị trói buộc.",
+      "narrative": "Một cuộc đối đầu thương mại bất ngờ khiến nguồn cung nguyên liệu và thiết bị bán dẫn bị đình trệ. Đội ngũ nào để chỉ số Tự Chủ thấp sẽ bị trói buộc và ép giá.",
       "tier": "II",
       "rules": [
         {
@@ -101,7 +101,7 @@
         },
         {
           "id": "rule_semi_choice_c",
-          "description": "Nếu chọn C ở Kịch bản 3: Kinh Tế +1, Uy Tín +1",
+          "description": "Nếu chọn C ở Kịch bản 3 (minh bạch xuất xứ & đa dạng hóa đối tác): Kinh Tế +1, Uy Tín +1",
           "when": {
             "type": "choice_match",
             "scenarioId": "sc3",
@@ -120,7 +120,7 @@
       "id": "bs_diplomatic",
       "title": "Sóng gió nghị trường & Trừng phạt thứ cấp đa phương",
       "banner": "THIÊN NGA ĐEN — Tối hậu thư kinh tế từ các siêu cường",
-      "narrative": "Các siêu cường gia tăng sức ép buộc các nước đang phát triển phải chọn phe tại các thể chế tài chính quốc tế.",
+      "narrative": "Các siêu cường gia tăng sức ép buộc các nước đang phát triển phải chọn phe tại các thể chế tài chính quốc tế. Đội ngũ nào thiếu uy tín đa phương sẽ gánh chịu trừng phạt.",
       "tier": "II",
       "rules": [
         {
@@ -140,7 +140,7 @@
         },
         {
           "id": "rule_dip_choice_c",
-          "description": "Nếu chọn C ở Kịch bản 4: Uy Tín +2, Tự Chủ +1",
+          "description": "Nếu chọn C ở Kịch bản 4 (bỏ phiếu Trắng có nguyên tắc, bảo vệ Hiến chương LHQ): Uy Tín +2, Tự Chủ +1",
           "when": {
             "type": "choice_match",
             "scenarioId": "sc4",

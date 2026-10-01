@@ -545,9 +545,59 @@ export function App() {
                                 <AxisIcon3D axis="ut" size={16} variant="vector" /> UT: {deltas.prestige > 0 ? `+${deltas.prestige}` : deltas.prestige}
                               </span>
                               {opt.isBalanced && (
-                                <span className="gm-balanced-pill">🌿 NGOẠI GIAO CÂY TRE</span>
+                                <span className="gm-balanced-pill">🌿 CHIẾN LƯỢC TOÀN DIỆN CÂN BẰNG</span>
                               )}
                             </div>
+
+                            {/* Stakeholder Breakdown on GM Projector */}
+                            {opt.reactions && (
+                              <div className="gm-stakeholder-disclosure-list">
+                                {opt.reactions.west && (
+                                  <div className="gm-stakeholder-item">
+                                    <span className="gm-stakeholder-name">🏛️ Phương Tây & FDI:</span>
+                                    <span className="gm-stakeholder-text">{opt.reactions.west.text}</span>
+                                    <span className="gm-stakeholder-delta">
+                                      (TC: {opt.reactions.west.delta.autonomy > 0 ? `+${opt.reactions.west.delta.autonomy}` : opt.reactions.west.delta.autonomy},
+                                       KT: {opt.reactions.west.delta.economy > 0 ? `+${opt.reactions.west.delta.economy}` : opt.reactions.west.delta.economy},
+                                       UT: {opt.reactions.west.delta.prestige > 0 ? `+${opt.reactions.west.delta.prestige}` : opt.reactions.west.delta.prestige})
+                                    </span>
+                                  </div>
+                                )}
+                                {opt.reactions.neighbor && (
+                                  <div className="gm-stakeholder-item">
+                                    <span className="gm-stakeholder-name">🌏 Láng giềng & Khu vực:</span>
+                                    <span className="gm-stakeholder-text">{opt.reactions.neighbor.text}</span>
+                                    <span className="gm-stakeholder-delta">
+                                      (TC: {opt.reactions.neighbor.delta.autonomy > 0 ? `+${opt.reactions.neighbor.delta.autonomy}` : opt.reactions.neighbor.delta.autonomy},
+                                       KT: {opt.reactions.neighbor.delta.economy > 0 ? `+${opt.reactions.neighbor.delta.economy}` : opt.reactions.neighbor.delta.economy},
+                                       UT: {opt.reactions.neighbor.delta.prestige > 0 ? `+${opt.reactions.neighbor.delta.prestige}` : opt.reactions.neighbor.delta.prestige})
+                                    </span>
+                                  </div>
+                                )}
+                                {opt.reactions.un && (
+                                  <div className="gm-stakeholder-item">
+                                    <span className="gm-stakeholder-name">🇺🇳 Liên Hợp Quốc & Pháp lý:</span>
+                                    <span className="gm-stakeholder-text">{opt.reactions.un.text}</span>
+                                    <span className="gm-stakeholder-delta">
+                                      (TC: {opt.reactions.un.delta.autonomy > 0 ? `+${opt.reactions.un.delta.autonomy}` : opt.reactions.un.delta.autonomy},
+                                       KT: {opt.reactions.un.delta.economy > 0 ? `+${opt.reactions.un.delta.economy}` : opt.reactions.un.delta.economy},
+                                       UT: {opt.reactions.un.delta.prestige > 0 ? `+${opt.reactions.un.delta.prestige}` : opt.reactions.un.delta.prestige})
+                                    </span>
+                                  </div>
+                                )}
+                                {opt.reactions.vn_people && (
+                                  <div className="gm-stakeholder-item">
+                                    <span className="gm-stakeholder-name">🇻🇳 Nhân dân trong nước:</span>
+                                    <span className="gm-stakeholder-text">{opt.reactions.vn_people.text}</span>
+                                    <span className="gm-stakeholder-delta">
+                                      (TC: {opt.reactions.vn_people.delta.autonomy > 0 ? `+${opt.reactions.vn_people.delta.autonomy}` : opt.reactions.vn_people.delta.autonomy},
+                                       KT: {opt.reactions.vn_people.delta.economy > 0 ? `+${opt.reactions.vn_people.delta.economy}` : opt.reactions.vn_people.delta.economy},
+                                       UT: {opt.reactions.vn_people.delta.prestige > 0 ? `+${opt.reactions.vn_people.delta.prestige}` : opt.reactions.vn_people.delta.prestige})
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
