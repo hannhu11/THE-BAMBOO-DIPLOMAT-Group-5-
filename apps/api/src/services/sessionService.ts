@@ -344,6 +344,7 @@ export class SessionService {
       session: { ...this.session },
       resolutions,
       leaderboard,
+      groups: this.getGroups(),
     };
   }
 

@@ -26,6 +26,18 @@ interface LeaderboardEntry {
   };
 }
 
+function computeOptionDeltas(reactions: Record<string, any> = {}) {
+  const deltas = { autonomy: 0, economy: 0, prestige: 0 };
+  for (const item of Object.values(reactions)) {
+    if (item && item.delta) {
+      deltas.autonomy += item.delta.autonomy || 0;
+      deltas.economy += item.delta.economy || 0;
+      deltas.prestige += item.delta.prestige || 0;
+    }
+  }
+  return deltas;
+}
+
 export function App() {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('bamboo_gm_token'));
   const [gmPassword, setGmPassword] = useState('');
@@ -133,20 +145,43 @@ export function App() {
     };
   }, [token]);
 
-  // Countdown timer
+  const handleLockRound = async () => {
+    try {
+      const res = await fetch('/api/gm/round/lock', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          roundId: scenario?.id || selectedScenarioId,
+          force: true,
+        }),
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        console.warn('Lỗi khóa biểu quyết:', d.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Countdown timer with auto-lock at 0s
   useEffect(() => {
     if (session?.status !== 'round_open') return;
     const interval = setInterval(() => {
       setRemainingSec((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
+          handleLockRound();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [session?.status, session?.currentRound]);
+  }, [session?.status, session?.currentRound, token, scenario?.id, selectedScenarioId]);
 
   // Handle Login
   const handleGmLogin = async (e: React.FormEvent) => {
@@ -207,28 +242,6 @@ export function App() {
       if (!res.ok) {
         const d = await res.json();
         alert(d.error || 'Lỗi chuyển câu hỏi tiếp theo');
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleLockRound = async () => {
-    try {
-      const res = await fetch('/api/gm/round/lock', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          roundId: scenario?.id || selectedScenarioId,
-          force: true,
-        }),
-      });
-      if (!res.ok) {
-        const d = await res.json();
-        alert(d.error || 'Lỗi khóa biểu quyết');
       }
     } catch (err) {
       console.error(err);
@@ -504,12 +517,39 @@ export function App() {
               {/* 4 Options Grid */}
               <div className="gm-options-column">
                 {activeDisplayScenario.options.map((opt: any) => {
+                  const deltas = computeOptionDeltas(opt.reactions);
+                  const isRoundLocked =
+                    session?.status === 'round_locked' ||
+                    session?.status === 'round_reveal' ||
+                    session?.status === 'final_results' ||
+                    (session?.status !== 'round_open' && (session?.currentRound || 0) > 0);
+
                   return (
-                    <div key={opt.id} className="gm-projector-option">
+                    <div key={opt.id} className={`gm-projector-option ${isRoundLocked && opt.isBalanced ? 'balanced-revealed' : ''}`}>
                       <div className="gm-option-letter">{opt.id}</div>
                       <div className="gm-option-content">
                         <div className="gm-option-title">{opt.label}</div>
                         <div className="gm-option-hint">{opt.hint}</div>
+
+                        {/* Option Impact Matrix (TC, KT, UT deltas) on Locked Round */}
+                        {isRoundLocked && (
+                          <div className="gm-option-impact-matrix">
+                            <div className="gm-impact-pills">
+                              <span className={`gm-impact-badge tc ${deltas.autonomy >= 0 ? 'pos' : 'neg'}`}>
+                                <AxisIcon3D axis="tc" size={16} variant="vector" /> TC: {deltas.autonomy > 0 ? `+${deltas.autonomy}` : deltas.autonomy}
+                              </span>
+                              <span className={`gm-impact-badge kt ${deltas.economy >= 0 ? 'pos' : 'neg'}`}>
+                                <AxisIcon3D axis="kt" size={16} variant="vector" /> KT: {deltas.economy > 0 ? `+${deltas.economy}` : deltas.economy}
+                              </span>
+                              <span className={`gm-impact-badge ut ${deltas.prestige >= 0 ? 'pos' : 'neg'}`}>
+                                <AxisIcon3D axis="ut" size={16} variant="vector" /> UT: {deltas.prestige > 0 ? `+${deltas.prestige}` : deltas.prestige}
+                              </span>
+                              {opt.isBalanced && (
+                                <span className="gm-balanced-pill">🌿 NGOẠI GIAO CÂY TRE</span>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -711,6 +751,12 @@ export function App() {
             type="button"
             className="gm-control-btn primary"
             onClick={handleNextRound}
+            disabled={session?.status === 'round_open'}
+            title={
+              session?.status === 'round_open'
+                ? 'Vui lòng khóa biểu quyết trước khi chuyển sang câu tiếp theo'
+                : 'Chuyển sang câu hỏi tiếp theo'
+            }
           >
             CÂU HỎI TIẾP THEO ➔
           </button>

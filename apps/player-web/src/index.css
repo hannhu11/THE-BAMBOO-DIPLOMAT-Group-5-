@@ -421,6 +421,72 @@ body {
   line-height: 1.5;
 }
 
+.option-laptop-card.balanced-revealed {
+  border-color: #B8860B;
+  background: #FCFBF5;
+}
+
+.player-option-impact-matrix {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #D8D0BE;
+}
+
+.player-impact-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.player-impact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.player-impact-badge.tc {
+  background: rgba(16, 185, 129, 0.12);
+  color: #0F3628;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.player-impact-badge.kt {
+  background: rgba(184, 134, 11, 0.12);
+  color: #B8860B;
+  border: 1px solid rgba(184, 134, 11, 0.35);
+}
+
+.player-impact-badge.ut {
+  background: rgba(30, 64, 175, 0.12);
+  color: #1E40AF;
+  border: 1px solid rgba(30, 64, 175, 0.35);
+}
+
+.player-impact-badge.neg {
+  background: rgba(158, 42, 43, 0.12);
+  color: #9E2A2B;
+  border-color: rgba(158, 42, 43, 0.35);
+}
+
+.player-balanced-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #1C5C47;
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
 /* ==========================================
    VOTE ACTION BAR & CONFIRMATION HUD
    ========================================== */

@@ -50,6 +50,13 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
       studentName: seat.studentName,
     });
 
+    const io = (fastify as any).io;
+    if (io) {
+      const bootstrap = sessionService.getBootstrap();
+      io.emit('leaderboard.updated', bootstrap.leaderboard);
+      io.emit('session.synced', bootstrap);
+    }
+
     return reply.status(200).send({
       success: true,
       isReconnect,

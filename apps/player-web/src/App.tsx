@@ -148,6 +148,18 @@ function GachaInteractiveEnvelope({
   );
 }
 
+function computeOptionDeltas(reactions: Record<string, any> = {}) {
+  const deltas = { autonomy: 0, economy: 0, prestige: 0 };
+  for (const item of Object.values(reactions)) {
+    if (item && item.delta) {
+      deltas.autonomy += item.delta.autonomy || 0;
+      deltas.economy += item.delta.economy || 0;
+      deltas.prestige += item.delta.prestige || 0;
+    }
+  }
+  return deltas;
+}
+
 export function App() {
   // Authentication & Group State
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('bamboo_token'));
@@ -159,6 +171,11 @@ export function App() {
     const g = localStorage.getItem('bamboo_group');
     return g ? JSON.parse(g) : null;
   });
+  const myGroupRef = useRef<GroupData | null>(myGroup);
+  useEffect(() => {
+    myGroupRef.current = myGroup;
+  }, [myGroup]);
+
   const [allGroups, setAllGroups] = useState<GroupData[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
@@ -230,9 +247,17 @@ export function App() {
       setSession(data.session);
       setScenario(data.currentScenario);
 
+      const currentGroup = myGroupRef.current;
+      const targetGid = seat.groupId || currentGroup?.id;
+      const myName = currentGroup?.name?.toLowerCase();
+
       if (data.groups) {
         setAllGroups(data.groups);
-        const found = data.groups.find((g: any) => g.id === seat.groupId);
+        const found = data.groups.find(
+          (g: any) =>
+            g.id === targetGid ||
+            (myName && g.name?.toLowerCase() === myName)
+        );
         if (found) {
           setMyGroup(found);
           localStorage.setItem('bamboo_group', JSON.stringify(found));
@@ -241,9 +266,29 @@ export function App() {
 
       if (data.leaderboard) {
         setLeaderboard(data.leaderboard);
+        const foundLb = data.leaderboard.find(
+          (l: any) =>
+            l.groupId === targetGid ||
+            (myName && l.name?.toLowerCase() === myName)
+        );
+        if (foundLb) {
+          setMyGroup((prev) => {
+            if (!prev) return prev;
+            const updated = {
+              ...prev,
+              rank: foundLb.rank,
+              totalScore: foundLb.score,
+              autonomy: foundLb.axes.autonomy,
+              economy: foundLb.axes.economy,
+              prestige: foundLb.axes.prestige,
+            };
+            localStorage.setItem('bamboo_group', JSON.stringify(updated));
+            return updated;
+          });
+        }
       }
 
-      const dec = data.roundDecisions?.[seat.groupId];
+      const dec = data.roundDecisions?.[targetGid || ''];
       if (dec) {
         setIsLocked(dec.isLocked);
         setSelectedChoice(dec.chosenOption as ChoiceLetter);
@@ -275,13 +320,81 @@ export function App() {
     s.on('round.revealed', (data: any) => {
       audioEngine.playGong();
       setSession(data.session);
-      const myRes = data.resolutions?.[seat.groupId];
+
+      const currentGroup = myGroupRef.current;
+      const targetGid = seat.groupId || currentGroup?.id;
+      const myName = currentGroup?.name?.toLowerCase();
+
+      const myRes =
+        (targetGid && data.resolutions?.[targetGid]) ||
+        (myName &&
+          Object.values(data.resolutions || {}).find(
+            (r: any) => r.groupName?.toLowerCase() === myName
+          ));
+
       if (myRes) {
         setResolutionData(myRes);
+        setMyGroup((prev) => {
+          if (!prev) return prev;
+          let rank = prev.rank;
+          if (data.leaderboard) {
+            const foundLb = data.leaderboard.find(
+              (item: any) =>
+                item.groupId === targetGid ||
+                (prev.name && item.name?.toLowerCase() === prev.name.toLowerCase())
+            );
+            if (foundLb) rank = foundLb.rank;
+          }
+          const updated = {
+            ...prev,
+            rank,
+            totalScore: myRes.compositeScore,
+            autonomy: myRes.newState.autonomy,
+            economy: myRes.newState.economy,
+            prestige: myRes.newState.prestige,
+          };
+          localStorage.setItem('bamboo_group', JSON.stringify(updated));
+          return updated;
+        });
       }
+
       if (data.leaderboard) {
         setLeaderboard(data.leaderboard);
+        const foundLb = data.leaderboard.find(
+          (item: any) =>
+            item.groupId === targetGid ||
+            (myName && item.name?.toLowerCase() === myName)
+        );
+        if (foundLb && !myRes) {
+          setMyGroup((prev) => {
+            if (!prev) return prev;
+            const updated = {
+              ...prev,
+              rank: foundLb.rank,
+              totalScore: foundLb.score,
+              autonomy: foundLb.axes.autonomy,
+              economy: foundLb.axes.economy,
+              prestige: foundLb.axes.prestige,
+            };
+            localStorage.setItem('bamboo_group', JSON.stringify(updated));
+            return updated;
+          });
+        }
       }
+
+      if (data.groups) {
+        setAllGroups(data.groups);
+        const foundG = data.groups.find(
+          (g: any) =>
+            g.id === targetGid ||
+            (myName && g.name?.toLowerCase() === myName)
+        );
+        if (foundG) {
+          setMyGroup(foundG);
+          localStorage.setItem('bamboo_group', JSON.stringify(foundG));
+        }
+      }
+
       // Show leaderboard automatically upon round conclusion
       setShowLeaderboardModal(true);
     });
@@ -289,22 +402,52 @@ export function App() {
     s.on('leaderboard.updated', (lb: LeaderboardEntry[]) => {
       if (Array.isArray(lb)) {
         setLeaderboard(lb);
-        const found = lb.find((item: any) => item.groupId === seat.groupId);
+        const currentGroup = myGroupRef.current;
+        const targetGid = seat.groupId || currentGroup?.id;
+        const myName = currentGroup?.name?.toLowerCase();
+
+        const found = lb.find(
+          (item: any) =>
+            item.groupId === targetGid ||
+            (myName && item.name?.toLowerCase() === myName)
+        );
         if (found) {
-          setMyGroup((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  rank: found.rank,
-                  totalScore: found.score,
-                  autonomy: found.axes.autonomy,
-                  economy: found.axes.economy,
-                  prestige: found.axes.prestige,
-                }
-              : prev
-          );
+          setMyGroup((prev) => {
+            if (!prev) return prev;
+            const updated = {
+              ...prev,
+              rank: found.rank,
+              totalScore: found.score,
+              autonomy: found.axes.autonomy,
+              economy: found.axes.economy,
+              prestige: found.axes.prestige,
+            };
+            localStorage.setItem('bamboo_group', JSON.stringify(updated));
+            return updated;
+          });
         }
       }
+    });
+
+    s.on('group.state.updated', (grp: any) => {
+      const currentGroup = myGroupRef.current;
+      const targetGid = seat.groupId || currentGroup?.id;
+      const myName = currentGroup?.name?.toLowerCase();
+
+      if (
+        grp &&
+        (grp.id === targetGid ||
+          (myName && grp.name?.toLowerCase() === myName))
+      ) {
+        setMyGroup(grp);
+        localStorage.setItem('bamboo_group', JSON.stringify(grp));
+      }
+    });
+
+    s.on('error.lock', (err: any) => {
+      console.warn('Error locking vote:', err);
+      setIsLocked(false);
+      alert(err.message || 'Lỗi khóa biểu quyết');
     });
 
     setSocket(s);
@@ -1072,11 +1215,18 @@ export function App() {
                 {scenario.options.map((opt: any) => {
                   const isSelected = selectedChoice === opt.id;
                   const optionResolution = resolutionData?.chosenOption === opt.id;
+                  const deltas = computeOptionDeltas(opt.reactions);
+                  const isVotingLocked =
+                    isLocked ||
+                    session?.status === 'round_locked' ||
+                    session?.status === 'round_reveal' ||
+                    session?.status === 'final_results' ||
+                    remainingSec <= 0;
 
                   return (
                     <div
                       key={opt.id}
-                      className={`option-laptop-card ${isSelected ? 'selected' : ''}`}
+                      className={`option-laptop-card ${isSelected ? 'selected' : ''} ${isVotingLocked && opt.isBalanced ? 'balanced-revealed' : ''}`}
                       onClick={() => handleSelectOption(opt.id)}
                     >
                       <div className="option-letter-badge">{opt.id}</div>
@@ -1084,6 +1234,26 @@ export function App() {
                       <div className="option-body">
                         <div className="option-title">{opt.label}</div>
                         {opt.hint && <div className="option-hint">{opt.hint}</div>}
+
+                        {/* Option Impact Matrix (TC, KT, UT deltas) on Locked Round */}
+                        {isVotingLocked && (
+                          <div className="player-option-impact-matrix">
+                            <div className="player-impact-pills">
+                              <span className={`player-impact-badge tc ${deltas.autonomy >= 0 ? 'pos' : 'neg'}`}>
+                                <AxisIcon3D axis="tc" size={14} variant="vector" /> TC: {deltas.autonomy > 0 ? `+${deltas.autonomy}` : deltas.autonomy}
+                              </span>
+                              <span className={`player-impact-badge kt ${deltas.economy >= 0 ? 'pos' : 'neg'}`}>
+                                <AxisIcon3D axis="kt" size={14} variant="vector" /> KT: {deltas.economy > 0 ? `+${deltas.economy}` : deltas.economy}
+                              </span>
+                              <span className={`player-impact-badge ut ${deltas.prestige >= 0 ? 'pos' : 'neg'}`}>
+                                <AxisIcon3D axis="ut" size={14} variant="vector" /> UT: {deltas.prestige > 0 ? `+${deltas.prestige}` : deltas.prestige}
+                              </span>
+                              {opt.isBalanced && (
+                                <span className="player-balanced-pill">🌿 CÂN BẰNG</span>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

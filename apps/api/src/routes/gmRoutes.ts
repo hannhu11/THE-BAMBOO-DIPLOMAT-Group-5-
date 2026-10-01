@@ -6,6 +6,7 @@ import {
   OpenRoundSchema,
 } from '@bamboo/domain-types';
 import { sessionService } from '../services/sessionService';
+import { roundTimerService } from '../services/roundTimerService';
 import { Server as SocketIOServer } from 'socket.io';
 import { z } from 'zod';
 
@@ -53,6 +54,9 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
       });
     }
 
+    // Start server-side auto-lock timer
+    roundTimerService.startAutoLockTimer(durationSeconds);
+
     return reply.status(200).send({ success: true, session, scenario });
   });
 
@@ -61,6 +65,9 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
     if (!parseResult.success) {
       return reply.status(400).send({ error: parseResult.error.flatten() });
     }
+
+    // Cancel pending auto-lock timer since GM is locking manually
+    roundTimerService.cancelTimer();
 
     const { force } = parseResult.data;
     const session = sessionService.lockRound(force);
@@ -80,12 +87,20 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
         io.emit('round.revealed', revealResult);
         io.emit('leaderboard.updated', revealResult.leaderboard);
       }
+      io.emit('session.synced', sessionService.getBootstrap());
     }
 
     return reply.status(200).send({ success: true, session, ...(revealResult || {}) });
   });
 
   fastify.post('/round/next', async (request, reply) => {
+    const currentSession = sessionService.getSession();
+    if (currentSession.status === 'round_open') {
+      return reply.status(400).send({
+        error: 'Vui lòng khóa biểu quyết của vòng hiện tại trước khi chuyển sang câu hỏi tiếp theo',
+      });
+    }
+
     const durationSeconds = 30;
     const { session, scenario } = sessionService.nextRound(durationSeconds);
 
@@ -97,6 +112,9 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
         durationSeconds,
       });
     }
+
+    // Start server-side auto-lock timer for the next round
+    roundTimerService.startAutoLockTimer(durationSeconds);
 
     return reply.status(200).send({ success: true, session, scenario });
   });
@@ -178,6 +196,7 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
   });
 
   fastify.post('/session/reset', async (request, reply) => {
+    roundTimerService.cancelTimer();
     sessionService.reset();
     const session = sessionService.getSession();
     const bootstrap = sessionService.getBootstrap();

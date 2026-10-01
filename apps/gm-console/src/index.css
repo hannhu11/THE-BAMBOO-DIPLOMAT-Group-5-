@@ -363,6 +363,82 @@ body {
   border-color: #9E2A2B;
 }
 
-.gm-control-btn:hover {
+.gm-control-btn:hover:not(:disabled) {
   transform: translateY(-2px);
+}
+
+.gm-control-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  filter: grayscale(0.5);
+}
+
+/* GM Option Impact Matrix */
+.gm-projector-option.balanced-revealed {
+  border-color: #B8860B;
+  background: #FCFBF5;
+}
+
+.gm-option-impact-matrix {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1.5px dashed #D8D0BE;
+}
+
+.gm-impact-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gm-impact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.gm-impact-badge.tc {
+  background: rgba(16, 185, 129, 0.12);
+  color: #0F3628;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.gm-impact-badge.kt {
+  background: rgba(184, 134, 11, 0.12);
+  color: #B8860B;
+  border: 1px solid rgba(184, 134, 11, 0.4);
+}
+
+.gm-impact-badge.ut {
+  background: rgba(30, 64, 175, 0.12);
+  color: #1E40AF;
+  border: 1px solid rgba(30, 64, 175, 0.4);
+}
+
+.gm-impact-badge.neg {
+  background: rgba(158, 42, 43, 0.12);
+  color: #9E2A2B;
+  border-color: rgba(158, 42, 43, 0.4);
+}
+
+.gm-balanced-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: #1C5C47;
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(28, 92, 71, 0.25);
 }

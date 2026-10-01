@@ -214,4 +214,123 @@ describe('@bamboo/api - Integration Test Suite', () => {
     expect(body.results).toBeDefined();
     expect(body.leaderboard.length).toBe(7);
   });
+
+  it('POST /api/gm/round/next rejects when current round is still open', async () => {
+    // Open round 2
+    const openRes = await app.inject({
+      method: 'POST',
+      url: '/api/gm/round/open',
+      headers: { authorization: `Bearer ${gmToken}` },
+      payload: { scenarioId: 'sc1_q2', durationSeconds: 30 },
+    });
+    expect(openRes.statusCode).toBe(200);
+
+    // Attempting next round while round is open must be rejected
+    const nextRes = await app.inject({
+      method: 'POST',
+      url: '/api/gm/round/next',
+      headers: { authorization: `Bearer ${gmToken}` },
+    });
+
+    expect(nextRes.statusCode).toBe(400);
+    const body = JSON.parse(nextRes.body);
+    expect(body.error).toContain('Vui lòng khóa biểu quyết');
+  });
+
+  it('POST /api/gm/round/next succeeds after round is locked', async () => {
+    // Lock current round first
+    const lockRes = await app.inject({
+      method: 'POST',
+      url: '/api/gm/round/lock',
+      headers: { authorization: `Bearer ${gmToken}` },
+      payload: { force: true },
+    });
+    expect(lockRes.statusCode).toBe(200);
+
+    // Now /round/next must succeed
+    const nextRes = await app.inject({
+      method: 'POST',
+      url: '/api/gm/round/next',
+      headers: { authorization: `Bearer ${gmToken}` },
+    });
+
+    expect(nextRes.statusCode).toBe(200);
+    const body = JSON.parse(nextRes.body);
+    expect(body.success).toBe(true);
+    expect(body.session.status).toBe('round_open');
+  });
+
+  it('Dynamic custom team scores update properly upon voting and round reveal', async () => {
+    // Custom team joins with custom name
+    const joinRes = await app.inject({
+      method: 'POST',
+      url: '/api/session/join',
+      payload: {
+        sessionPin: 'HCM202',
+        teamName: 'dưedqwdwq',
+      },
+    });
+
+    expect(joinRes.statusCode).toBe(200);
+    const joinBody = JSON.parse(joinRes.body);
+    expect(joinBody.group.name).toBe('dưedqwdwq');
+    const customGroupId = joinBody.group.id;
+    const customSeatId = joinBody.seat.id;
+
+    // Initial axes should be 10, 10, 10
+    expect(joinBody.group.autonomy).toBe(10);
+    expect(joinBody.group.economy).toBe(10);
+    expect(joinBody.group.prestige).toBe(10);
+
+    // Vote for Option C (Balanced: Autonomy +2, Economy +3, Prestige +4)
+    const { voteService } = await import('../services/voteService');
+    const { sessionService } = await import('../services/sessionService');
+    const curScenario = sessionService.getCurrentScenario()!;
+
+    voteService.captainLockVote(customSeatId, {
+      roundId: curScenario.id,
+      chosenOption: 'C',
+    });
+
+    // Lock and reveal round
+    const lockRes = await app.inject({
+      method: 'POST',
+      url: '/api/gm/round/lock',
+      headers: { authorization: `Bearer ${gmToken}` },
+      payload: { force: true },
+    });
+
+    expect(lockRes.statusCode).toBe(200);
+    const lockBody = JSON.parse(lockRes.body);
+
+    // Check resolutions for custom team
+    const customRes = lockBody.resolutions[customGroupId];
+    expect(customRes).toBeDefined();
+    expect(customRes.chosenOption).toBe('C');
+
+    // Verify axes updated in sessionService
+    const updatedCustomGroup = sessionService.getGroup(customGroupId);
+    expect(updatedCustomGroup).toBeDefined();
+    expect(updatedCustomGroup!.totalScore).not.toBe(30);
+
+    // Verify leaderboard contains custom team with rank and updated score
+    const customLeaderboardEntry = lockBody.leaderboard.find((l: any) => l.groupId === customGroupId);
+    expect(customLeaderboardEntry).toBeDefined();
+    expect(customLeaderboardEntry.score).toBe(updatedCustomGroup!.totalScore);
+  });
+
+  it('roundTimerService auto-locks and reveals the round when triggered', async () => {
+    const { sessionService } = await import('../services/sessionService');
+    const { roundTimerService } = await import('../services/roundTimerService');
+
+    // Open a round first
+    sessionService.openRound('sc1', 30);
+    expect(sessionService.getSession().status).toBe('round_open');
+
+    // Trigger auto-lock
+    roundTimerService.handleAutoLock();
+
+    // Verify state transitioned to round_reveal and round was locked
+    expect(sessionService.getSession().status).toBe('round_reveal');
+  });
 });

@@ -7,6 +7,7 @@ import { bootstrapRoutes } from './routes/bootstrapRoutes';
 import { gmRoutes } from './routes/gmRoutes';
 import { createSocketGateway } from './socket/socketGateway';
 import { Server as SocketIOServer } from 'socket.io';
+import { roundTimerService } from './services/roundTimerService';
 
 export async function buildApp(): Promise<{ app: FastifyInstance; io: SocketIOServer }> {
   const app = fastify({
@@ -39,6 +40,7 @@ export async function buildApp(): Promise<{ app: FastifyInstance; io: SocketIOSe
   // Attach Socket.IO to raw node http server
   const io = createSocketGateway(app.server);
   (app as any).io = io;
+  roundTimerService.setIo(io);
 
   // Health check endpoint
   app.get('/health', async () => ({

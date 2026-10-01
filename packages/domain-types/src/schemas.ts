@@ -78,7 +78,7 @@ export const OpenRoundSchema = z
 
 export const LockRoundSchema = z
   .object({
-    roundId: z.string().min(1),
+    roundId: z.string().min(1).optional(),
     force: z.boolean().default(false),
   })
   .strict();
