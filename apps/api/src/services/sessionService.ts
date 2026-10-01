@@ -1,6 +1,7 @@
 import {
   CardStatus,
   CardType,
+  ChoiceLetter,
   GameSession,
   Group,
   GroupDecision,
@@ -46,7 +47,7 @@ export class SessionService {
   private groups: Map<string, Group> = new Map();
   private lockedDecisions: Map<string, Map<string, GroupDecision>> = new Map(); // roundId -> (groupId -> GroupDecision)
   private currentResolutions: Record<string, RoundResolution> = {};
-  private pastDecisions: Record<string, Record<string, 'A' | 'B' | 'C'>> = {}; // groupId -> (scenarioId -> choice)
+  private pastDecisions: Record<string, Record<string, ChoiceLetter>> = {}; // groupId -> (scenarioId -> choice)
 
   constructor() {
     this.session = {
@@ -230,9 +231,10 @@ export class SessionService {
     const group = this.groups.get(decision.groupId);
     if (group) {
       if (decision.allInArmed) {
-        group.allInUses += 1;
+        group.allInUses = (group.allInUses || 0) + 1;
       }
       if (decision.activeCard) {
+        if (!group.activeCards) group.activeCards = {};
         group.activeCards[decision.activeCard] = 'exhausted';
       }
     }
@@ -283,6 +285,7 @@ export class SessionService {
               allInArmed: decision.allInArmed,
               activeCard: decision.activeCard,
               allianceTargetGroupId: decision.allianceTargetGroupId,
+              targetGroupId: decision.targetGroupId || decision.allianceTargetGroupId,
             }
           : {
               // Default fallback if group did not lock in time
@@ -513,6 +516,10 @@ export class SessionService {
     this.lockedDecisions.clear();
     this.currentResolutions = {};
     this.initializeGroups();
+  }
+
+  public resetSession(): void {
+    this.reset();
   }
 }
 

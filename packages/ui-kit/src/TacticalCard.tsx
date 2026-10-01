@@ -702,8 +702,9 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
       className={className}
       style={{
         position: 'relative',
-        width: 300,
-        height: 440,
+        width: 324,
+        minHeight: 520,
+        height: 520,
         borderRadius: 24,
         cursor: 'pointer',
         userSelect: 'none',
@@ -712,19 +713,19 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
         transition: 'transform 0.15s ease-out',
       }}
     >
-      {/* Front Face */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           borderRadius: 24,
-          padding: 24,
+          padding: '18px 20px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           border: `2px solid ${meta.colors.border}`,
           overflow: 'hidden',
           background: meta.colors.bg,
+          boxSizing: 'border-box',
         }}
       >
         {/* Holographic foil glint layer */}
@@ -738,69 +739,145 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
           }}
         />
 
-        {/* Card Header */}
-        <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontSize: 10, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 2, color: '#D8B46D', textTransform: 'uppercase' }}>
-              {meta.category}
+        {!isFlipped ? (
+          /* MẶT TRƯỚC: TÁC DỤNG CHIẾN LƯỢC */
+          <>
+            {/* Card Header */}
+            <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+              <div>
+                <div style={{ fontSize: 9.5, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 2, color: '#D8B46D', textTransform: 'uppercase' }}>
+                  {meta.category}
+                </div>
+                <h3 style={{ margin: '4px 0 2px', fontSize: 18, fontWeight: 800, fontFamily: 'var(--font-display, sans-serif)', color: '#F3EEDC', lineHeight: 1.25 }}>
+                  {meta.title}
+                </h3>
+                <div style={{ fontSize: 10.5, color: '#A8B3AF', fontFamily: 'var(--font-mono, monospace)' }}>
+                  {meta.sub}
+                </div>
+              </div>
+              <span
+                style={{
+                  fontSize: 9.5,
+                  fontFamily: 'var(--font-mono, monospace)',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontWeight: 800,
+                  background: meta.colors.badgeBg,
+                  color: meta.colors.badgeText,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {meta.tier}
+              </span>
             </div>
-            <h3 style={{ margin: '4px 0 2px', fontSize: 22, fontWeight: 800, fontFamily: 'var(--font-display, sans-serif)', color: '#F3EEDC' }}>
-              {meta.title}
-            </h3>
-            <div style={{ fontSize: 11, color: '#A8B3AF', fontFamily: 'var(--font-mono, monospace)' }}>
-              {meta.sub}
+
+            {/* Center Artwork Emblem */}
+            <div style={{ position: 'relative', zIndex: 10, margin: '4px 0 6px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  width: 76,
+                  height: 76,
+                  borderRadius: '50%',
+                  border: `1.5px solid ${meta.colors.border}`,
+                  background: 'radial-gradient(circle, rgba(28,92,71,0.45) 0%, rgba(9,18,14,0.85) 80%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: `0 0 20px ${meta.colors.glow}`,
+                }}
+              >
+                {renderCardArtwork(type, 56)}
+              </div>
+              <span style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: 'rgba(203,213,225,0.7)', marginTop: 6, letterSpacing: 1.2 }}>
+                CHẠM ĐỂ LẬT XEM ĐIỂN TÍCH ↻
+              </span>
+            </div>
+
+            {/* Card Footer: Action Box (Fix Truncation & Enable Full Clean Wrap) */}
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 10,
+                padding: '10px 12px',
+                borderRadius: 12,
+                background: 'rgba(0,0,0,0.55)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                boxSizing: 'border-box',
+                width: '100%',
+              }}
+            >
+              <div style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1.5, color: '#D8B46D', textTransform: 'uppercase', marginBottom: 4 }}>
+                TÁC DỤNG CHIẾN LƯỢC
+              </div>
+              <div
+                style={{
+                  fontSize: 11.5,
+                  color: '#F3EEDC',
+                  lineHeight: 1.45,
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  whiteSpace: 'normal',
+                }}
+              >
+                {meta.effect}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, paddingTop: 6, borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: '#A8B3AF' }}>
+                <span>{meta.usage}</span>
+                <span style={{ color: meta.colors.accent, fontWeight: 700 }}>{meta.rarity}</span>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* MẶT SAU: ĐIỂN TÍCH BÁC HỒ & TRIẾT LÝ NGOẠI GIAO */
+          <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                <span style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1.5, color: '#68A98F', textTransform: 'uppercase' }}>
+                  DI SẢN NGOẠI GIAO HỒ CHÍ MINH
+                </span>
+                <span style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: '#D8B46D' }}>
+                  {meta.tier}
+                </span>
+              </div>
+
+              <h4 style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 800, fontFamily: 'var(--font-display, sans-serif)', color: '#F3CA68', lineHeight: 1.25 }}>
+                {meta.title}
+              </h4>
+
+              <blockquote
+                style={{
+                  margin: '0 0 12px 0',
+                  padding: '10px 12px',
+                  borderRadius: 10,
+                  background: 'rgba(216, 180, 109, 0.08)',
+                  borderLeft: '3px solid #D8B46D',
+                  fontStyle: 'italic',
+                  fontSize: 11.5,
+                  color: '#F3EEDC',
+                  lineHeight: 1.55,
+                }}
+              >
+                {meta.quote}
+              </blockquote>
+
+              <div style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(17, 33, 28, 0.65)', border: '1px solid rgba(47, 125, 98, 0.3)' }}>
+                <div style={{ fontSize: 8.5, fontFamily: 'var(--font-mono, monospace)', color: '#A8B3AF', letterSpacing: 1, marginBottom: 4 }}>
+                  BỐI CẢNH LỊCH SỬ & Ý NGHĨA
+                </div>
+                <p style={{ margin: 0, fontSize: 11, color: '#CBD5E1', lineHeight: 1.5 }}>
+                  {meta.lore}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center', paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+              <span style={{ fontSize: 9.5, fontFamily: 'var(--font-mono, monospace)', color: '#D8B46D', letterSpacing: 1 }}>
+                CHẠM ĐỂ QUAY LẠI MẶT TRƯỚC ↻
+              </span>
             </div>
           </div>
-          <span
-            style={{
-              fontSize: 10,
-              fontFamily: 'var(--font-mono, monospace)',
-              padding: '3px 8px',
-              borderRadius: 4,
-              fontWeight: 800,
-              background: meta.colors.badgeBg,
-              color: meta.colors.badgeText,
-            }}
-          >
-            {meta.tier}
-          </span>
-        </div>
-
-        {/* Center Artwork Emblem */}
-        <div style={{ position: 'relative', zIndex: 10, margin: 'auto 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: '50%',
-              border: `1px solid ${meta.colors.border}`,
-              background: 'radial-gradient(circle, rgba(28,92,71,0.45) 0%, rgba(9,18,14,0.85) 80%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: `0 0 25px ${meta.colors.glow}`,
-            }}
-          >
-            {renderCardArtwork(type, 96)}
-          </div>
-          <span style={{ fontSize: 10, fontFamily: 'var(--font-mono, monospace)', color: 'rgba(203,213,225,0.6)', marginTop: 12, letterSpacing: 1.5 }}>
-            CHẠM ĐỂ LẬT XEM ĐIỂN TÍCH
-          </span>
-        </div>
-
-        {/* Card Footer */}
-        <div style={{ position: 'relative', zIndex: 10, padding: 12, borderRadius: 12, background: 'rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: 9.5, fontFamily: 'var(--font-mono, monospace)', letterSpacing: 1.5, color: '#D8B46D', textTransform: 'uppercase', marginBottom: 2 }}>
-            TÁC DỤNG CHIẾN LƯỢC
-          </div>
-          <div style={{ fontSize: 12, color: '#F3EEDC', lineHeight: 1.45 }}>
-            {meta.effect}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: '#A8B3AF' }}>
-            <span>{meta.usage}</span>
-            <span style={{ color: meta.colors.accent, fontWeight: 700 }}>{meta.rarity}</span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

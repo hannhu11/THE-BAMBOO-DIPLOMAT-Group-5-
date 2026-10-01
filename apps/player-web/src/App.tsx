@@ -182,7 +182,6 @@ export function App() {
   const [targetTeamId, setTargetTeamId] = useState<string>('');
   const [isLocked, setIsLocked] = useState(false);
   const [remainingSec, setRemainingSec] = useState(30);
-  const [serverStatus, setServerStatus] = useState('Đang kết nối...');
   const [resolutionData, setResolutionData] = useState<any>(null);
 
   // Modals State
@@ -219,11 +218,11 @@ export function App() {
     });
 
     s.on('connect', () => {
-      setServerStatus('Trực tuyến · Sẵn sàng tác chiến');
+      console.log('Player Socket connected');
     });
 
     s.on('disconnect', () => {
-      setServerStatus('Mất kết nối máy chủ');
+      console.log('Player Socket disconnected');
     });
 
     s.on('session.synced', (data: any) => {
@@ -771,31 +770,6 @@ export function App() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              padding: '6px 12px',
-              borderRadius: 8,
-              background: '#FAF7F0',
-              border: '1px solid #D8D0BE',
-              color: '#0E281E',
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: serverStatus.includes('Trực tuyến') ? '#10B981' : '#EF4444',
-              }}
-            />
-            {serverStatus}
-          </div>
-
           <button
             type="button"
             onClick={() => setShowLeaderboardModal(true)}
@@ -939,13 +913,13 @@ export function App() {
                       key={card}
                       onClick={() => setInspectedCard(card)}
                       style={{
-                        padding: '9px 12px',
-                        borderRadius: 10,
+                        padding: '10px 12px',
+                        borderRadius: 12,
                         border: isArmedForVote
                           ? '2px solid #B8860B'
                           : isSpent
                           ? '1px solid #D8D0BE'
-                          : '1px solid #D8D0BE',
+                          : '1.5px solid #D8D0BE',
                         background: isArmedForVote
                           ? '#FDF8EC'
                           : isSpent
@@ -955,47 +929,74 @@ export function App() {
                         opacity: isSpent ? 0.6 : 1,
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 4,
+                        gap: 6,
+                        boxShadow: isArmedForVote ? '0 4px 14px rgba(184, 134, 11, 0.2)' : '0 1px 3px rgba(0,0,0,0.04)',
                         transition: 'all 0.2s ease',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: 12, fontWeight: 800, color: '#0E281E' }}>
-                          {card === 'break_supply'
-                            ? 'BẺ GÃY CHUỖI CUNG ỨNG'
-                            : card === 'counter_tariff'
-                            ? 'ÁP ĐẶT THUẾ ĐỐI KHÁNG'
-                            : card === 'submarine_cable'
-                            ? 'CHIẾM LĨNH CÁP QUANG BIỂN'
-                            : card === 'di_bat_bien' || card === 'anchor'
-                            ? 'DĨ BẤT BIẾN, ỨNG VẠN BIẾN'
-                            : card === 'sovereignty_shield'
-                            ? 'VÀNH ĐAI ĐỘC LẬP'
-                            : card === 'self_reliance'
-                            ? 'TỰ LỰC CÁNH SINH'
-                            : card === 'cau_dong_ton_di' || card === 'alliance'
-                            ? 'CẦU ĐỒNG TỒN DỊ'
-                            : card === 'un_resolution'
-                            ? 'NGHỊ QUYẾT ĐHĐ LHQ'
-                            : 'TIẾNG CHIÊNG NGOẠI GIAO'}
-                        </span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden' }}>
+                          <span
+                            style={{
+                              fontSize: 9,
+                              fontFamily: 'var(--font-mono)',
+                              padding: '2px 5px',
+                              borderRadius: 4,
+                              background:
+                                card === 'break_supply' || card === 'counter_tariff' || card === 'submarine_cable'
+                                  ? '#5C4314'
+                                  : card === 'di_bat_bien' || card === 'sovereignty_shield' || card === 'self_reliance' || card === 'anchor'
+                                  ? '#0F3628'
+                                  : '#183756',
+                              color: '#FBF8EE',
+                              fontWeight: 800,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {card === 'break_supply' || card === 'counter_tariff' || card === 'submarine_cable'
+                              ? 'CÔNG'
+                              : card === 'di_bat_bien' || card === 'sovereignty_shield' || card === 'self_reliance' || card === 'anchor'
+                              ? 'THỦ'
+                              : 'MINH'}
+                          </span>
+                          <span style={{ fontSize: 12, fontWeight: 800, color: '#0E281E', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {card === 'break_supply'
+                              ? 'BẺ GÃY CHUỖI CUNG ỨNG'
+                              : card === 'counter_tariff'
+                              ? 'ÁP ĐẶT THUẾ ĐỐI KHÁNG'
+                              : card === 'submarine_cable'
+                              ? 'CHIẾM LĨNH CÁP QUANG BIỂN'
+                              : card === 'di_bat_bien' || card === 'anchor'
+                              ? 'DĨ BẤT BIẾN, ỨNG VẠN BIẾN'
+                              : card === 'sovereignty_shield'
+                              ? 'VÀNH ĐAI ĐỘC LẬP'
+                              : card === 'self_reliance'
+                              ? 'TỰ LỰC CÁNH SINH'
+                              : card === 'cau_dong_ton_di' || card === 'alliance'
+                              ? 'CẦU ĐỒNG TỒN DỊ'
+                              : card === 'un_resolution'
+                              ? 'NGHỊ QUYẾT ĐHĐ LHQ'
+                              : 'TIẾNG CHIÊNG NGOẠI GIAO'}
+                          </span>
+                        </div>
                         <span
                           style={{
-                            fontSize: 9.5,
+                            fontSize: 9,
                             fontFamily: 'var(--font-mono)',
-                            padding: '2px 5px',
+                            padding: '2px 6px',
                             borderRadius: 4,
                             background: isSpent ? '#E2E8F0' : isArmedForVote ? '#B8860B' : '#EFE9DC',
                             color: isArmedForVote ? '#FFFFFF' : '#0E281E',
-                            fontWeight: 700,
+                            fontWeight: 800,
+                            flexShrink: 0,
                           }}
                         >
                           {isSpent ? 'ĐÃ DÙNG' : isArmedForVote ? 'SẼ KÍCH HOẠT' : 'SẴN SÀNG'}
                         </span>
                       </div>
 
-                      <div style={{ fontSize: 10.5, color: eligible ? '#4A5B53' : '#9E2A2B', lineHeight: 1.3 }}>
-                        {isSpent ? 'Thẻ đã hoàn thành sứ mệnh' : eligible ? 'Chạm để xem chi tiết / gán lượt này' : reason}
+                      <div style={{ fontSize: 10.5, color: eligible ? '#4A5B53' : '#9E2A2B', lineHeight: 1.35 }}>
+                        {isSpent ? 'Thẻ đã hoàn thành sứ mệnh trong trận đấu' : eligible ? 'Chạm để xem điển tích / gán lượt này ↻' : reason}
                       </div>
                     </div>
                   );
@@ -1302,21 +1303,46 @@ export function App() {
                 {isCardEligible(inspectedCard).reason}
               </div>
 
-              {/* Target Team Selector for Attack cards */}
-              {(inspectedCard === 'break_supply' || inspectedCard === 'submarine_cable') &&
+              {/* Target Team Selector only when round is actively open and card requires targeting */}
+              {session?.status === 'round_open' &&
+                !isLocked &&
+                (inspectedCard === 'break_supply' ||
+                  inspectedCard === 'cau_dong_ton_di' ||
+                  inspectedCard === 'alliance' ||
+                  inspectedCard === 'submarine_cable') &&
                 isCardEligible(inspectedCard).eligible &&
                 myGroup.cardStatuses?.[inspectedCard] !== 'used' && (
-                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 8,
+                      background: '#FAF7F0',
+                      padding: '12px 14px',
+                      borderRadius: 12,
+                      border: '1.5px solid #D8D0BE',
+                      boxSizing: 'border-box',
+                    }}
+                  >
                     <label
                       style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: 11,
                         fontWeight: 800,
-                        color: '#0E281E',
+                        color: inspectedCard === 'break_supply' ? '#9E2A2B' : '#0E281E',
                         textTransform: 'uppercase',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
                       }}
                     >
-                      CHỌN ĐỘI MỤC TIÊU PHONG TỎA:
+                      <span>🎯</span>
+                      {inspectedCard === 'break_supply'
+                        ? 'CHỌN ĐỘI ĐỐI THỦ PHONG TỎA (ĐÓNG BĂNG THẺ BÀI):'
+                        : inspectedCard === 'cau_dong_ton_di' || inspectedCard === 'alliance'
+                        ? 'CHỌN ĐỘI ĐỐI TÁC CÙNG LIÊN MINH:'
+                        : 'CHỌN ĐỘI CẠNH TRANH HẠ TẦNG SỐ (TÙY CHỌN):'}
                     </label>
                     <select
                       value={targetTeamId}
@@ -1325,17 +1351,30 @@ export function App() {
                         width: '100%',
                         padding: '10px 14px',
                         borderRadius: 10,
-                        border: '1.5px solid #D8D0BE',
-                        background: '#FAF7F0',
+                        border:
+                          !targetTeamId &&
+                          (inspectedCard === 'break_supply' ||
+                            inspectedCard === 'cau_dong_ton_di' ||
+                            inspectedCard === 'alliance')
+                            ? '2px solid #DC2626'
+                            : '1.5px solid #D8D0BE',
+                        background: '#FFFFFF',
                         fontFamily: 'var(--font-mono)',
                         fontSize: 13,
                         fontWeight: 700,
                         color: '#0E281E',
                         outline: 'none',
                         cursor: 'pointer',
+                        boxSizing: 'border-box',
                       }}
                     >
-                      <option value="">-- Chọn 1 nhóm đối thủ --</option>
+                      <option value="">
+                        {inspectedCard === 'break_supply'
+                          ? '-- Bắt buộc: Chọn 1 nhóm đối thủ để phong tỏa --'
+                          : inspectedCard === 'cau_dong_ton_di' || inspectedCard === 'alliance'
+                          ? '-- Bắt buộc: Chọn 1 nhóm đối tác liên minh --'
+                          : '-- Tùy chọn: Chọn 1 nhóm đối thủ --'}
+                      </option>
                       {allGroups
                         .filter((g) => g.id !== myGroup.id)
                         .map((g) => (
@@ -1383,43 +1422,92 @@ export function App() {
                       cursor: 'not-allowed',
                     }}
                   >
-                    CHƯA ĐỦ ĐIỀU KIỆN (YÊU CẦU ĐIỂM ≥ 7)
+                    CHƯA ĐỦ ĐIỀU KIỆN (YÊU CẦU ĐIỂM TƯƠNG ỨNG ≥ 7)
                   </button>
                 ) : (
                   <>
-                    {session?.status === 'round_open' && !isLocked && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (selectedCardForVote === inspectedCard) {
-                            setSelectedCardForVote(undefined);
-                          } else {
-                            setSelectedCardForVote(inspectedCard);
-                          }
-                          setInspectedCard(null);
-                        }}
+                    {session?.status === 'round_open' && !isLocked ? (
+                      (() => {
+                        const requiresTarget =
+                          inspectedCard === 'break_supply' ||
+                          inspectedCard === 'cau_dong_ton_di' ||
+                          inspectedCard === 'alliance';
+                        const isMissingTarget = requiresTarget && !targetTeamId;
+                        const isCurrentlyArmed = selectedCardForVote === inspectedCard;
+
+                        if (!isCurrentlyArmed && isMissingTarget) {
+                          return (
+                            <button
+                              type="button"
+                              disabled
+                              style={{
+                                width: '100%',
+                                padding: '14px',
+                                borderRadius: 12,
+                                fontFamily: 'var(--font-mono)',
+                                fontSize: 13,
+                                fontWeight: 800,
+                                background: '#FEF3C7',
+                                color: '#92400E',
+                                border: '1.5px dashed #F59E0B',
+                                cursor: 'not-allowed',
+                              }}
+                            >
+                              ⚠ VUI LÒNG CHỌN ĐỘI MỤC TIÊU PHÍA TRÊN ĐỂ GÁN THẺ
+                            </button>
+                          );
+                        }
+
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (isCurrentlyArmed) {
+                                setSelectedCardForVote(undefined);
+                              } else {
+                                setSelectedCardForVote(inspectedCard);
+                              }
+                              setInspectedCard(null);
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '14px',
+                              borderRadius: 12,
+                              fontFamily: 'var(--font-mono)',
+                              fontSize: 13,
+                              fontWeight: 800,
+                              letterSpacing: 1,
+                              background: isCurrentlyArmed
+                                ? '#9E2A2B'
+                                : 'linear-gradient(180deg, #1C5C47, #0F3628)',
+                              color: '#FFFFFF',
+                              border: '1.5px solid #B8860B',
+                              cursor: 'pointer',
+                              boxShadow: '0 6px 18px rgba(15, 54, 40, 0.25)',
+                            }}
+                          >
+                            {isCurrentlyArmed
+                              ? 'HỦY GÁN CHO LƯỢT BIỂU QUYẾT NÀY ✕'
+                              : '✓ GÁN KÍCH HOẠT CHO LƯỢT BIỂU QUYẾT NÀY'}
+                          </button>
+                        );
+                      })()
+                    ) : (
+                      <div
                         style={{
-                          width: '100%',
-                          padding: '14px',
-                          borderRadius: 12,
+                          padding: '12px 14px',
+                          borderRadius: 10,
+                          background: '#F0FDF4',
+                          border: '1.5px solid #86EFAC',
+                          color: '#166534',
+                          fontSize: 12.5,
                           fontFamily: 'var(--font-mono)',
-                          fontSize: 13,
-                          fontWeight: 800,
-                          letterSpacing: 1,
-                          background:
-                            selectedCardForVote === inspectedCard
-                              ? '#9E2A2B'
-                              : 'linear-gradient(180deg, #1C5C47, #0F3628)',
-                          color: '#FFFFFF',
-                          border: '1.5px solid #B8860B',
-                          cursor: 'pointer',
-                          boxShadow: '0 6px 18px rgba(15, 54, 40, 0.25)',
+                          fontWeight: 700,
+                          textAlign: 'center',
                         }}
                       >
-                        {selectedCardForVote === inspectedCard
-                          ? 'HỦY GÁN CHO LƯỢT BIỂU QUYẾT NÀY ✕'
-                          : 'GÁN KÍCH HOẠT CHO LƯỢT BIỂU QUYẾT NÀY ✓'}
-                      </button>
+                        ✓ THẺ ĐÃ SẴN SÀNG · Hãy gán kích hoạt khi Quản trò (GM) mở lượt biểu quyết
+                      </div>
                     )}
                     <button
                       type="button"

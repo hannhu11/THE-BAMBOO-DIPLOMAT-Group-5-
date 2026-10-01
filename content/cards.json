@@ -2,23 +2,113 @@
   "version": "1.0.0",
   "cards": [
     {
+      "id": "break_supply",
+      "name": "Bẻ Gãy Chuỗi Cung Ứng",
+      "subtitle": "Supply Chain Interdiction",
+      "description": "Phong tỏa đối trọng: Đóng băng quyền kích hoạt thẻ bài chiến lược của 1 đội đối thủ trong câu hỏi hiện tại.",
+      "principle": "Đa dạng hóa quan hệ kinh tế, không phụ thuộc một thị trường (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "economy>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "counter_tariff",
+      "name": "Áp Đặt Thuế Đối Kháng",
+      "subtitle": "Countervailing Tariff Defense",
+      "description": "Tận dụng công cụ pháp lý quốc tế: Nhân đôi toàn bộ điểm Kinh Tế (+KT) đạt được trong câu hỏi này nếu chọn phương án có lợi ích kinh tế.",
+      "principle": "Tự lực cánh sinh kết hợp phòng vệ thương mại quốc tế (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "economy>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "submarine_cable",
+      "name": "Chiếm Lĩnh Cáp Quang Biển",
+      "subtitle": "Subsea Cable Supremacy",
+      "description": "Chớp thời cơ hạ tầng số: Cộng ngay +2 điểm Kinh Tế và kiểm soát huyết mạch thông tin quốc gia.",
+      "principle": "Làm chủ hạ tầng số và huyết mạch kinh tế trong kỷ nguyên mới (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "economy>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "di_bat_bien",
+      "name": "Dĩ Bất Biến, Ứng Vạn Biến",
+      "subtitle": "Anchor of Sovereignty",
+      "description": "Vô hiệu hóa 100% mọi delta âm (Δ-) của trục Tự Chủ trong câu hỏi hiện tại dù phương án có chịu sức ép chính trị.",
+      "principle": "Dĩ bất biến, ứng vạn biến trong giữ gìn độc lập chủ quyền (Mục 5.2.2)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "autonomy>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "sovereignty_shield",
+      "name": "Vành Đai Độc Lập",
+      "subtitle": "Sovereignty Shield",
+      "description": "Lá chắn chủ quyền: Miễn nhiễm hoàn toàn khỏi mọi tác động tiêu cực hoặc biến động trừ điểm trên cả 3 trục.",
+      "principle": "Không có gì quý hơn độc lập, tự do (Chủ tịch Hồ Chí Minh, 1966)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "autonomy>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "self_reliance",
+      "name": "Tự Lực Cánh Sinh",
+      "subtitle": "Strategic Self-Reliance",
+      "description": "Vận dụng nội lực dân tộc: Nếu điểm Tự Chủ bị giảm xuống dưới 7, tự động chuyển đổi 1 điểm KT thành 2 điểm TC để giữ ngưỡng an toàn.",
+      "principle": "Độc lập, tự chủ, tự lực cánh sinh dựa vào sức mình là chính (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "autonomy>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "cau_dong_ton_di",
+      "name": "Cầu Đồng Tồn Dị",
+      "subtitle": "Multilateral Concord",
+      "description": "Hòa giải đa phương: Cộng thêm +2 điểm Uy Tín nếu lựa chọn đối thoại hòa bình. Thưởng thêm khi đối tác liên minh cùng cân bằng.",
+      "principle": "Tìm cái đồng, gác cái dị; thêm bạn bớt thù (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "prestige>=7",
+      "activation": "before_vote"
+    },
+    {
+      "id": "un_resolution",
+      "name": "Nghị Quyết ĐHĐ Liên Hợp Quốc",
+      "subtitle": "UN General Assembly Mandate",
+      "description": "Chính danh quốc tế: Soi sáng phương án tối ưu hóa chỉ số Uy Tín nhất (+2 Uy Tín khi hoàn thành).",
+      "principle": "Thượng tôn luật pháp quốc tế và các cơ chế đa phương (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "prestige>=7",
+      "activation": "before_lock"
+    },
+    {
+      "id": "diplomatic_gong",
+      "name": "Tiếng Chiêng Ngoại Giao",
+      "subtitle": "Diplomatic Resonator",
+      "description": "Tuyên cáo chính nghĩa: Nhân đôi toàn bộ điểm số tổng nhận được trong lượt biểu quyết hiện tại!",
+      "principle": "Khí phách ngoại giao cảm hóa lòng người và quy tụ đồng thuận (Mục 5.2.3)",
+      "maxUsesPerGroup": 1,
+      "eligibility": "prestige>=7",
+      "activation": "before_lock"
+    },
+    {
       "id": "anchor",
-      "name": "Dĩ Bất Biến",
+      "name": "Dĩ Bất Biến (Di sản)",
       "subtitle": "Anchor of Sovereignty",
       "description": "Vô hiệu hoá mọi điểm trừ về TỰ CHỦ do các Tác nhân quốc tế gây ra trong lượt hiện tại.",
       "principle": "Độc lập, tự chủ, tự lực cánh sinh (Mục 5.2.3)",
       "maxUsesPerGroup": 1,
-      "eligibility": "rank>=4",
+      "eligibility": "autonomy>=7",
       "activation": "before_lock"
     },
     {
       "id": "alliance",
-      "name": "Cầu Đồng Tồn Dị",
+      "name": "Cầu Đồng Tồn Dị (Di sản)",
       "subtitle": "Alliance Form",
       "description": "Đề xuất liên minh với 1 nhóm đối tác. Nếu cả 2 cùng chọn phương án cân bằng → cả hai nhận thưởng +50% delta; nếu lệch phương án → trừ 10 điểm Uy Tín.",
       "principle": "Đoàn kết trên cơ sở thống nhất mục tiêu chung (Mục 5.2.3)",
       "maxUsesPerGroup": 1,
-      "eligibility": "rank>=4",
+      "eligibility": "prestige>=7",
       "activation": "before_vote"
     },
     {

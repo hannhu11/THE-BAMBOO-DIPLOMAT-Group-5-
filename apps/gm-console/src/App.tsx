@@ -433,28 +433,6 @@ export function App() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div
-            style={{
-              padding: '8px 16px',
-              borderRadius: 10,
-              background: '#FAF7F0',
-              border: '1px solid #D8D0BE',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 13,
-              fontWeight: 800,
-              color: session?.status === 'round_open' ? '#10B981' : '#B8860B',
-            }}
-          >
-            TRẠNG THÁI:{' '}
-            {session?.status === 'round_open'
-              ? 'ĐANG MỞ BIỂU QUYẾT'
-              : session?.status === 'round_locked'
-              ? 'ĐÃ KHÓA BIỂU QUYẾT'
-              : session?.status === 'round_reveal'
-              ? 'ĐÃ CÔNG BỐ KẾT QUẢ'
-              : 'PHÒNG CHỜ NGOẠI GIAO'}
-          </div>
-
           <VolumeToggle />
 
           <button
@@ -593,9 +571,6 @@ export function App() {
         <section className="gm-leaderboard-board">
           <div className="gm-lb-header">
             <h2 className="gm-lb-title">BẢNG XẾP HẠNG TRỰC TIẾP</h2>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#B8860B', fontWeight: 700 }}>
-              CẬP NHẬT TỨC THỜI
-            </span>
           </div>
 
           <div className="gm-teams-list">

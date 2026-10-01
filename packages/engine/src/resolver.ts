@@ -121,6 +121,12 @@ export function resolveRound(params: ResolveRoundParams): RoundResolution {
     workingDelta.prestige += 2;
     if (allianceContext && allianceContext.partnerChose) {
       allianceOutcome = allianceContext.isPartnerBalanced ? 'bonus' : 'penalty';
+      if (allianceOutcome === 'bonus') {
+        workingDelta.prestige += 1;
+        workingDelta.economy += 1;
+      } else if (allianceOutcome === 'penalty') {
+        workingDelta.prestige = Math.max(0, workingDelta.prestige - 2);
+      }
     }
   }
 
@@ -130,8 +136,8 @@ export function resolveRound(params: ResolveRoundParams): RoundResolution {
     workingDelta.prestige += 2;
   }
 
-  // Tiếng Chiêng Ngoại Giao (diplomatic_gong): Nhân đôi toàn bộ điểm cộng
-  if (cardsToApply.has('diplomatic_gong')) {
+  // Tiếng Chiêng Ngoại Giao (diplomatic_gong / challenge): Nhân đôi toàn bộ điểm cộng
+  if (cardsToApply.has('diplomatic_gong') || cardsToApply.has('challenge')) {
     cardEffectsApplied.push('diplomatic_gong');
     if (workingDelta.autonomy > 0) workingDelta.autonomy *= 2;
     if (workingDelta.economy > 0) workingDelta.economy *= 2;
@@ -193,7 +199,11 @@ export function resolveAllGroupsRound(
     let allianceContext: AllianceContext | undefined = undefined;
     const targetGroupId = groupInput.decision.allianceTargetGroupId || groupInput.decision.targetGroupId;
 
-    if (groupInput.decision.activeCard === 'alliance' && targetGroupId) {
+    if (
+      (groupInput.decision.activeCard === 'alliance' ||
+        groupInput.decision.activeCard === 'cau_dong_ton_di') &&
+      targetGroupId
+    ) {
       const partner = decisionsMap.get(targetGroupId);
       if (partner) {
         const partnerOption = partner.decision.chosenOption;

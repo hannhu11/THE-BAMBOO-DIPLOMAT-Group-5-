@@ -665,16 +665,16 @@ body {
 .tactical-modal-box {
   background: #F7F4EA;
   border: 2px solid var(--gold-royal, #B8860B);
-  border-radius: 24px;
-  padding: 32px 36px;
-  max-width: 520px;
+  border-radius: 20px;
+  padding: 20px 24px;
+  max-width: 480px;
   width: 100%;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  max-height: 90vh;
+  gap: 12px;
+  max-height: 92vh;
   overflow-y: auto;
 }
 

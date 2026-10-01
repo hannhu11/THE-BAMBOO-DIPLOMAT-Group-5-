@@ -2,7 +2,21 @@ import { z } from 'zod';
 
 export const CardItemSchema = z
   .object({
-    id: z.enum(['anchor', 'alliance', 'challenge', 'veto']),
+    id: z.enum([
+      'break_supply',
+      'counter_tariff',
+      'submarine_cable',
+      'di_bat_bien',
+      'sovereignty_shield',
+      'self_reliance',
+      'cau_dong_ton_di',
+      'un_resolution',
+      'diplomatic_gong',
+      'anchor',
+      'alliance',
+      'challenge',
+      'veto',
+    ]),
     name: z.string().min(2),
     subtitle: z.string().min(2),
     description: z.string().min(10),

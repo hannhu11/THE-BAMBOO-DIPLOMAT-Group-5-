@@ -47,6 +47,7 @@ export function canActivateCard(card: string, state: StrategicAxesState): boolea
     case 'un_resolution':
     case 'diplomatic_gong':
     case 'alliance':
+    case 'challenge':
       return state.prestige >= 7;
     default:
       return true;

@@ -3,7 +3,9 @@ import {
   GroupDecision,
   Role,
   VoteIntent,
+  CardType,
 } from '@bamboo/domain-types';
+import { canActivateCard } from '@bamboo/engine';
 import { sessionService } from './sessionService';
 import { seatService } from './seatService';
 
@@ -11,16 +13,18 @@ export interface DraftVoteInput {
   roundId: string;
   selectedOption: ChoiceLetter;
   allInEnabled?: boolean;
-  selectedCard?: 'anchor' | 'alliance' | 'challenge';
+  selectedCard?: CardType;
   selectedAllianceTarget?: string;
+  targetGroupId?: string;
 }
 
 export interface CaptainLockInput {
   roundId: string;
   chosenOption: ChoiceLetter;
   allInArmed?: boolean;
-  activeCard?: 'anchor' | 'alliance' | 'challenge';
+  activeCard?: CardType;
   allianceTargetGroupId?: string;
+  targetGroupId?: string;
 }
 
 export interface GroupConsensus {
@@ -81,7 +85,7 @@ export class VoteService {
     const groupSeats = seatService.getSeatsBySession(sessionService.getSession().id)
       .filter((s) => s.groupId === groupId);
 
-    const tallies: Record<ChoiceLetter, number> = { A: 0, B: 0, C: 0 };
+    const tallies: Record<ChoiceLetter, number> = { A: 0, B: 0, C: 0, D: 0 };
     let allInSuggested = 0;
     const cardSuggestions: Record<string, number> = {};
     const allianceTargetSuggestions: Record<string, number> = {};
@@ -160,7 +164,7 @@ export class VoteService {
 
     // Validate All-in constraints (max 2 uses per game, lower half of leaderboard only)
     if (input.allInArmed) {
-      if (group.allInUses >= 2) {
+      if ((group.allInUses || 0) >= 2) {
         throw new Error(`Nhóm ${group.id} đã dùng hết số lần All-in (tối đa 2 lần/game)`);
       }
       if (group.rank < 4) {
@@ -174,7 +178,12 @@ export class VoteService {
       if (cardStatus !== 'ready') {
         throw new Error(`Thẻ ${input.activeCard} không khả dụng (trạng thái: ${cardStatus})`);
       }
+      if (!canActivateCard(input.activeCard, { autonomy: group.autonomy, economy: group.economy, prestige: group.prestige })) {
+        throw new Error(`Nhóm ${group.id} không đủ điều kiện kích hoạt thẻ ${input.activeCard} (yêu cầu chỉ số tương ứng ≥ 7)`);
+      }
     }
+
+    const targetGroupId = input.targetGroupId || input.allianceTargetGroupId;
 
     const decision: GroupDecision = {
       roundId: scenario.id,
@@ -182,7 +191,8 @@ export class VoteService {
       chosenOption: input.chosenOption,
       allInArmed: !!input.allInArmed,
       activeCard: input.activeCard,
-      allianceTargetGroupId: input.allianceTargetGroupId,
+      targetGroupId,
+      allianceTargetGroupId: targetGroupId,
       lockedBySeatId: seat.id,
       lockedAt: Date.now(),
     };

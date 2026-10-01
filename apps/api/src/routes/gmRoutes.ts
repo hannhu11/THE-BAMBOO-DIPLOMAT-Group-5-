@@ -178,7 +178,7 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
   });
 
   fastify.post('/session/reset', async (request, reply) => {
-    sessionService.resetSession();
+    sessionService.reset();
     const session = sessionService.getSession();
     const bootstrap = sessionService.getBootstrap();
 
