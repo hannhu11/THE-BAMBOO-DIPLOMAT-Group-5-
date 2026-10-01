@@ -239,6 +239,8 @@ export function App() {
         seatId: seat.id,
         role: seat.role,
         groupId: seat.groupId,
+        groupName: myGroup?.name,
+        studentName: seat.studentName,
       },
     });
 

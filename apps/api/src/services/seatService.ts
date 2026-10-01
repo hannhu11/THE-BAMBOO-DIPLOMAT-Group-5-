@@ -70,6 +70,36 @@ export class SeatService {
     return this.seats.get(seatId);
   }
 
+  public ensureSeat(params: {
+    seatId: string;
+    sessionId?: string;
+    groupId: string;
+    studentName?: string;
+    role?: Role;
+    memberIndex?: number;
+  }): Seat {
+    let seat = this.seats.get(params.seatId);
+    if (!seat) {
+      seat = {
+        id: params.seatId,
+        sessionId: params.sessionId || 'SESSION_HCM202',
+        groupId: params.groupId,
+        memberIndex: params.memberIndex || 1,
+        studentName: params.studentName || 'Đội Ngoại Giao',
+        role: params.role || (params.memberIndex === 1 ? 'captain' : 'member'),
+        joinedAt: Date.now(),
+        lastSeenAt: Date.now(),
+        isOnline: true,
+      };
+      this.seats.set(params.seatId, seat);
+    } else {
+      seat.isOnline = true;
+      seat.lastSeenAt = Date.now();
+      if (params.studentName) seat.studentName = params.studentName;
+    }
+    return seat;
+  }
+
   public getSeatsBySession(sessionId: string): Seat[] {
     return Array.from(this.seats.values()).filter((s) => s.sessionId === sessionId);
   }

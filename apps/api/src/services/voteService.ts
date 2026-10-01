@@ -133,7 +133,18 @@ export class VoteService {
    * Reference: 01_SPEC_SAN_PHAM_MOI.md §5.1 & 03_KIEN_TRUC_LOGIC_BACKEND.md §6.1
    */
   public captainLockVote(seatId: string, input: CaptainLockInput, roleOverride?: Role): GroupDecision {
-    const seat = seatService.getSeat(seatId);
+    let seat = seatService.getSeat(seatId);
+    if (!seat && seatId) {
+      const parts = seatId.split('_');
+      const memberIndex = parseInt(parts[parts.length - 1] || '1', 10);
+      const groupId = parts.slice(2, -1).join('_') || parts[2] || 'G01';
+      seat = seatService.ensureSeat({
+        seatId,
+        sessionId: 'SESSION_HCM202',
+        groupId,
+        role: memberIndex === 1 ? 'captain' : 'member',
+      });
+    }
     if (!seat) throw new Error('Seat not registered');
 
     const effectiveRole = roleOverride ?? seat.role;
@@ -153,8 +164,10 @@ export class VoteService {
     const scenario = sessionService.getCurrentScenario();
     if (!scenario) throw new Error('Không có tình huống nào đang mở');
 
-    const group = sessionService.getGroup(seat.groupId);
-    if (!group) throw new Error(`Không tìm thấy nhóm ${seat.groupId}`);
+    let group = sessionService.getGroup(seat.groupId);
+    if (!group) {
+      group = sessionService.registerOrGetTeam('Đội Ngoại Giao', seat.groupId);
+    }
 
     // Check if group has already locked in this round
     const existingDecisions = sessionService.getRoundDecisions(scenario.id);

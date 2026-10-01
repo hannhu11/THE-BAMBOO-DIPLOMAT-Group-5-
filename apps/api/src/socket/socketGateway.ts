@@ -21,6 +21,22 @@ export function createSocketGateway(server: HttpServer): SocketIOServer {
     const seatId = socket.handshake.auth?.seatId as string | undefined;
     const role = socket.handshake.auth?.role as string | undefined;
     const groupId = socket.handshake.auth?.groupId as string | undefined;
+    const groupName = socket.handshake.auth?.groupName as string | undefined;
+    const studentName = socket.handshake.auth?.studentName as string | undefined;
+
+    if (seatId && groupId) {
+      let group = sessionService.getGroup(groupId);
+      if (!group) {
+        group = sessionService.registerOrGetTeam(groupName || studentName || 'Đội Ngoại Giao', groupId);
+      }
+      seatService.ensureSeat({
+        seatId,
+        sessionId: 'SESSION_HCM202',
+        groupId: group.id,
+        studentName: studentName || group.name,
+        role: (role as any) || 'captain',
+      });
+    }
 
     // Join room for session broadcast
     socket.join('session:SESSION_HCM202');
