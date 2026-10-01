@@ -1,9 +1,11 @@
 import {
+  CardType,
   ChoiceLetter,
   GroupDecision,
   Role,
   VoteIntent,
 } from '@bamboo/domain-types';
+import { canActivateCard } from '@bamboo/engine';
 import { sessionService } from './sessionService';
 import { seatService } from './seatService';
 
@@ -11,7 +13,7 @@ export interface DraftVoteInput {
   roundId: string;
   selectedOption: ChoiceLetter;
   allInEnabled?: boolean;
-  selectedCard?: 'anchor' | 'alliance' | 'challenge';
+  selectedCard?: CardType;
   selectedAllianceTarget?: string;
 }
 
@@ -19,8 +21,9 @@ export interface CaptainLockInput {
   roundId: string;
   chosenOption: ChoiceLetter;
   allInArmed?: boolean;
-  activeCard?: 'anchor' | 'alliance' | 'challenge';
+  activeCard?: CardType;
   allianceTargetGroupId?: string;
+  targetGroupId?: string;
 }
 
 export interface GroupConsensus {
@@ -174,6 +177,28 @@ export class VoteService {
       if (cardStatus !== 'ready') {
         throw new Error(`Thẻ ${input.activeCard} không khả dụng (trạng thái: ${cardStatus})`);
       }
+
+      // Chỉ được dùng thẻ mà nhóm đã bốc được
+      if (group.assignedCards && group.assignedCards.length > 0 && !group.assignedCards.includes(input.activeCard)) {
+        throw new Error(`Nhóm ${group.id} không sở hữu thẻ ${input.activeCard}`);
+      }
+
+      // Điều kiện điểm mở khoá thẻ (≥ 7 ở trục tương ứng) — server là trọng tài, không chỉ giao diện
+      if (!canActivateCard(input.activeCard, {
+        autonomy: group.autonomy,
+        economy: group.economy,
+        prestige: group.prestige,
+      })) {
+        throw new Error(`Nhóm ${group.id} chưa đủ điểm để kích hoạt thẻ ${input.activeCard} (cần ≥ 7 ở trục tương ứng)`);
+      }
+
+      // Thẻ Bẻ Gãy Chuỗi Cung Ứng bắt buộc có đội mục tiêu hợp lệ
+      if (input.activeCard === 'break_supply') {
+        const target = input.targetGroupId;
+        if (!target) throw new Error('Thẻ Bẻ Gãy Chuỗi Cung Ứng cần chọn 1 đội đối thủ làm mục tiêu');
+        if (target === group.id) throw new Error('Không thể chọn chính đội mình làm mục tiêu');
+        if (!sessionService.getGroup(target)) throw new Error('Đội mục tiêu không tồn tại');
+      }
     }
 
     const decision: GroupDecision = {
@@ -183,6 +208,7 @@ export class VoteService {
       allInArmed: !!input.allInArmed,
       activeCard: input.activeCard,
       allianceTargetGroupId: input.allianceTargetGroupId,
+      targetGroupId: input.activeCard === 'break_supply' ? input.targetGroupId : undefined,
       lockedBySeatId: seat.id,
       lockedAt: Date.now(),
     };

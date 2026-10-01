@@ -178,7 +178,8 @@ describe('End-to-End Simulation: 34 Students across 7 Groups in Fall 2026', () =
     expect(body.resolutions['G01'].allianceOutcome).toBe('bonus');
 
     // Verify G03 anchor card protected negative autonomy
-    expect(body.resolutions['G03'].finalDelta.autonomy).toBe(0);
+    // (negative autonomy removed, then +1 TC from the card)
+    expect(body.resolutions['G03'].finalDelta.autonomy).toBe(1);
 
     // Verify leaderboard is ranked 1 to 7
     expect(body.leaderboard.length).toBe(7);

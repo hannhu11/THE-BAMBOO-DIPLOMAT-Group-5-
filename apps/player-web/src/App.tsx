@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import gsap from 'gsap';
 import { io, Socket } from 'socket.io-client';
 import {
   Button,
@@ -16,6 +15,8 @@ import {
   SigilVN,
 } from '@bamboo/ui-kit';
 import { ChoiceLetter, CardType, Role } from '@bamboo/domain-types';
+import { GachaPortal } from './GachaPortal';
+import { BambooGrove, BambooDivider } from './BambooDecor';
 
 interface GroupData {
   id: string;
@@ -48,105 +49,6 @@ interface LeaderboardEntry {
   };
 }
 
-// ==========================================
-// GSAP 3D Interactive Card Envelope Component
-// ==========================================
-function GachaInteractiveEnvelope({
-  idx,
-  cardType,
-  categoryLabel,
-  isRevealed,
-  onReveal,
-}: {
-  idx: number;
-  cardType: CardType;
-  categoryLabel: string;
-  isRevealed: boolean;
-  onReveal: () => void;
-}) {
-  const flipperRef = useRef<HTMLDivElement>(null);
-  const sealRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
-
-  const handleClick = () => {
-    if (isRevealed) return;
-    audioEngine.playCardFlip();
-
-    const seal = sealRef.current;
-    const flipper = flipperRef.current;
-    const particles = particlesRef.current;
-
-    if (seal && flipper && particles) {
-      particles.innerHTML = '';
-      for (let i = 0; i < 14; i++) {
-        const p = document.createElement('div');
-        p.className = 'wax-particle';
-        particles.appendChild(p);
-        const angle = (i / 14) * Math.PI * 2;
-        const dist = 35 + Math.random() * 55;
-        gsap.to(p, {
-          x: Math.cos(angle) * dist,
-          y: Math.sin(angle) * dist,
-          opacity: 0,
-          scale: Math.random() * 0.4 + 0.2,
-          duration: 0.65,
-          ease: 'power2.out',
-        });
-      }
-
-      const tl = gsap.timeline({
-        onComplete: () => {
-          onReveal();
-        },
-      });
-
-      tl.to(seal, {
-        scale: 1.25,
-        rotation: 12,
-        duration: 0.15,
-        ease: 'power1.out',
-      })
-      .to(seal, {
-        scale: 0,
-        opacity: 0,
-        duration: 0.22,
-        ease: 'power2.in',
-      })
-      .to(flipper, {
-        rotationY: 180,
-        duration: 0.75,
-        ease: 'back.out(1.4)',
-      }, '-=0.1');
-    } else {
-      onReveal();
-    }
-  };
-
-  return (
-    <div
-      className={`gacha-interactive-card ${isRevealed ? 'flipped' : ''}`}
-      onClick={handleClick}
-    >
-      <div ref={flipperRef} className="card-flipper">
-        {/* Front Side: Sealed Wax Envelope */}
-        <div className="card-face front-envelope">
-          <div ref={particlesRef} className="particles-burst-container" />
-          <div ref={sealRef} className="wax-seal-interactive">
-            <span>{idx === 0 ? 'CÔNG' : idx === 1 ? 'THỦ' : 'MINH'}</span>
-          </div>
-          <div className="envelope-label">{categoryLabel}</div>
-          <div className="envelope-sub">Chạm để bóc niêm phong sáp đỏ ↻</div>
-        </div>
-
-        {/* Back Side: Revealed Tactical Card */}
-        <div className="card-face back-card">
-          <TacticalCard type={cardType} status="ready" canActivate={true} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function App() {
   // Authentication & Group State
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('bamboo_token'));
@@ -168,9 +70,11 @@ export function App() {
   const [isSubmittingJoin, setIsSubmittingJoin] = useState(false);
 
   // Gacha Portal State
-  const [showGacha, setShowGacha] = useState(false);
+  // Refresh khi đang ở #/gacha thì phải quay lại đúng màn bốc thẻ (thẻ do server giữ nên không đổi)
+  const [showGacha, setShowGacha] = useState(
+    () => window.location.hash === '#/gacha' && !!localStorage.getItem('bamboo_token')
+  );
   const [gachaCards, setGachaCards] = useState<CardType[]>([]);
-  const [revealedCards, setRevealedCards] = useState<boolean[]>([false, false, false]);
   const [isDrawingGacha, setIsDrawingGacha] = useState(false);
 
   // Active Battle Room State
@@ -203,6 +107,14 @@ export function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  // Đang ở màn bốc thẻ nhưng chưa có danh sách thẻ (refresh trang / bấm Back): lấy lại từ server
+  useEffect(() => {
+    if (showGacha && gachaCards.length === 0 && myGroup && !isDrawingGacha) {
+      fetchGachaCards(myGroup.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showGacha, myGroup?.id]);
 
   // Socket Connection Effect
   useEffect(() => {
@@ -381,33 +293,54 @@ export function App() {
       if (data.success && data.cards) {
         setGachaCards(data.cards);
         setShowGacha(true);
+      } else {
+        // Không lấy được thẻ (ví dụ server vừa khởi động lại): vào thẳng phòng chơi thay vì kẹt ở màn trống
+        setShowGacha(false);
+        window.history.replaceState({ step: 'battle' }, '', '#/battle');
       }
     } catch (err) {
       console.error('Failed to draw gacha cards:', err);
+      setShowGacha(false);
+      window.history.replaceState({ step: 'battle' }, '', '#/battle');
     } finally {
       setIsDrawingGacha(false);
     }
   };
 
-  // Reveal Single Gacha Card
-  const handleRevealCard = (index: number) => {
-    audioEngine.playCardFlip();
-    setRevealedCards((prev) => {
-      const copy = [...prev];
-      copy[index] = true;
-      return copy;
-    });
-  };
-
-  // Reveal All & Finish Gacha
+  // Hoàn tất vòng quay: vào phòng tác chiến
   const handleCompleteGacha = () => {
     audioEngine.playStamp();
     setShowGacha(false);
     window.history.pushState({ step: 'battle' }, '', '#/battle');
   };
 
+  // Đổi nhóm / đăng xuất: xoá phiên đăng nhập và quay về màn nhập tên nhóm
+  const handleLogout = () => {
+    const ok = window.confirm(
+      'Đổi nhóm sẽ thoát khỏi phòng chơi hiện tại.\nNếu nhập lại đúng tên nhóm cũ, bạn sẽ được vào lại nhóm đó. Tiếp tục?'
+    );
+    if (!ok) return;
+    localStorage.removeItem('bamboo_token');
+    localStorage.removeItem('bamboo_seat');
+    localStorage.removeItem('bamboo_group');
+    setShowGacha(false);
+    setGachaCards([]);
+    setSelectedChoice(undefined);
+    setSelectedCardForVote(undefined);
+    setIsLocked(false);
+    setSession(null);
+    setScenario(null);
+    setResolutionData(null);
+    setTeamNameInput('');
+    setJoinError('');
+    setToken(null);
+    setSeat(null);
+    setMyGroup(null);
+    window.history.replaceState(null, '', window.location.pathname);
+  };
+
   // Check Card Eligibility
-  const isCardEligible = (cardType: CardType): { eligible: boolean; reason: string } => {
+  const isCardEligible =(cardType: CardType): { eligible: boolean; reason: string } => {
     if (!myGroup) return { eligible: false, reason: 'Chưa có thông tin nhóm' };
 
     // Check if card was already spent
@@ -464,7 +397,7 @@ export function App() {
       roundId: scenario.id,
       chosenOption: selectedChoice,
       activeCard: selectedCardForVote,
-      targetGroupId: targetTeamId || undefined,
+      targetGroupId: selectedCardForVote === 'break_supply' ? targetTeamId || undefined : undefined,
     });
     setIsLocked(true);
   };
@@ -474,30 +407,10 @@ export function App() {
   // ==========================================
   if (!token || !seat || !myGroup) {
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-          background: '#F7F4EA',
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            maxWidth: 480,
-            background: '#FFFFFF',
-            border: '2px solid #D8D0BE',
-            borderRadius: 24,
-            padding: '36px 32px',
-            boxShadow: '0 12px 36px rgba(14, 40, 30, 0.08)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 24,
-          }}
-        >
+      <div className="login-screen">
+        <BambooGrove side="left" />
+        <BambooGrove side="right" />
+        <div className="login-card">
           {/* Logo & Header */}
           <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
             <BrandLogoMark size={64} />
@@ -639,6 +552,7 @@ export function App() {
             </button>
           </form>
 
+          <BambooDivider />
           <div
             style={{
               textAlign: 'center',
@@ -655,100 +569,26 @@ export function App() {
   }
 
   // ==========================================
-  // RENDER: GACHA REVEAL PORTAL (TAM TRỤ GSAP)
+  // RENDER: GACHA WHEEL PORTAL (VÒNG QUAY THẺ)
   // ==========================================
-  if (showGacha) {
-    const allRevealed = revealedCards.every(Boolean);
-
+  if (showGacha && gachaCards.length === 0) {
     return (
-      <div className="gacha-screen-overlay">
-        <div className="gacha-chamber">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: 2,
-                color: '#B8860B',
-                textTransform: 'uppercase',
-              }}
-            >
-              NGHI THỨC NGOẠI GIAO ĐẦU TRẬN
-            </span>
-            <h2 className="gacha-header-title">KHAI THẺ CHIẾN LƯỢC TAM TRỤ</h2>
-            <p style={{ margin: 0, fontSize: 14, color: '#4A5B53', maxWidth: 640 }}>
-              Đội ngũ của bạn được trao quyền tiếp nhận 3 Mật lệnh Chiến lược (1 Tấn Công, 1 Phòng Thủ, 1 Chức Năng).
-              Hãy chạm vào từng phong thư niêm phong sáp đỏ để giải mã đặc ân ngoại giao!
-            </p>
-          </div>
-
-          <div className="gacha-cards-trio">
-            {gachaCards.map((cardType, idx) => {
-              const isRevealed = revealedCards[idx];
-              const categoryLabel =
-                idx === 0
-                  ? 'MẬT THƯ TẤN CÔNG (KT ≥ 7)'
-                  : idx === 1
-                  ? 'MẬT THƯ PHÒNG THỦ (TC ≥ 7)'
-                  : 'MẬT THƯ CHỨC NĂNG (UT ≥ 7)';
-
-              return (
-                <GachaInteractiveEnvelope
-                  key={idx}
-                  idx={idx}
-                  cardType={cardType}
-                  categoryLabel={categoryLabel}
-                  isRevealed={Boolean(isRevealed)}
-                  onReveal={() => handleRevealCard(idx)}
-                />
-              );
-            })}
-          </div>
-
-          <div style={{ display: 'flex', gap: 14 }}>
-            {!allRevealed && (
-              <button
-                type="button"
-                onClick={() => setRevealedCards([true, true, true])}
-                style={{
-                  padding: '12px 20px',
-                  borderRadius: 10,
-                  fontSize: 13,
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  border: '1px solid #D8D0BE',
-                  background: '#FFFFFF',
-                  color: '#0E281E',
-                  cursor: 'pointer',
-                }}
-              >
-                MỞ NHANH CẢ 3 THẺ
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={handleCompleteGacha}
-              style={{
-                padding: '14px 28px',
-                borderRadius: 12,
-                fontSize: 14,
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 800,
-                letterSpacing: 1.5,
-                background: 'linear-gradient(180deg, #1C5C47, #0F3628)',
-                color: '#FFFFFF',
-                border: '1.5px solid #B8860B',
-                cursor: 'pointer',
-                boxShadow: '0 6px 18px rgba(15, 54, 40, 0.25)',
-              }}
-            >
-              TIẾP NHẬN MẬT LỆNH & VÀO PHÒNG TÁC CHIẾN →
-            </button>
-          </div>
+      <div className="login-screen">
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: '#4A5B53' }}>
+          Đang mở lại vòng quay thẻ…
         </div>
       </div>
+    );
+  }
+
+  if (showGacha) {
+    return (
+      <GachaPortal
+        storageKey={myGroup ? `bamboo_gacha_${myGroup.id}` : undefined}
+        cards={gachaCards}
+        teamName={myGroup?.name || teamNameInput}
+        onComplete={handleCompleteGacha}
+      />
     );
   }
 
@@ -760,6 +600,8 @@ export function App() {
   // ==========================================
   return (
     <div className="player-desktop-root">
+      <BambooGrove side="left" />
+      <BambooGrove side="right" />
       {/* Top Navbar */}
       <header className="top-navbar">
         <div className="brand-section">
@@ -819,6 +661,24 @@ export function App() {
           </button>
 
           <VolumeToggle />
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            title="Thoát và đổi tên nhóm"
+            style={{
+              padding: '6px 12px',
+              borderRadius: 8,
+              fontSize: 11,
+              fontFamily: 'var(--font-mono)',
+              border: '1px solid #D8D0BE',
+              background: '#FFFFFF',
+              color: '#4A5B53',
+              cursor: 'pointer',
+            }}
+          >
+            ĐỔI NHÓM
+          </button>
         </div>
       </header>
 
@@ -1303,7 +1163,7 @@ export function App() {
               </div>
 
               {/* Target Team Selector for Attack cards */}
-              {(inspectedCard === 'break_supply' || inspectedCard === 'submarine_cable') &&
+              {inspectedCard === 'break_supply' &&
                 isCardEligible(inspectedCard).eligible &&
                 myGroup.cardStatuses?.[inspectedCard] !== 'used' && (
                   <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -1390,6 +1250,11 @@ export function App() {
                     {session?.status === 'round_open' && !isLocked && (
                       <button
                         type="button"
+                        disabled={
+                          inspectedCard === 'break_supply' &&
+                          !targetTeamId &&
+                          selectedCardForVote !== inspectedCard
+                        }
                         onClick={() => {
                           if (selectedCardForVote === inspectedCard) {
                             setSelectedCardForVote(undefined);
@@ -1399,6 +1264,12 @@ export function App() {
                           setInspectedCard(null);
                         }}
                         style={{
+                          opacity:
+                            inspectedCard === 'break_supply' &&
+                            !targetTeamId &&
+                            selectedCardForVote !== inspectedCard
+                              ? 0.5
+                              : 1,
                           width: '100%',
                           padding: '14px',
                           borderRadius: 12,
@@ -1418,6 +1289,8 @@ export function App() {
                       >
                         {selectedCardForVote === inspectedCard
                           ? 'HỦY GÁN CHO LƯỢT BIỂU QUYẾT NÀY ✕'
+                          : inspectedCard === 'break_supply' && !targetTeamId
+                          ? 'CHỌN ĐỘI MỤC TIÊU Ở TRÊN TRƯỚC'
                           : 'GÁN KÍCH HOẠT CHO LƯỢT BIỂU QUYẾT NÀY ✓'}
                       </button>
                     )}

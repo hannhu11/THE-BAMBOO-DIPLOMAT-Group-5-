@@ -15,6 +15,7 @@ import scenariosData from '../../../../content/scenarios.json';
 import blackSwanData from '../../../../content/black_swan.json';
 
 const scenario1 = (scenariosData.scenarios as unknown as ScenarioItem[])[0]!;
+const base10 = () => ({ autonomy: 10, economy: 10, prestige: 10 });
 const scenario2 = (scenariosData.scenarios as unknown as ScenarioItem[])[1]!;
 
 describe('@bamboo/engine - Mathematical Scoring Functions (Phase 2)', () => {
@@ -121,14 +122,14 @@ describe('@bamboo/engine - Round Resolution Engine (Phase 2)', () => {
     });
 
     expect(resolution.cardEffectsApplied).toContain('di_bat_bien');
-    // autonomy delta was -3, protected to 0
-    expect(resolution.finalDelta.autonomy).toBe(0);
+    // autonomy delta was -3, protected to 0, then +1
+    expect(resolution.finalDelta.autonomy).toBe(1);
     expect(resolution.finalDelta.economy).toBe(1);
     expect(resolution.finalDelta.prestige).toBe(-1);
-    expect(resolution.newState.autonomy).toBe(10);
+    expect(resolution.newState.autonomy).toBe(11);
   });
 
-  it('applies Submarine Cable card (+2 Economy)', () => {
+  it('applies Submarine Cable card (+3 Economy)', () => {
     const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
@@ -140,11 +141,11 @@ describe('@bamboo/engine - Round Resolution Engine (Phase 2)', () => {
     });
 
     expect(resolution.cardEffectsApplied).toContain('submarine_cable');
-    // economy: 3 + 2 = 5
-    expect(resolution.finalDelta.economy).toBe(5);
+    // economy: 3 + 3 = 6
+    expect(resolution.finalDelta.economy).toBe(6);
   });
 
-  it('applies Diplomatic Gong card (doubles positive deltas)', () => {
+  it('applies Diplomatic Gong card (doubles positives, bonus capped at +2 per axis)', () => {
     const previous = { autonomy: 10, economy: 10, prestige: 10 };
     const resolution = resolveRound({
       previousGroupState: previous,
@@ -156,8 +157,126 @@ describe('@bamboo/engine - Round Resolution Engine (Phase 2)', () => {
     });
 
     expect(resolution.cardEffectsApplied).toContain('diplomatic_gong');
-    // all positive deltas doubled: 2*2=4, 3*2=6, 4*2=8
-    expect(resolution.finalDelta).toEqual({ autonomy: 4, economy: 6, prestige: 8 });
+    // bonus = min(delta, 2): 2+2=4, 3+2=5, 4+2=6
+    expect(resolution.finalDelta).toEqual({ autonomy: 4, economy: 5, prestige: 6 });
+  });
+
+  describe('card balance (mỗi thẻ ≈ +3 điểm kỳ vọng)', () => {
+    const base = { autonomy: 10, economy: 10, prestige: 10 };
+    const allScenarios = scenariosData.scenarios as unknown as ScenarioItem[];
+    const byId = (id: string) => allScenarios.find((s) => s.id === id)!;
+    const play = (sc: ScenarioItem, opt: 'A' | 'B' | 'C' | 'D', card?: any, prev = base) =>
+      resolveRound({
+        previousGroupState: prev,
+        scenario: sc,
+        lockedDecision: { chosenOption: opt, activeCard: card },
+      });
+
+    it('Counter Tariff: KT dương nhân đôi (thưởng ≤ +5) và luôn +1 KT', () => {
+      expect(play(scenario1, 'C', 'counter_tariff').finalDelta.economy).toBe(7); // 3 + 3 + 1
+      expect(play(scenario1, 'B', 'counter_tariff').finalDelta.economy).toBe(-2); // -3 + 1
+      // trần thưởng +5: sc3_q3 phương án C có KT +5 -> 5 + 5 + 1 = 11
+      expect(play(byId('sc3_q3'), 'C', 'counter_tariff').finalDelta.economy).toBe(11);
+    });
+
+    it('Break Supply: +2 KT cho đội dùng', () => {
+      expect(play(scenario1, 'B', 'break_supply').finalDelta.economy).toBe(-1); // -3 + 2
+    });
+
+    it('Sovereignty Shield: giảm 50% điểm âm, mỗi trục bảo vệ tối đa 4', () => {
+      expect(play(scenario1, 'A', 'sovereignty_shield').finalDelta).toEqual({
+        autonomy: -1,
+        economy: 1,
+        prestige: 0,
+      });
+      // sc4_q3 B = { 1, -12, -10 } -> KT -12 chỉ được cứu 4 (=-8), UT -10 cứu 4 (=-6)
+      const r = play(byId('sc4_q3'), 'B', 'sovereignty_shield').finalDelta;
+      expect(r.economy).toBe(-8);
+      expect(r.prestige).toBe(-6);
+    });
+
+    it('Self Reliance: +3 TC; TC sau lượt < 7 thì +2 TC nữa và -1 KT', () => {
+      const plain = play(scenario1, 'C', 'self_reliance');
+      expect(plain.finalDelta.autonomy).toBe(5); // 2 + 3
+      expect(plain.finalDelta.economy).toBe(3);
+      // sc1_q2 A = { -4, 1, -2 }; TC 7 -4 + 3 = 6 < 7 -> +2 TC, -1 KT
+      const rescue = play(byId('sc1_q2'), 'A', 'self_reliance', { autonomy: 7, economy: 10, prestige: 10 });
+      expect(rescue.finalDelta.autonomy).toBe(1); // -4 + 3 + 2
+      expect(rescue.finalDelta.economy).toBe(0); // 1 - 1
+    });
+
+    it('Cau Dong Ton Di: +2 UT, thêm +2 UT khi chọn phương án cân bằng', () => {
+      expect(play(scenario1, 'A', 'cau_dong_ton_di').finalDelta.prestige).toBe(1); // -1 + 2
+      expect(play(scenario1, 'C', 'cau_dong_ton_di').finalDelta.prestige).toBe(8); // 4 + 2 + 2
+    });
+
+    it('UN Resolution: +1 mỗi trục', () => {
+      expect(play(scenario1, 'C', 'un_resolution').finalDelta).toEqual({
+        autonomy: 3,
+        economy: 4,
+        prestige: 5,
+      });
+    });
+
+    it('không có điểm -0 khi thẻ làm tròn về 0', () => {
+      const r = play(scenario1, 'A', 'sovereignty_shield').finalDelta;
+      expect(Object.is(r.prestige, -0)).toBe(false);
+    });
+
+    it('giá trị trung bình của mỗi thẻ nằm trong khoảng cân bằng trên cả 12 câu hỏi', () => {
+      const cards = [
+        'submarine_cable', 'counter_tariff', 'break_supply',
+        'di_bat_bien', 'sovereignty_shield', 'self_reliance',
+        'cau_dong_ton_di', 'un_resolution', 'diplomatic_gong',
+      ];
+      const total = (d: { autonomy: number; economy: number; prestige: number }) =>
+        d.autonomy + d.economy + d.prestige;
+
+      for (const card of cards) {
+        const right: number[] = [];
+        const wrong: number[] = [];
+        for (const sc of allScenarios) {
+          for (const opt of sc.options) {
+            const letter = opt.id as 'A' | 'B' | 'C' | 'D';
+            const gain = total(play(sc, letter, card).finalDelta) - total(play(sc, letter).finalDelta);
+            (opt.isBalanced ? right : wrong).push(gain);
+          }
+        }
+        const avg = (a: number[]) => a.reduce((x, y) => x + y, 0) / a.length;
+        const expected = 0.5 * avg(right) + 0.5 * avg(wrong);
+        // break_supply có thêm tác dụng đóng băng đối thủ nên giá trị tự thân thấp hơn một chút
+        expect(expected, card).toBeGreaterThanOrEqual(1.9);
+        expect(expected, card).toBeLessThanOrEqual(3.6);
+      }
+    });
+  });
+
+  it('Break Supply đóng băng thẻ của đội mục tiêu trong cùng vòng', () => {
+    const results = resolveAllGroupsRound(scenario1, [
+      {
+        groupId: 'G01',
+        previousState: base10(),
+        decision: { chosenOption: 'C' as const, activeCard: 'break_supply' as const, targetGroupId: 'G02' },
+      },
+      {
+        groupId: 'G02',
+        previousState: base10(),
+        decision: { chosenOption: 'C' as const, activeCard: 'diplomatic_gong' as const },
+      },
+      {
+        groupId: 'G03',
+        previousState: base10(),
+        decision: { chosenOption: 'C' as const, activeCard: 'diplomatic_gong' as const },
+      },
+    ]);
+
+    // G02 bị đóng băng: nhận đúng điểm gốc của phương án C, không được nhân đôi
+    expect(results['G02'].finalDelta).toEqual({ autonomy: 2, economy: 3, prestige: 4 });
+    expect(results['G02'].cardEffectsApplied).toEqual([]);
+    // G03 không bị nhắm tới: Tiếng Chiêng vẫn hoạt động
+    expect(results['G03'].finalDelta).toEqual({ autonomy: 4, economy: 5, prestige: 6 });
+    // G01 vẫn nhận +2 KT từ thẻ của mình
+    expect(results['G01'].finalDelta.economy).toBe(5);
   });
 
   it('resolves all groups round concurrently via resolveAllGroupsRound', () => {
@@ -183,8 +302,8 @@ describe('@bamboo/engine - Round Resolution Engine (Phase 2)', () => {
     const results = resolveAllGroupsRound(scenario1, groupsInput);
 
     // G01 got gong doubled deltas
-    expect(results['G01'].finalDelta.prestige).toBe(8);
-    // G02 got autonomy protected
-    expect(results['G02'].finalDelta.autonomy).toBe(0);
+    expect(results['G01'].finalDelta.prestige).toBe(6);
+    // G02 got autonomy protected (-3 -> 0, then +1)
+    expect(results['G02'].finalDelta.autonomy).toBe(1);
   });
 });

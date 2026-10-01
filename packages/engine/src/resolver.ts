@@ -16,6 +16,18 @@ import {
   sumReactions,
 } from './scoring';
 
+/** Vành Đai: giảm một nửa điểm âm nhưng mỗi trục chỉ được bảo vệ tối đa 4 điểm. */
+function shieldNegative(n: number): number {
+  if (n >= 0) return n;
+  const saved = Math.min(Math.ceil(-n / 2), 4);
+  return n + saved;
+}
+
+/** Thưởng của Tiếng Chiêng: bằng điểm dương hiện có, tối đa +2. */
+function gongBonus(n: number): number {
+  return n > 0 ? Math.min(n, 2) : 0;
+}
+
 /**
  * Pure deterministic round resolution function.
  * Reference: 03_KIEN_TRUC_LOGIC_BACKEND.md §8.1
@@ -66,76 +78,85 @@ export function resolveRound(params: ResolveRoundParams): RoundResolution {
   const cardEffectsApplied: CardType[] = [];
   let allianceOutcome: 'bonus' | 'penalty' | 'none' | undefined = undefined;
 
+  // Hiệu ứng thẻ phải khớp CARD_CATALOG (packages/domain-types/src/cards.ts)
+
   // 3.1 Nhóm Phòng Thủ & Tự Chủ
-  // Dĩ Bất Biến (di_bat_bien / anchor): Không bị trừ điểm Tự Chủ
+  // Dĩ Bất Biến (di_bat_bien / anchor): TC âm -> 0, rồi +1 TC
   if (cardsToApply.has('di_bat_bien') || cardsToApply.has('anchor')) {
     cardEffectsApplied.push('di_bat_bien');
     if (workingDelta.autonomy < 0) {
       workingDelta.autonomy = 0;
     }
+    workingDelta.autonomy += 1;
   }
 
-  // Vành Đai Độc Lập (sovereignty_shield): Miễn nhiễm khỏi các chỉ số âm
+  // Vành Đai Độc Lập (sovereignty_shield): mọi điểm âm ở 3 trục giảm 50% (làm tròn về 0),
+  // mỗi trục được bảo vệ tối đa 4 điểm
   if (cardsToApply.has('sovereignty_shield')) {
     cardEffectsApplied.push('sovereignty_shield');
-    if (workingDelta.autonomy < 0) workingDelta.autonomy = 0;
-    if (workingDelta.economy < 0) workingDelta.economy = 0;
-    if (workingDelta.prestige < 0) workingDelta.prestige = 0;
+    workingDelta.autonomy = shieldNegative(workingDelta.autonomy);
+    workingDelta.economy = shieldNegative(workingDelta.economy);
+    workingDelta.prestige = shieldNegative(workingDelta.prestige);
   }
 
-  // Tự Lực Cánh Sinh (self_reliance): Cứu nguy Tự Chủ nếu dưới 7
+  // Tự Lực Cánh Sinh (self_reliance): +3 TC; nếu TC sau lượt < 7 thì +2 TC nữa, đổi lại -1 KT
   if (cardsToApply.has('self_reliance')) {
     cardEffectsApplied.push('self_reliance');
+    workingDelta.autonomy += 3;
     if (previousGroupState.autonomy + workingDelta.autonomy < 7) {
       workingDelta.autonomy += 2;
-      workingDelta.economy = Math.max(0, workingDelta.economy - 1);
+      workingDelta.economy -= 1;
     }
   }
 
   // 3.2 Nhóm Tấn Công Ngoại Giao
-  // Áp Đặt Thuế Đối Kháng (counter_tariff): Nhân đôi lợi ích kinh tế
+  // Áp Đặt Thuế Đối Kháng (counter_tariff): KT dương x2 (thưởng thêm tối đa +5), luôn +1 KT
   if (cardsToApply.has('counter_tariff')) {
     cardEffectsApplied.push('counter_tariff');
     if (workingDelta.economy > 0) {
-      workingDelta.economy *= 2;
-    } else {
-      workingDelta.economy += 1;
+      workingDelta.economy += Math.min(workingDelta.economy, 5);
     }
+    workingDelta.economy += 1;
   }
 
-  // Chiếm Lĩnh Cáp Quang Biển (submarine_cable): Tăng 2 điểm KT
+  // Chiếm Lĩnh Cáp Quang Biển (submarine_cable): +3 KT cố định
   if (cardsToApply.has('submarine_cable')) {
     cardEffectsApplied.push('submarine_cable');
+    workingDelta.economy += 3;
+  }
+
+  // Bẻ Gãy Chuỗi Cung Ứng (break_supply): +2 KT cho đội dùng.
+  // Phần đóng băng thẻ đội mục tiêu được xử lý ở resolveAllGroupsRound.
+  if (cardsToApply.has('break_supply')) {
+    cardEffectsApplied.push('break_supply');
     workingDelta.economy += 2;
   }
 
-  // Bẻ Gãy Chuỗi Cung Ứng (break_supply)
-  if (cardsToApply.has('break_supply')) {
-    cardEffectsApplied.push('break_supply');
-  }
-
   // 3.3 Nhóm Chức Năng & Uy Tín
-  // Cầu Đồng Tồn Dị (cau_dong_ton_di / alliance): Tăng Uy Tín
+  // Cầu Đồng Tồn Dị (cau_dong_ton_di / alliance): +2 UT; phương án cân bằng thì +2 UT nữa
   if (cardsToApply.has('cau_dong_ton_di') || cardsToApply.has('alliance')) {
     cardEffectsApplied.push('cau_dong_ton_di');
     workingDelta.prestige += 2;
+    if (option.isBalanced) workingDelta.prestige += 2;
     if (allianceContext && allianceContext.partnerChose) {
       allianceOutcome = allianceContext.isPartnerBalanced ? 'bonus' : 'penalty';
     }
   }
 
-  // Nghị Quyết Đại Hội Đồng LHQ (un_resolution): Tăng Uy Tín
+  // Nghị Quyết Đại Hội Đồng LHQ (un_resolution): +1 mỗi trục
   if (cardsToApply.has('un_resolution')) {
     cardEffectsApplied.push('un_resolution');
-    workingDelta.prestige += 2;
+    workingDelta.autonomy += 1;
+    workingDelta.economy += 1;
+    workingDelta.prestige += 1;
   }
 
-  // Tiếng Chiêng Ngoại Giao (diplomatic_gong): Nhân đôi toàn bộ điểm cộng
+  // Tiếng Chiêng Ngoại Giao (diplomatic_gong): điểm dương x2, thưởng thêm tối đa +2 mỗi trục
   if (cardsToApply.has('diplomatic_gong')) {
     cardEffectsApplied.push('diplomatic_gong');
-    if (workingDelta.autonomy > 0) workingDelta.autonomy *= 2;
-    if (workingDelta.economy > 0) workingDelta.economy *= 2;
-    if (workingDelta.prestige > 0) workingDelta.prestige *= 2;
+    workingDelta.autonomy += gongBonus(workingDelta.autonomy);
+    workingDelta.economy += gongBonus(workingDelta.economy);
+    workingDelta.prestige += gongBonus(workingDelta.prestige);
   }
 
   // 4. Calculate new state

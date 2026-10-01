@@ -283,6 +283,7 @@ export class SessionService {
               allInArmed: decision.allInArmed,
               activeCard: decision.activeCard,
               allianceTargetGroupId: decision.allianceTargetGroupId,
+              targetGroupId: decision.targetGroupId,
             }
           : {
               // Default fallback if group did not lock in time

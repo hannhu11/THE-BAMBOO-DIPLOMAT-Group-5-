@@ -11,5 +11,6 @@ export * from './VolumeToggle';
 export * from './DecryptedText';
 export * from './SovereigntyRadar';
 export * from './TacticalCard';
+export * from './CardIllustrations';
 export * from './Sigils';
 export * from './BrandLogo';

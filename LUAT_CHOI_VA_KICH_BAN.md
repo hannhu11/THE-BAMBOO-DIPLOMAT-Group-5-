@@ -47,9 +47,9 @@ Khi đại diện bàn đăng ký tên nhóm, hệ thống mở **Cổng Bốc T
 
 | Mã thẻ | Tên Thẻ Bài | Trích dẫn / Triết lý | Hiệu ứng Chiến lược |
 | :--- | :--- | :--- | :--- |
-| `break_supply` | **Bẻ gãy Thế Gọng kìm** | *"Muốn người ta giúp mình, trước hết mình phải tự giúp lấy mình."* | Đột phá thế bao vây thương mại: **+4 KT, +2 TC, -1 UT**. Hủy bỏ hiệu ứng trừ điểm kinh tế của kịch bản hiện tại. |
-| `counter_tariff` | **Phản đòn Thuế quan** | *"Có thực mới vực được đạo — Giữ vững thế chủ động thương mại."* | Áp dụng biện pháp tự vệ kinh tế: **+5 KT, -2 UT**. Ép đối phương nhượng bộ trên bàn đàm phán thương mại. |
-| `submarine_cable` | **Chiếm lĩnh Cáp quang Biển** | *"Hạ tầng số là mạch máu quốc gia — Nắm giữ huyết mạch, định hình tương lai."* | Làm chủ quyền trạm cập bờ và dữ liệu lớn: **+3 KT, +3 TC, 0 UT**. Kháng hoàn toàn các đòn trừng phạt công nghệ. |
+| `break_supply` | **Bẻ Gãy Chuỗi Cung Ứng** | *"Muốn người ta giúp cho thì trước hết phải tự giúp lấy mình."* | **Chọn 1 đội đối thủ: thẻ chiến lược của đội đó bị vô hiệu** trong câu hỏi này. Đội dùng được **+2 KT**. Bắt buộc chọn đội mục tiêu trước khi khóa. |
+| `counter_tariff` | **Áp Đặt Thuế Đối Kháng** | *"Tự lực cánh sinh, kết hợp phòng vệ thương mại có lý có tình."* | KT dương **nhân đôi (thưởng thêm tối đa +5)**, và luôn **+1 KT**. Giá trị +1 → +6. |
+| `submarine_cable` | **Chiếm Lĩnh Cáp Quang Biển** | *"Ai làm chủ huyết mạch thông tin số, người đó nắm giữ huyết mạch kinh tế."* | **+3 KT cố định**, bất kể phương án. Chắc chắn, trần thấp. |
 
 ---
 
@@ -57,9 +57,9 @@ Khi đại diện bàn đăng ký tên nhóm, hệ thống mở **Cổng Bốc T
 
 | Mã thẻ | Tên Thẻ Bài | Trích dẫn / Triết lý | Hiệu ứng Chiến lược |
 | :--- | :--- | :--- | :--- |
-| `di_bat_bien` | **Dĩ Bất Biến, Ứng Vạn Biến** | *"Nguyên tắc là bất biến, sách lược là vạn biến."* *(Chủ tịch Hồ Chí Minh, 1946)* | Hóa giải toàn bộ điểm trừ của kịch bản hiện tại: **Bảo vệ toàn diện mọi trục điểm, cộng thưởng +2 TC, +2 UT**. |
-| `sovereignty_shield` | **Vành đai Độc lập** | *"Không có gì quý hơn độc lập, tự do."* | Thiết lập phòng tuyến pháp lý và thực địa kiên cố: **+5 TC, -1 KT**. Miễn nhiễm trước mọi sức ép quân sự/chính trị từ các siêu cường. |
-| `self_reliance` | **Tự lực Cánh sinh** | *"Đem sức ta mà tự giải phóng cho ta."* | Dựa vào nội lực và sự đoàn kết toàn dân: **+3 TC, +2 KT, +1 UT**. Tăng thêm 20% tổng điểm khi kết thúc trận. |
+| `di_bat_bien` | **Dĩ Bất Biến, Ứng Vạn Biến** | *"Nguyên tắc là bất biến, sách lược là vạn biến."* *(Chủ tịch Hồ Chí Minh, 1946)* | Điểm **TC âm về 0** (chỉ trục Tự Chủ), sau đó **+1 TC**. Giá trị +1 → +9. |
+| `sovereignty_shield` | **Vành Đai Độc Lập** | *"Không có gì quý hơn độc lập, tự do."* | **Mọi điểm âm ở cả 3 trục giảm một nửa**, mỗi trục được bảo vệ tối đa 4 điểm. Giá trị +0 → +12. |
+| `self_reliance` | **Tự Lực Cánh Sinh** | *"Đem sức ta mà tự giải phóng cho ta."* | **+3 TC**. Nếu TC sau lượt < 7: **thêm +2 TC** (tổng +5) nhưng **−1 KT**. |
 
 ---
 
@@ -67,9 +67,11 @@ Khi đại diện bàn đăng ký tên nhóm, hệ thống mở **Cổng Bốc T
 
 | Mã thẻ | Tên Thẻ Bài | Trích dẫn / Triết lý | Hiệu ứng Chiến lược |
 | :--- | :--- | :--- | :--- |
-| `cau_dong_ton_di` | **Cầu Đồng Tồn Dị** | *"Tìm điểm tương đồng, gác lại bất đồng — Vì hòa bình và cùng phát triển."* | Hòa giải xung đột đa phương: **+4 UT, +2 KT, +1 TC**. Biến đối đầu thành đối thoại hợp tác kinh tế. |
-| `un_resolution` | **Nghị quyết Đại hội đồng LHQ** | *"Thượng tôn Hiến chương Liên Hợp Quốc và Luật pháp quốc tế."* | Kích hoạt công lý quốc tế và UNCLOS 1982: **+5 UT, +2 TC, -1 KT**. Vô hiệu hóa yêu sách phi lý của nước ngoài. |
-| `diplomatic_gong` | **Tiếng chiêng Ngoại giao** | *"Tiếng chuông hòa bình vang vọng năm châu."* | Kêu gọi sự ủng hộ đồng thuận từ ASEAN và khối Không Liên Kết: **+3 UT, +2 TC, +2 KT**. |
+| `cau_dong_ton_di` | **Cầu Đồng Tồn Dị** | *"Tìm cái đồng, gác cái dị; thêm bạn bớt thù."* | **+2 UT**; nếu chọn phương án **cân bằng** thì **thêm +2 UT** (tổng +4). |
+| `un_resolution` | **Nghị Quyết Đại Hội Đồng LHQ** | *"Thượng tôn Hiến chương Liên Hợp Quốc và luật pháp quốc tế."* | **+1 TC, +1 KT, +1 UT** (tổng +3), chắc chắn, không phụ thuộc phương án. |
+| `diplomatic_gong` | **Tiếng Chiêng Ngoại Giao** | *"Văn hóa là ngọn đuốc soi đường cho quốc dân đi."* | Mọi điểm dương **nhân đôi**, thưởng thêm **tối đa +2 mỗi trục** (tối đa +6). |
+
+> **Nguyên tắc cân bằng:** mỗi đội chỉ có 3 thẻ, mỗi thẻ dùng 1 lần, mỗi vòng chỉ gắn 1 thẻ. Đo trên cả 12 câu hỏi (giả định 50% chọn đúng phương án cân bằng), giá trị kỳ vọng của mỗi thẻ nằm trong khoảng **+2 đến +3.5 điểm**; test `engine.spec.ts` sẽ báo lỗi nếu số liệu lệch khỏi khoảng này. Thẻ chắc chắn (Cáp quang, LHQ) có trần thấp; thẻ có điều kiện (Thuế đối kháng, Tiếng chiêng, Cầu đồng tồn dị) có trần cao hơn nhưng phải chọn đúng phương án. Server kiểm tra thẻ có thuộc nhóm không, đủ điểm ≥ 7 chưa, và đội mục tiêu của thẻ Bẻ Gãy Chuỗi Cung Ứng. Nguồn số liệu: `packages/domain-types/src/cards.ts` (giao diện) và `packages/engine/src/resolver.ts` (tính điểm), hai nơi phải khớp nhau.
 
 ---
 
