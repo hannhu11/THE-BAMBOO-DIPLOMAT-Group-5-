@@ -177,7 +177,12 @@ export const SigilVN: React.FC<{ size?: number; className?: string; style?: Reac
   </svg>
 );
 
-export const CardAnchorArt: React.FC<{ size?: number; className?: string; style?: React.CSSProperties }> = ({
+// ==========================================
+// IMPERIAL LACQUER TACTICAL CARD EMBLEMS
+// High-fidelity vector artwork for tactical card seals
+// ==========================================
+
+export const CardDefenseArt: React.FC<{ size?: number; className?: string; style?: React.CSSProperties }> = ({
   size = 64,
   className = '',
   style = {},
@@ -185,44 +190,53 @@ export const CardAnchorArt: React.FC<{ size?: number; className?: string; style?
   <svg
     width={size}
     height={size}
-    viewBox="-90 -90 180 180"
+    viewBox="0 0 200 200"
     role="img"
-    aria-label="Anchor of Sovereignty Artwork"
+    aria-label="Sovereign Defense Jade Emblem"
     className={className}
     style={{ display: 'inline-block', flexShrink: 0, ...style }}
   >
     <defs>
-      <radialGradient id="art_ac_inner" cx=".5" cy=".5" r=".7">
-        <stop offset="0" stopColor="#1C5C47" stopOpacity=".7" />
-        <stop offset="1" stopColor="#0B1512" stopOpacity="0" />
+      <radialGradient id="def_jade_grad" cx="50%" cy="45%" r="55%">
+        <stop offset="0%" stopColor="#2A7A5E" />
+        <stop offset="50%" stopColor="#133D2E" />
+        <stop offset="100%" stopColor="#081A13" />
       </radialGradient>
+      <linearGradient id="def_gold_rim" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#F9E29D" />
+        <stop offset="50%" stopColor="#D4AF37" />
+        <stop offset="100%" stopColor="#8A6C18" />
+      </linearGradient>
     </defs>
-    <circle r="88" fill="url(#art_ac_inner)" />
-    <g stroke="#D8B46D" strokeWidth="1.2" fill="none" opacity=".9">
-      <circle r="72" />
-      <circle r="56" opacity=".6" />
-      <circle r="42" opacity=".4" />
-    </g>
-    <g stroke="#68A98F" strokeWidth="3" strokeLinecap="round">
-      <line x1="-50" y1="-50" x2="-50" y2="50" />
-      <line x1="-25" y1="-62" x2="-25" y2="62" />
-      <line x1="0" y1="-68" x2="0" y2="68" />
-      <line x1="25" y1="-62" x2="25" y2="62" />
-      <line x1="50" y1="-50" x2="50" y2="50" />
-    </g>
-    <g stroke="#0F3628" strokeWidth="4">
-      <line x1="-56" y1="-18" x2="56" y2="-18" />
-      <line x1="-56" y1="18" x2="56" y2="18" />
-    </g>
-    <g fill="none" stroke="#F0DFB6" strokeWidth="2">
-      <circle cx="0" cy="-6" r="9" />
-      <line x1="0" y1="3" x2="0" y2="32" />
-      <path d="M-18 22 C -16 36 -5 44 0 44 C 5 44 16 36 18 22" />
-    </g>
+    {/* Outer Jade Base */}
+    <circle cx="100" cy="100" r="94" fill="url(#def_jade_grad)" stroke="url(#def_gold_rim)" strokeWidth="3" />
+    <circle cx="100" cy="100" r="86" fill="none" stroke="#D4AF37" strokeWidth="1" strokeDasharray="4 3" opacity="0.8" />
+    <circle cx="100" cy="100" r="78" fill="none" stroke="#68A98F" strokeWidth="1.2" opacity="0.6" />
+    {/* Hexagonal Sovereign Shield Ring */}
+    <polygon
+      points="100,26 164,63 164,137 100,174 36,137 36,63"
+      fill="none"
+      stroke="#D4AF37"
+      strokeWidth="1.8"
+      opacity="0.85"
+    />
+    {/* Sacred Bamboo Pillar (Tự Chủ) */}
+    <rect x="94" y="38" width="12" height="124" rx="4" fill="#68A98F" stroke="#133D2E" strokeWidth="1" />
+    <rect x="91" y="68" width="18" height="5" rx="1.5" fill="#F9E29D" stroke="#8A6C18" strokeWidth="1" />
+    <rect x="91" y="104" width="18" height="5" rx="1.5" fill="#F9E29D" stroke="#8A6C18" strokeWidth="1" />
+    <rect x="91" y="140" width="18" height="5" rx="1.5" fill="#F9E29D" stroke="#8A6C18" strokeWidth="1" />
+    {/* Bamboo Foliage Wings */}
+    <path d="M94 70 C 60 55 45 80 88 84 Z" fill="#2A7A5E" stroke="#F9E29D" strokeWidth="0.8" />
+    <path d="M106 106 C 140 91 155 116 112 120 Z" fill="#68A98F" stroke="#F9E29D" strokeWidth="0.8" />
+    {/* Anchor Base of Sovereignty */}
+    <circle cx="100" cy="100" r="16" fill="none" stroke="#F9E29D" strokeWidth="2.5" />
+    <path d="M72 136 C 85 160 115 160 128 136" fill="none" stroke="#F9E29D" strokeWidth="3.2" strokeLinecap="round" />
+    <polygon points="72,136 68,144 76,142" fill="#F9E29D" />
+    <polygon points="128,136 132,144 124,142" fill="#F9E29D" />
   </svg>
 );
 
-export const CardAllianceArt: React.FC<{ size?: number; className?: string; style?: React.CSSProperties }> = ({
+export const CardAttackArt: React.FC<{ size?: number; className?: string; style?: React.CSSProperties }> = ({
   size = 64,
   className = '',
   style = {},
@@ -230,37 +244,49 @@ export const CardAllianceArt: React.FC<{ size?: number; className?: string; styl
   <svg
     width={size}
     height={size}
-    viewBox="-115 -115 230 230"
+    viewBox="0 0 200 200"
     role="img"
-    aria-label="Alliance Form Artwork"
+    aria-label="Strategic Attack Imperial Gold Emblem"
     className={className}
     style={{ display: 'inline-block', flexShrink: 0, ...style }}
   >
     <defs>
-      <radialGradient id="art_al_inner" cx=".5" cy=".5" r=".7">
-        <stop offset="0" stopColor="#2F7D62" stopOpacity=".5" />
-        <stop offset="1" stopColor="#06110D" stopOpacity="0" />
+      <radialGradient id="att_gold_grad" cx="50%" cy="45%" r="55%">
+        <stop offset="0%" stopColor="#4A3410" />
+        <stop offset="50%" stopColor="#2A1B07" />
+        <stop offset="100%" stopColor="#120A02" />
       </radialGradient>
+      <linearGradient id="att_gold_rim" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FFF2B2" />
+        <stop offset="50%" stopColor="#D4AF37" />
+        <stop offset="100%" stopColor="#8A6C18" />
+      </linearGradient>
     </defs>
-    <circle r="90" fill="url(#art_al_inner)" />
-    <path d="M -90 -36 C -36 -100 36 -100 90 -36" fill="none" stroke="#B5D6C6" strokeWidth="2.2" />
-    <path d="M -90 36 C -36 100 36 100 90 36" fill="none" stroke="#68A98F" strokeWidth="2.2" />
-    <path d="M -90 -36 C -36 18 36 18 90 -36" fill="none" stroke="#D8B46D" strokeWidth="1.4" opacity=".8" />
-    <path d="M -90 36 C -36 -18 36 -18 90 36" fill="none" stroke="#D8B46D" strokeWidth="1.4" opacity=".8" />
-    <g stroke="#F0DFB6" strokeWidth="1.6" fill="none">
-      <rect x="-14" y="-14" width="28" height="28" transform="rotate(45)" />
-      <circle r="6" />
+    {/* Outer Lacquer Disc */}
+    <circle cx="100" cy="100" r="94" fill="url(#att_gold_grad)" stroke="url(#att_gold_rim)" strokeWidth="3" />
+    <circle cx="100" cy="100" r="86" fill="none" stroke="#F3CA68" strokeWidth="1" strokeDasharray="3 3" opacity="0.8" />
+    <circle cx="100" cy="100" r="76" fill="none" stroke="#8A6C18" strokeWidth="1.2" opacity="0.6" />
+    {/* Crossed Ceremonial Diplomatic Blades */}
+    <g stroke="url(#att_gold_rim)" strokeWidth="3" strokeLinecap="round">
+      <line x1="50" y1="50" x2="150" y2="150" />
+      <line x1="150" y1="50" x2="50" y2="150" />
     </g>
-    <g stroke="#B5D6C6" strokeWidth="1.4" fill="none">
-      <line x1="-80" y1="-56" x2="-80" y2="56" />
-      <line x1="80" y1="-56" x2="80" y2="56" />
-      <rect x="-80" y="-56" width="20" height="14" fill="#2F7D62" stroke="none" />
-      <rect x="60" y="-56" width="20" height="14" fill="#8E6A24" stroke="none" />
-    </g>
+    {/* Hilt Crossguards */}
+    <rect x="62" y="58" width="14" height="4" transform="rotate(45 69 60)" fill="#FFF2B2" />
+    <rect x="124" y="58" width="14" height="4" transform="rotate(-45 131 60)" fill="#FFF2B2" />
+    {/* Ancient Imperial Coin (Thông Bảo) Center */}
+    <circle cx="100" cy="100" r="32" fill="#2A1B07" stroke="#D4AF37" strokeWidth="2.5" />
+    <circle cx="100" cy="100" r="26" fill="#3D290C" stroke="#F3CA68" strokeWidth="1" />
+    <rect x="88" y="88" width="24" height="24" rx="2" fill="#120A02" stroke="#FFF2B2" strokeWidth="2" />
+    {/* Four Imperial Dots */}
+    <circle cx="100" cy="79" r="2.5" fill="#FFF2B2" />
+    <circle cx="100" cy="121" r="2.5" fill="#FFF2B2" />
+    <circle cx="79" cy="100" r="2.5" fill="#FFF2B2" />
+    <circle cx="121" cy="100" r="2.5" fill="#FFF2B2" />
   </svg>
 );
 
-export const CardChallengeArt: React.FC<{ size?: number; className?: string; style?: React.CSSProperties }> = ({
+export const CardPrestigeArt: React.FC<{ size?: number; className?: string; style?: React.CSSProperties }> = ({
   size = 64,
   className = '',
   style = {},
@@ -268,32 +294,44 @@ export const CardChallengeArt: React.FC<{ size?: number; className?: string; sty
   <svg
     width={size}
     height={size}
-    viewBox="-120 -110 240 200"
+    viewBox="0 0 200 200"
     role="img"
-    aria-label="Multilateral Challenge Artwork"
+    aria-label="Multilateral Prestige Sapphire Emblem"
     className={className}
     style={{ display: 'inline-block', flexShrink: 0, ...style }}
   >
     <defs>
-      <radialGradient id="art_ch_inner" cx=".5" cy=".5" r=".7">
-        <stop offset="0" stopColor="#8A2F37" stopOpacity=".5" />
-        <stop offset="1" stopColor="#0B0808" stopOpacity="0" />
+      <radialGradient id="pres_sapphire_grad" cx="50%" cy="45%" r="55%">
+        <stop offset="0%" stopColor="#1E456E" />
+        <stop offset="50%" stopColor="#0F2744" />
+        <stop offset="100%" stopColor="#05101E" />
       </radialGradient>
+      <linearGradient id="pres_gold_rim" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#E2F0FE" />
+        <stop offset="50%" stopColor="#4E7EA7" />
+        <stop offset="100%" stopColor="#183756" />
+      </linearGradient>
     </defs>
-    <circle r="95" fill="url(#art_ch_inner)" />
-    <path d="M -100 36 Q 0 -18 100 36" stroke="#E8C2A6" strokeWidth="1.8" fill="none" />
-    <path d="M -100 60 Q 0 6 100 60" stroke="#8A2F37" strokeWidth="1.4" fill="none" opacity=".8" />
-    <path d="M 0 -90 L -70 54 L 70 54 Z" fill="#E8C2A6" opacity=".1" />
-    <path d="M 0 -90 L -70 54 L 70 54 Z" fill="none" stroke="#E8C2A6" strokeWidth=".8" opacity=".45" />
-    <g transform="translate(0 -16) rotate(-18)" stroke="#F0DFB6" strokeWidth="1.8" fill="none">
-      <rect x="-26" y="-7" width="52" height="14" rx="2" />
-      <line x1="26" y1="0" x2="60" y2="0" />
-      <circle cx="60" cy="0" r="3" />
-    </g>
-    <g fill="#E8C2A6">
-      <circle cx="-54" cy="54" r="3" />
-      <circle cx="0" cy="54" r="3" />
-      <circle cx="54" cy="54" r="3" />
-    </g>
+    {/* Outer Lacquer Disc */}
+    <circle cx="100" cy="100" r="94" fill="url(#pres_sapphire_grad)" stroke="#D4AF37" strokeWidth="2.5" />
+    <circle cx="100" cy="100" r="86" fill="none" stroke="#60A5FA" strokeWidth="1" strokeDasharray="4 2" opacity="0.75" />
+    <circle cx="100" cy="100" r="76" fill="none" stroke="#1E40AF" strokeWidth="1.2" opacity="0.6" />
+    {/* 8-Point Dong Son Solar Star (Trống Đồng Đông Sơn) */}
+    <polygon
+      points="100,42 107,82 148,68 118,97 158,100 118,103 148,132 107,118 100,158 93,118 52,132 82,103 42,100 82,97 52,68 93,82"
+      fill="#D4AF37"
+      stroke="#FFF2B2"
+      strokeWidth="0.8"
+    />
+    {/* Central Resonant Gong */}
+    <circle cx="100" cy="100" r="22" fill="#0A1828" stroke="#F3CA68" strokeWidth="2" />
+    <circle cx="100" cy="100" r="14" fill="#1E40AF" stroke="#60A5FA" strokeWidth="1.5" />
+    <circle cx="100" cy="100" r="6" fill="#F3CA68" />
   </svg>
 );
+
+// Backward compatibility aliases
+export const CardAnchorArt = CardDefenseArt;
+export const CardChallengeArt = CardAttackArt;
+export const CardAllianceArt = CardPrestigeArt;
+

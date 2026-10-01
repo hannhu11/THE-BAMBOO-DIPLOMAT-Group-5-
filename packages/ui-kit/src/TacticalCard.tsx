@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { audioEngine } from './AudioEngine';
-import { CardAnchorArt, CardAllianceArt, CardChallengeArt } from './Sigils';
+import { CardAttackArt, CardDefenseArt, CardPrestigeArt } from './Sigils';
 
 import { CardType } from '@bamboo/domain-types';
 
@@ -292,7 +292,7 @@ const renderCardArtwork = (cardType: CardType, size: number) => {
     cardType === 'submarine_cable' ||
     cardType === 'challenge'
   ) {
-    return <CardChallengeArt size={size} />;
+    return <CardAttackArt size={size} />;
   }
   if (
     cardType === 'cau_dong_ton_di' ||
@@ -300,9 +300,29 @@ const renderCardArtwork = (cardType: CardType, size: number) => {
     cardType === 'diplomatic_gong' ||
     cardType === 'alliance'
   ) {
-    return <CardAllianceArt size={size} />;
+    return <CardPrestigeArt size={size} />;
   }
-  return <CardAnchorArt size={size} />;
+  return <CardDefenseArt size={size} />;
+};
+
+const getEmblemBackdrop = (cardType: CardType) => {
+  if (
+    cardType === 'break_supply' ||
+    cardType === 'counter_tariff' ||
+    cardType === 'submarine_cable' ||
+    cardType === 'challenge'
+  ) {
+    return 'radial-gradient(circle, rgba(92, 67, 20, 0.6) 0%, rgba(20, 12, 3, 0.95) 80%)';
+  }
+  if (
+    cardType === 'cau_dong_ton_di' ||
+    cardType === 'un_resolution' ||
+    cardType === 'diplomatic_gong' ||
+    cardType === 'alliance'
+  ) {
+    return 'radial-gradient(circle, rgba(24, 55, 86, 0.6) 0%, rgba(6, 14, 22, 0.95) 80%)';
+  }
+  return 'radial-gradient(circle, rgba(28, 92, 71, 0.6) 0%, rgba(6, 17, 13, 0.95) 80%)';
 };
 
 export const TacticalCard: React.FC<TacticalCardProps> = ({
@@ -582,7 +602,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
                         height: 92,
                         borderRadius: '50%',
                         border: `1.5px solid ${meta.colors.border}`,
-                        background: 'radial-gradient(circle, rgba(28,92,71,0.45) 0%, rgba(9,18,14,0.95) 80%)',
+                        background: getEmblemBackdrop(type),
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -780,7 +800,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
                   height: 76,
                   borderRadius: '50%',
                   border: `1.5px solid ${meta.colors.border}`,
-                  background: 'radial-gradient(circle, rgba(28,92,71,0.45) 0%, rgba(9,18,14,0.85) 80%)',
+                  background: getEmblemBackdrop(type),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

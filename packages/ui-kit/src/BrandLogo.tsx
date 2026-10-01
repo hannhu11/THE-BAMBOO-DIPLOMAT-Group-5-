@@ -142,9 +142,10 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
       return;
     }
 
-    // Master Root Group
+    // Master Root Group & Resource Disposables tracker
     const rootGroup = new THREE.Group();
     scene.add(rootGroup);
+    const disposables: { dispose: () => void }[] = [];
 
     // ==========================================
     // 1. Lacquer Ceremonial Backing Disc & Gold Rim
@@ -159,6 +160,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
     const discMesh = new THREE.Mesh(discGeo, lacquerMat);
     discMesh.position.z = -0.3;
     rootGroup.add(discMesh);
+    disposables.push(discGeo, lacquerMat);
 
     // Outer Gold Rim
     const rimGeo = new THREE.TorusGeometry(3.36, 0.07, 16, 64);
@@ -170,12 +172,14 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
     const rimMesh = new THREE.Mesh(rimGeo, goldMat);
     rimMesh.position.z = -0.22;
     rootGroup.add(rimMesh);
+    disposables.push(rimGeo, goldMat);
 
     // Inner Delicate Filigree Ring
     const innerRimGeo = new THREE.TorusGeometry(2.7, 0.03, 12, 48);
     const innerRimMesh = new THREE.Mesh(innerRimGeo, goldMat);
     innerRimMesh.position.z = -0.2;
     rootGroup.add(innerRimMesh);
+    disposables.push(innerRimGeo);
 
     // ==========================================
     // 2. Bamboo Stalks (Three Axes)
@@ -188,6 +192,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
       roughness: 0.3,
       metalness: 0.25,
     });
+    disposables.push(emeraldMat);
 
     const leafMat = new THREE.MeshStandardMaterial({
       color: 0x5fa489,
@@ -195,6 +200,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
       metalness: 0.15,
       side: THREE.DoubleSide,
     });
+    disposables.push(leafMat);
 
     // Helper to build a segmented bamboo stalk
     const createStalk = (
@@ -216,6 +222,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
         const segMesh = new THREE.Mesh(segGeo, emeraldMat);
         segMesh.position.y = i * segHeight + segHeight / 2;
         stalk.add(segMesh);
+        disposables.push(segGeo);
 
         // Gold Internode Joint Ring
         if (i < segmentCount) {
@@ -224,6 +231,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
           const jointMesh = new THREE.Mesh(jointGeo, goldMat);
           jointMesh.position.y = (i + 1) * segHeight;
           stalk.add(jointMesh);
+          disposables.push(jointGeo);
 
           // Add stylized leaf on joint
           if (i === 1 || i === 2) {
@@ -239,6 +247,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
             leafMesh.rotation.y = dir * 0.3;
             leafMesh.scale.set(0.9, 0.9, 0.9);
             stalk.add(leafMesh);
+            disposables.push(leafGeo);
           }
         }
       }
@@ -301,6 +310,10 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
+
+      // Throttling: Skip rendering if browser tab is hidden to save GPU & eliminate lag
+      if (document.hidden) return;
+
       const elapsed = clock.getElapsedTime();
 
       // Center stalk breathes slightly
@@ -355,7 +368,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
       container.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    // Cleanup resources
+    // Cleanup resources to guarantee zero memory leaks
     return () => {
       cancelAnimationFrame(animationFrameId);
       glintTween.kill();
@@ -366,16 +379,14 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
         container.removeEventListener('mouseleave', handleMouseLeave);
       }
 
-      // Dispose Three.js objects
-      discGeo.dispose();
-      lacquerMat.dispose();
-      rimGeo.dispose();
-      innerRimGeo.dispose();
-      goldMat.dispose();
-      emeraldMat.dispose();
-      leafMat.dispose();
+      // Dispose all tracked Three.js geometries and materials
+      for (const item of disposables) {
+        item.dispose();
+      }
 
       if (renderer) {
+        const gl = renderer.getContext();
+        gl?.getExtension('WEBGL_lose_context')?.loseContext();
         renderer.dispose();
       }
     };

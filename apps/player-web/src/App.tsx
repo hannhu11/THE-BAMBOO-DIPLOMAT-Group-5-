@@ -10,6 +10,7 @@ import {
   VolumeToggle,
   audioEngine,
   BrandLogoMark,
+  AxisIcon3D,
   SigilWest,
   SigilNeighbor,
   SigilUN,
@@ -315,12 +316,18 @@ export function App() {
 
   // Countdown timer
   useEffect(() => {
-    if (session?.status !== 'round_open' || remainingSec <= 0) return;
+    if (session?.status !== 'round_open') return;
     const interval = setInterval(() => {
-      setRemainingSec((prev) => (prev > 0 ? prev - 1 : 0));
+      setRemainingSec((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
     return () => clearInterval(interval);
-  }, [session?.status, remainingSec]);
+  }, [session?.status, session?.currentRound]);
 
   // Handle Team Login
   const handleJoinSession = async (e: React.FormEvent) => {
@@ -449,14 +456,14 @@ export function App() {
 
   // Select Option
   const handleSelectOption = (letter: ChoiceLetter) => {
-    if (isLocked || session?.status !== 'round_open') return;
+    if (isLocked || session?.status !== 'round_open' || remainingSec <= 0) return;
     audioEngine.playCardFlip();
     setSelectedChoice(letter);
   };
 
   // Lock Vote Submission
   const handleLockVote = () => {
-    if (!socket || !selectedChoice || !scenario || isLocked) return;
+    if (!socket || !selectedChoice || !scenario || isLocked || session?.status !== 'round_open' || remainingSec <= 0) return;
 
     audioEngine.playStamp();
     socket.emit('vote.lock', {
@@ -789,7 +796,7 @@ export function App() {
               boxShadow: '0 2px 8px rgba(184, 134, 11, 0.15)',
             }}
           >
-            🏆 BẢNG XẾP HẠNG
+            BẢNG XẾP HẠNG
           </button>
 
           <VolumeToggle />
@@ -823,7 +830,10 @@ export function App() {
               {/* Autonomy */}
               <div className="axis-meter">
                 <div className="axis-meter-label">
-                  <span style={{ color: '#0F3628' }}>TỰ CHỦ (TC)</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <AxisIcon3D axis="tc" size={22} />
+                    <span style={{ color: '#0F3628' }}>TỰ CHỦ (TC)</span>
+                  </div>
                   <div>
                     <span style={{ color: '#0F3628', fontWeight: 800 }}>{myGroup.autonomy}</span>
                     {resolutionData?.finalDelta?.autonomy !== undefined && (
@@ -847,7 +857,10 @@ export function App() {
               {/* Economy */}
               <div className="axis-meter">
                 <div className="axis-meter-label">
-                  <span style={{ color: '#B8860B' }}>KINH TẾ (KT)</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <AxisIcon3D axis="kt" size={22} />
+                    <span style={{ color: '#B8860B' }}>KINH TẾ (KT)</span>
+                  </div>
                   <div>
                     <span style={{ color: '#B8860B', fontWeight: 800 }}>{myGroup.economy}</span>
                     {resolutionData?.finalDelta?.economy !== undefined && (
@@ -871,7 +884,10 @@ export function App() {
               {/* Prestige */}
               <div className="axis-meter">
                 <div className="axis-meter-label">
-                  <span style={{ color: '#1E40AF' }}>UY TÍN (UT)</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <AxisIcon3D axis="ut" size={22} />
+                    <span style={{ color: '#1E40AF' }}>UY TÍN (UT)</span>
+                  </div>
                   <div>
                     <span style={{ color: '#1E40AF', fontWeight: 800 }}>{myGroup.prestige}</span>
                     {resolutionData?.finalDelta?.prestige !== undefined && (
@@ -1018,7 +1034,7 @@ export function App() {
               <div className="scenario-header-bar">
                 <div className="scenario-meta">
                   <div className="scenario-principle-chip">
-                    {scenario.isBlackSwan ? '⚡ KHỦNG HOẢNG THIÊN NGA ĐEN' : scenario.principle}
+                    {scenario.isBlackSwan ? 'KHỦNG HOẢNG THIÊN NGA ĐEN' : scenario.principle}
                   </div>
                   <h1 className="scenario-title">
                     CÂU HỎI {scenario.order}/12: {scenario.title}
@@ -1036,10 +1052,14 @@ export function App() {
                       fontFamily: 'var(--font-mono)',
                       fontSize: 11,
                       fontWeight: 700,
-                      color: isLocked ? '#10B981' : '#B8860B',
+                      color: isLocked ? '#10B981' : remainingSec <= 0 ? '#9E2A2B' : '#B8860B',
                     }}
                   >
-                    {isLocked ? '✓ ĐÃ KHÓA BIỂU QUYẾT' : 'ĐANG MỞ BIỂU QUYẾT (30S)'}
+                    {isLocked
+                      ? '✓ ĐÃ KHÓA BIỂU QUYẾT'
+                      : remainingSec <= 0
+                      ? 'HẾT GIỜ BIỂU QUYẾT'
+                      : 'ĐANG MỞ BIỂU QUYẾT (30S)'}
                   </span>
                 </div>
               </div>
@@ -1064,26 +1084,6 @@ export function App() {
                       <div className="option-body">
                         <div className="option-title">{opt.label}</div>
                         {opt.hint && <div className="option-hint">{opt.hint}</div>}
-
-                        {/* Stakeholder Reaction Icons */}
-                        <div className="stakeholder-preview-row">
-                          <div className="sigil-chip" title="Phản ứng Phương Tây">
-                            <SigilWest size={16} />
-                            <span>PT: Phương Tây</span>
-                          </div>
-                          <div className="sigil-chip" title="Phản ứng Láng Giềng">
-                            <SigilNeighbor size={16} />
-                            <span>LG: Láng Giềng</span>
-                          </div>
-                          <div className="sigil-chip" title="Phản ứng Liên Hợp Quốc">
-                            <SigilUN size={16} />
-                            <span>UN: LHQ</span>
-                          </div>
-                          <div className="sigil-chip" title="Ý Đảng Lòng Dân VN">
-                            <SigilVN size={16} />
-                            <span>VN: Nhân Dân</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   );
@@ -1124,24 +1124,48 @@ export function App() {
                 </div>
               )}
 
-              {/* Action Bottom Bar */}
+              {/* Redesigned Action Bottom Bar */}
               <div className="action-bar-bottom">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ fontSize: 13, color: '#4A5B53' }}>
-                    {selectedChoice
-                      ? `Bạn đang chọn phương án: ${selectedChoice}`
-                      : 'Vui lòng chọn 1 phương án tác chiến (A, B, C hoặc D)'}
-                  </span>
+                <div className="vote-choice-display">
+                  {selectedChoice ? (
+                    <div className="selected-choice-badge">
+                      <div className="choice-medallion">{selectedChoice}</div>
+                      <div className="choice-info-text">
+                        <span className="choice-sub-tag">PHƯƠNG ÁN ĐÃ CHỌN</span>
+                        <span className="choice-title-preview">
+                          {scenario.options.find((o: any) => o.id === selectedChoice)?.label || `Phương án ${selectedChoice}`}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="choice-empty-prompt">
+                      <span className="choice-dot-pulse" />
+                      <span>Vui lòng chọn 1 phương án tác chiến (A, B, C hoặc D)</span>
+                    </div>
+                  )}
                 </div>
 
-                <button
-                  type="button"
-                  className="lock-vote-btn"
-                  onClick={handleLockVote}
-                  disabled={!selectedChoice || isLocked || session?.status !== 'round_open'}
-                >
-                  {isLocked ? '✓ BIỂU QUYẾT ĐÃ KHÓA' : 'XÁC NHẬN BIỂU QUYẾT ➔'}
-                </button>
+                <div className="vote-button-wrapper">
+                  {remainingSec <= 0 && !isLocked ? (
+                    <div className="vote-expired-pill">
+                      <span>ĐÃ HẾT THỜI GIAN (ĐÓNG BỎ PHIẾU)</span>
+                    </div>
+                  ) : isLocked ? (
+                    <div className="vote-locked-pill">
+                      <span>✓ BIỂU QUYẾT ĐÃ KHÓA NIÊM PHONG</span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="lock-vote-btn"
+                      onClick={handleLockVote}
+                      disabled={!selectedChoice || session?.status !== 'round_open' || remainingSec <= 0}
+                    >
+                      <span>XÁC NHẬN BIỂU QUYẾT</span>
+                      <span className="btn-arrow">➔</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Resolution Details Panel (if round resolved) */}
@@ -1337,7 +1361,7 @@ export function App() {
                         gap: 6,
                       }}
                     >
-                      <span>🎯</span>
+                      <span style={{ color: '#B8860B', fontWeight: 800 }}>[MỤC TIÊU]</span>
                       {inspectedCard === 'break_supply'
                         ? 'CHỌN ĐỘI ĐỐI THỦ PHONG TỎA (ĐÓNG BĂNG THẺ BÀI):'
                         : inspectedCard === 'cau_dong_ton_di' || inspectedCard === 'alliance'

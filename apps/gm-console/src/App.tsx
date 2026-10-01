@@ -5,6 +5,7 @@ import {
   VolumeToggle,
   audioEngine,
   BrandLogoMark,
+  AxisIcon3D,
   SigilWest,
   SigilNeighbor,
   SigilUN,
@@ -134,12 +135,18 @@ export function App() {
 
   // Countdown timer
   useEffect(() => {
-    if (session?.status !== 'round_open' || remainingSec <= 0) return;
+    if (session?.status !== 'round_open') return;
     const interval = setInterval(() => {
-      setRemainingSec((prev) => (prev > 0 ? prev - 1 : 0));
+      setRemainingSec((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
     return () => clearInterval(interval);
-  }, [session?.status, remainingSec]);
+  }, [session?.status, session?.currentRound]);
 
   // Handle Login
   const handleGmLogin = async (e: React.FormEvent) => {
@@ -557,7 +564,7 @@ export function App() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#9E2A2B', fontWeight: 800 }}>
-                <span>⚠ KHỦNG HOẢNG THIÊN NGA ĐEN ĐÃ KÍCH HOẠT:</span>
+                <span>[KHỦNG HOẢNG THIÊN NGA ĐEN KÍCH HOẠT]:</span>
                 <span>{activeBlackSwan.title}</span>
               </div>
               <p style={{ margin: 0, fontSize: 13.5, color: '#0E281E', lineHeight: 1.5 }}>
@@ -618,10 +625,16 @@ export function App() {
                         )}
                       </div>
 
-                      <div className="gm-team-axes">
-                        <span style={{ color: '#0F3628' }}>TC: {team.axes?.autonomy}</span>
-                        <span style={{ color: '#B8860B' }}>KT: {team.axes?.economy}</span>
-                        <span style={{ color: '#1E40AF' }}>UT: {team.axes?.prestige}</span>
+                      <div className="gm-team-axes" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ color: '#0F3628', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <AxisIcon3D axis="tc" size={16} /> TC: {team.axes?.autonomy}
+                        </span>
+                        <span style={{ color: '#B8860B', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <AxisIcon3D axis="kt" size={16} /> KT: {team.axes?.economy}
+                        </span>
+                        <span style={{ color: '#1E40AF', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <AxisIcon3D axis="ut" size={16} /> UT: {team.axes?.prestige}
+                        </span>
                       </div>
                     </div>
 
@@ -665,7 +678,7 @@ export function App() {
           >
             {(scenariosList as any[]).map((sc: any) => (
               <option key={sc.id} value={sc.id}>
-                {sc.isBlackSwan ? '⚡ [THIÊN NGA ĐEN] ' : `[Q${sc.order}] `}
+                {sc.isBlackSwan ? '[THIÊN NGA ĐEN] ' : `[Q${sc.order}] `}
                 {sc.title}
               </option>
             ))}

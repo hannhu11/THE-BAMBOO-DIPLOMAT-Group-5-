@@ -13,3 +13,4 @@ export * from './SovereigntyRadar';
 export * from './TacticalCard';
 export * from './Sigils';
 export * from './BrandLogo';
+export * from './AxisIcon3D';
