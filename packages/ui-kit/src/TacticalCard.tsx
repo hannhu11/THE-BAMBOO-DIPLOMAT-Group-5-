@@ -39,9 +39,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   // === NHÓM 1: TẤN CÔNG NGOẠI GIAO (Yêu cầu Kinh Tế >= 7) ===
   break_supply: {
     title: 'BẺ GÃY CHUỖI CUNG ỨNG',
-    sub: 'Supply Chain Interdiction',
+    sub: 'Đột Phá Gọng Kìm Kinh Tế',
     category: 'TẤN CÔNG NGOẠI GIAO',
-    tier: 'TIER I · VÀNG',
+    tier: 'BẬC I · HOÀNG KIM',
     rarity: 'HOÀNG GIA',
     requirement: 'YÊU CẦU: KINH TẾ ≥ 7',
     effect: 'Phong tỏa đối trọng: Đóng băng quyền kích hoạt thẻ bài chiến lược của 1 đội đối thủ trong câu hỏi hiện tại.',
@@ -59,9 +59,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   counter_tariff: {
     title: 'ÁP ĐẶT THUẾ ĐỐI KHÁNG',
-    sub: 'Countervailing Tariff Defense',
+    sub: 'Phòng Vệ Thương Mại Quốc Tế',
     category: 'TẤN CÔNG NGOẠI GIAO',
-    tier: 'TIER II · VÀNG',
+    tier: 'BẬC II · HOÀNG KIM',
     rarity: 'HOÀNG GIA',
     requirement: 'YÊU CẦU: KINH TẾ ≥ 7',
     effect: 'Tận dụng công cụ pháp lý quốc tế: Nhân đôi toàn bộ điểm Kinh Tế (+KT) đạt được trong câu hỏi này nếu chọn phương án có lợi ích kinh tế.',
@@ -79,12 +79,12 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   submarine_cable: {
     title: 'CHIẾM LĨNH CÁP QUANG BIỂN',
-    sub: 'Subsea Cable Supremacy',
+    sub: 'Làm Chủ Hạ Tầng Số Biển',
     category: 'TẤN CÔNG NGOẠI GIAO',
-    tier: 'TIER III · VÀNG',
+    tier: 'BẬC III · HOÀNG KIM',
     rarity: 'HOÀNG GIA',
     requirement: 'YÊU CẦU: KINH TẾ ≥ 7',
-    effect: 'Chớp thời cơ hạ tầng số: Cộng ngay +2 điểm Kinh Tế và hút 1 điểm KT từ đội có tổng điểm cao nhất nếu đội biểu quyết sớm nhất.',
+    effect: 'Chớp thời cơ hạ tầng số: Cộng ngay +2 điểm Kinh Tế và kiểm soát huyết mạch thông tin quốc gia.',
     usage: '1 LẦN / TOÀN TRẬN ĐẤU',
     lore: 'Ai làm chủ huyết mạch thông tin số dưới lòng đại dương, người đó nắm giữ huyết mạch kinh tế của thế kỷ 21.',
     quote: '« Tương lai thuộc về công nghệ và tự chủ thông tin liên lạc quốc gia. »',
@@ -101,9 +101,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   // === NHÓM 2: PHÒNG THỦ & TỰ CHỦ (Yêu cầu Tự Chủ >= 7) ===
   di_bat_bien: {
     title: 'DĨ BẤT BIẾN, ỨNG VẠN BIẾN',
-    sub: 'Anchor of Sovereignty',
+    sub: 'Kiên Định Độc Lập Cương Thổ',
     category: 'PHÒNG THỦ CHIẾN LƯỢC',
-    tier: 'TIER I · NGỌC BÍCH',
+    tier: 'BẬC I · NGỌC BÍCH',
     rarity: 'BẢO VẬT',
     requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
     effect: 'Vô hiệu hóa 100% mọi delta âm (Δ-) của trục Tự Chủ trong câu hỏi hiện tại dù phương án có chịu sức ép chính trị.',
@@ -121,12 +121,12 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   sovereignty_shield: {
     title: 'VÀNH ĐAI ĐỘC LẬP',
-    sub: 'Sovereignty Shield',
+    sub: 'Lá Chắn Độc Lập Toàn Diện',
     category: 'PHÒNG THỦ CHIẾN LƯỢC',
-    tier: 'TIER II · NGỌC BÍCH',
+    tier: 'BẬC II · NGỌC BÍCH',
     rarity: 'BẢO VẬT',
     requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
-    effect: 'Lá chắn chủ quyền: Miễn nhiễm hoàn toàn khỏi mọi tác động tiêu cực hoặc biến động trừ điểm từ Thiên Nga Đen trong câu này.',
+    effect: 'Lá chắn chủ quyền: Miễn nhiễm hoàn toàn khỏi mọi tác động tiêu cực hoặc biến động trừ điểm trên cả 3 trục.',
     usage: '1 LẦN / TOÀN TRẬN ĐẤU',
     lore: 'Xây dựng thế trận lòng dân kết hợp củng cố quốc phòng toàn dân, tạo vành đai bảo vệ bất khả xâm phạm.',
     quote: '« Nước Việt Nam là một, dân tộc Việt Nam là một. Sông có thể cạn, núi có thể mòn, song chân lý ấy không bao giờ thay đổi. »',
@@ -141,12 +141,12 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   self_reliance: {
     title: 'TỰ LỰC CÁNH SINH',
-    sub: 'Strategic Self-Reliance',
+    sub: 'Phát Huy Tối Đa Nội Lực',
     category: 'PHÒNG THỦ CHIẾN LƯỢC',
-    tier: 'TIER III · NGỌC BÍCH',
+    tier: 'BẬC III · NGỌC BÍCH',
     rarity: 'BẢO VẬT',
     requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
-    effect: 'Vận dụng nội lực dân tộc: Nếu điểm Tự Chủ bị giảm xuống dưới 7, tự động chuyển đổi 2 điểm KT thành 2 điểm TC để giữ ngưỡng an toàn.',
+    effect: 'Vận dụng nội lực dân tộc: Nếu điểm Tự Chủ bị giảm xuống dưới 7, tự động chuyển đổi 1 điểm KT thành 2 điểm TC để giữ ngưỡng an toàn.',
     usage: '1 LẦN / TOÀN TRẬN ĐẤU',
     lore: 'Chủ tịch Hồ Chí Minh chỉ rõ: "Một dân tộc không tự lực cánh sinh mà cứ ngồi chờ dân tộc khác giúp đỡ thì không xứng đáng được độc lập."',
     quote: '« Độc lập tự do là quyền thiêng liêng bất khả xâm phạm; nội lực là gốc rễ của tự cường. »',
@@ -163,9 +163,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   // === NHÓM 3: CHỨC NĂNG & UY TÍN (Yêu cầu Uy Tín >= 7) ===
   cau_dong_ton_di: {
     title: 'CẦU ĐỒNG TỒN DỊ',
-    sub: 'Multilateral Concord',
+    sub: 'Hòa Giải & Hợp Tác Cùng Có Lợi',
     category: 'NGOẠI GIAO ĐA PHƯƠNG',
-    tier: 'TIER I · LAM NGỌC',
+    tier: 'BẬC I · LAM NGỌC',
     rarity: 'CAO QUÝ',
     requirement: 'YÊU CẦU: UY TÍN ≥ 7',
     effect: 'Hòa giải đa phương: Cộng thêm +2 điểm Uy Tín nếu phương án nhóm lựa chọn ưu tiên đàm phán hòa bình và hợp tác cùng có lợi.',
@@ -183,9 +183,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   un_resolution: {
     title: 'NGHỊ QUYẾT ĐHĐ LIÊN HỢP QUỐC',
-    sub: 'UN General Assembly Mandate',
+    sub: 'Thượng Tôn Luật Pháp Quốc Tế',
     category: 'NGOẠI GIAO ĐA PHƯƠNG',
-    tier: 'TIER II · LAM NGỌC',
+    tier: 'BẬC II · LAM NGỌC',
     rarity: 'CAO QUÝ',
     requirement: 'YÊU CẦU: UY TÍN ≥ 7',
     effect: 'Chính danh quốc tế: Soi sáng phương án tối ưu hóa chỉ số Uy Tín nhất trước khi nhóm quyết định nộp bài (+2 Uy Tín khi hoàn thành).',
@@ -203,9 +203,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   diplomatic_gong: {
     title: 'TIẾNG CHIÊNG NGOẠI GIAO',
-    sub: 'Diplomatic Resonator',
+    sub: 'Khuếch Đại Khí Phách Chính Nghĩa',
     category: 'NGOẠI GIAO ĐA PHƯƠNG',
-    tier: 'TIER III · LAM NGỌC',
+    tier: 'BẬC III · LAM NGỌC',
     rarity: 'CAO QUÝ',
     requirement: 'YÊU CẦU: UY TÍN ≥ 7',
     effect: 'Tuyên cáo chính nghĩa: Nhân đôi toàn bộ điểm số tổng (TC + KT + UT) nhận được trong lượt biểu quyết hiện tại!',
@@ -225,9 +225,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   // Danh mục Thẻ Chiến Lược Bổ Sung & Đặc Thù
   anchor: {
     title: 'TRỌNG TÂM TỰ CHỦ',
-    sub: 'Anchor of Sovereignty',
+    sub: 'Kiên Định Độc Lập Cương Thổ',
     category: 'PHÒNG THỦ CHIẾN LƯỢC',
-    tier: 'TIER I · NGỌC BÍCH',
+    tier: 'BẬC I · NGỌC BÍCH',
     rarity: 'BẢO VẬT',
     requirement: 'YÊU CẦU: TỰ CHỦ ≥ 7',
     effect: 'Khóa cứng lập trường: Vô hiệu hóa 100% mọi delta âm (Δ- TC = 0) của trục Tự Chủ do áp lực địa chính trị trong lượt hiện tại.',
@@ -245,9 +245,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   alliance: {
     title: 'ĐỒNG THUẬN CHIẾN LƯỢC',
-    sub: 'Strategic Concord Alliance',
+    sub: 'Đồng Thuận Đa Phương',
     category: 'NGOẠI GIAO ĐA PHƯƠNG',
-    tier: 'TIER I · LAM NGỌC',
+    tier: 'BẬC I · LAM NGỌC',
     rarity: 'CAO QUÝ',
     requirement: 'YÊU CẦU: UY TÍN ≥ 7',
     effect: 'Hòa giải & Liên minh: Đề xuất hiệp đồng với 1 nhóm đối tác. Nếu cả 2 cùng chọn phương án cân bằng → nhận thêm thưởng đồng thuận; nếu lệch hướng → trừ điểm Uy Tín.',
@@ -265,9 +265,9 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
   challenge: {
     title: 'CHẤT VẤN NGHỊ TRƯỜNG',
-    sub: 'Parliamentary Challenge',
+    sub: 'Chất Vấn Nghị Trường',
     category: 'NGOẠI GIAO ĐA PHƯƠNG',
-    tier: 'TIER III · LAM NGỌC',
+    tier: 'BẬC III · LAM NGỌC',
     rarity: 'CAO QUÝ',
     requirement: 'YÊU CẦU: UY TÍN ≥ 7',
     effect: 'Kích hoạt quyền chất vấn tại diễn đàn lớp học; nhân đôi toàn bộ thành quả điểm dương trong lượt khi nhóm thể hiện lập luận thuyết phục.',
@@ -285,24 +285,60 @@ const CARD_DATA: Record<string, CardMeta> = {
   },
 };
 
+export const CARD_IMAGES: Record<string, string> = {
+  break_supply: '/cards/break_supply.jpg',
+  counter_tariff: '/cards/counter_tariff.jpg',
+  submarine_cable: '/cards/submarine_cable.jpg',
+  di_bat_bien: '/cards/di_bat_bien.png',
+  anchor: '/cards/di_bat_bien.png',
+  sovereignty_shield: '/cards/sovereignty_shield.png',
+  self_reliance: '/cards/self_reliance.png',
+  cau_dong_ton_di: '/cards/cau_dong_ton_di.png',
+  alliance: '/cards/cau_dong_ton_di.png',
+  un_resolution: '/cards/un_resolution.png',
+  diplomatic_gong: '/cards/diplomatic_gong.png',
+  challenge: '/cards/diplomatic_gong.png',
+};
+
 const renderCardArtwork = (cardType: CardType, size: number) => {
-  if (
-    cardType === 'break_supply' ||
-    cardType === 'counter_tariff' ||
-    cardType === 'submarine_cable' ||
-    cardType === 'challenge'
-  ) {
-    return <CardAttackArt size={size} />;
-  }
-  if (
-    cardType === 'cau_dong_ton_di' ||
-    cardType === 'un_resolution' ||
-    cardType === 'diplomatic_gong' ||
-    cardType === 'alliance'
-  ) {
-    return <CardPrestigeArt size={size} />;
-  }
-  return <CardDefenseArt size={size} />;
+  const imgSrc = CARD_IMAGES[cardType];
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {imgSrc && (
+        <img
+          src={imgSrc}
+          alt={cardType}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            borderRadius: '50%',
+            display: 'block',
+          }}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+      )}
+      <div style={{ opacity: imgSrc ? 0 : 1 }}>
+        {cardType === 'break_supply' ||
+        cardType === 'counter_tariff' ||
+        cardType === 'submarine_cable' ||
+        cardType === 'challenge' ? (
+          <CardAttackArt size={size} />
+        ) : cardType === 'cau_dong_ton_di' ||
+          cardType === 'un_resolution' ||
+          cardType === 'diplomatic_gong' ||
+          cardType === 'alliance' ? (
+          <CardPrestigeArt size={size} />
+        ) : (
+          <CardDefenseArt size={size} />
+        )}
+      </div>
+    </div>
+  );
 };
 
 const getEmblemBackdrop = (cardType: CardType) => {
@@ -430,7 +466,7 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
                 color: meta.colors.badgeText,
               }}
             >
-              {type === 'anchor' ? 'THỦ' : type === 'alliance' ? 'MINH' : 'CHẤT'}
+              {meta.category === 'TẤN CÔNG NGOẠI GIAO' ? 'TẤN CÔNG' : meta.category === 'PHÒNG THỦ CHIẾN LƯỢC' ? 'PHÒNG THỦ' : 'UY TÍN'}
             </span>
             <span style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: isActive ? '#F3CA68' : '#8E9C95' }}>
               {isActive ? 'ĐANG DÙNG' : isSpent ? 'ĐÃ DÙNG' : 'SẴN SÀNG'}
@@ -598,18 +634,20 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
                   >
                     <div
                       style={{
-                        width: 92,
-                        height: 92,
+                        width: 110,
+                        height: 110,
                         borderRadius: '50%',
-                        border: `1.5px solid ${meta.colors.border}`,
+                        border: `2px solid ${meta.colors.border}`,
                         background: getEmblemBackdrop(type),
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         boxShadow: `0 0 25px ${meta.colors.glow}`,
+                        overflow: 'hidden',
+                        position: 'relative',
                       }}
                     >
-                      {renderCardArtwork(type, 74)}
+                      {renderCardArtwork(type, 84)}
                     </div>
                   </div>
 
@@ -796,18 +834,20 @@ export const TacticalCard: React.FC<TacticalCardProps> = ({
             <div style={{ position: 'relative', zIndex: 10, margin: '4px 0 6px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <div
                 style={{
-                  width: 76,
-                  height: 76,
+                  width: 96,
+                  height: 96,
                   borderRadius: '50%',
-                  border: `1.5px solid ${meta.colors.border}`,
+                  border: `2px solid ${meta.colors.border}`,
                   background: getEmblemBackdrop(type),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   boxShadow: `0 0 20px ${meta.colors.glow}`,
+                  overflow: 'hidden',
+                  position: 'relative',
                 }}
               >
-                {renderCardArtwork(type, 56)}
+                {renderCardArtwork(type, 70)}
               </div>
               <span style={{ fontSize: 9, fontFamily: 'var(--font-mono, monospace)', color: 'rgba(203,213,225,0.7)', marginTop: 6, letterSpacing: 1.2 }}>
                 CHẠM ĐỂ LẬT XEM ĐIỂN TÍCH ↻

@@ -17,6 +17,7 @@ import {
   SigilVN,
 } from '@bamboo/ui-kit';
 import { ChoiceLetter, CardType, Role } from '@bamboo/domain-types';
+import { StrategicLuckyWheel } from './components/StrategicLuckyWheel';
 
 interface GroupData {
   id: string;
@@ -538,6 +539,20 @@ export function App() {
       const data = await res.json();
       if (data.success && data.cards) {
         setGachaCards(data.cards);
+        setMyGroup((prev) => {
+          if (!prev) return prev;
+          const updated = {
+            ...prev,
+            assignedCards: data.cards,
+            cardStatuses: prev.cardStatuses || {
+              [data.cards[0]]: 'ready',
+              [data.cards[1]]: 'ready',
+              [data.cards[2]]: 'ready',
+            },
+          };
+          localStorage.setItem('bamboo_group', JSON.stringify(updated));
+          return updated;
+        });
         setShowGacha(true);
       }
     } catch (err) {
@@ -560,6 +575,15 @@ export function App() {
   // Reveal All & Finish Gacha
   const handleCompleteGacha = () => {
     audioEngine.playStamp();
+    setMyGroup((prev) => {
+      if (!prev) return prev;
+      const updated = {
+        ...prev,
+        assignedCards: gachaCards.length ? gachaCards : prev.assignedCards,
+      };
+      localStorage.setItem('bamboo_group', JSON.stringify(updated));
+      return updated;
+    });
     setShowGacha(false);
     window.history.pushState({ step: 'battle' }, '', '#/battle');
   };
@@ -813,100 +837,14 @@ export function App() {
   }
 
   // ==========================================
-  // RENDER: GACHA REVEAL PORTAL (TAM TRỤ GSAP)
+  // RENDER: GACHA STRATEGIC LUCKY WHEEL PORTAL
   // ==========================================
   if (showGacha) {
-    const allRevealed = revealedCards.every(Boolean);
-
     return (
-      <div className="gacha-screen-overlay">
-        <div className="gacha-chamber">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: 2,
-                color: '#B8860B',
-                textTransform: 'uppercase',
-              }}
-            >
-              NGHI THỨC NGOẠI GIAO ĐẦU TRẬN
-            </span>
-            <h2 className="gacha-header-title">KHAI THẺ CHIẾN LƯỢC TAM TRỤ</h2>
-            <p style={{ margin: 0, fontSize: 14, color: '#4A5B53', maxWidth: 640 }}>
-              Đội ngũ của bạn được trao quyền tiếp nhận 3 Mật lệnh Chiến lược (1 Tấn Công, 1 Phòng Thủ, 1 Chức Năng).
-              Hãy chạm vào từng phong thư niêm phong sáp đỏ để giải mã đặc ân ngoại giao!
-            </p>
-          </div>
-
-          <div className="gacha-cards-trio">
-            {gachaCards.map((cardType, idx) => {
-              const isRevealed = revealedCards[idx];
-              const categoryLabel =
-                idx === 0
-                  ? 'MẬT THƯ TẤN CÔNG (KT ≥ 7)'
-                  : idx === 1
-                  ? 'MẬT THƯ PHÒNG THỦ (TC ≥ 7)'
-                  : 'MẬT THƯ CHỨC NĂNG (UT ≥ 7)';
-
-              return (
-                <GachaInteractiveEnvelope
-                  key={idx}
-                  idx={idx}
-                  cardType={cardType}
-                  categoryLabel={categoryLabel}
-                  isRevealed={Boolean(isRevealed)}
-                  onReveal={() => handleRevealCard(idx)}
-                />
-              );
-            })}
-          </div>
-
-          <div style={{ display: 'flex', gap: 14 }}>
-            {!allRevealed && (
-              <button
-                type="button"
-                onClick={() => setRevealedCards([true, true, true])}
-                style={{
-                  padding: '12px 20px',
-                  borderRadius: 10,
-                  fontSize: 13,
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  border: '1px solid #D8D0BE',
-                  background: '#FFFFFF',
-                  color: '#0E281E',
-                  cursor: 'pointer',
-                }}
-              >
-                MỞ NHANH CẢ 3 THẺ
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={handleCompleteGacha}
-              style={{
-                padding: '14px 28px',
-                borderRadius: 12,
-                fontSize: 14,
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 800,
-                letterSpacing: 1.5,
-                background: 'linear-gradient(180deg, #1C5C47, #0F3628)',
-                color: '#FFFFFF',
-                border: '1.5px solid #B8860B',
-                cursor: 'pointer',
-                boxShadow: '0 6px 18px rgba(15, 54, 40, 0.25)',
-              }}
-            >
-              TIẾP NHẬN MẬT LỆNH & VÀO PHÒNG TÁC CHIẾN →
-            </button>
-          </div>
-        </div>
-      </div>
+      <StrategicLuckyWheel
+        assignedCards={gachaCards}
+        onComplete={handleCompleteGacha}
+      />
     );
   }
 

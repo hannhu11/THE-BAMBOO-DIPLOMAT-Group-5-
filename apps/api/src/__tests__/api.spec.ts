@@ -333,4 +333,107 @@ describe('@bamboo/api - Integration Test Suite', () => {
     // Verify state transitioned to round_reveal and round was locked
     expect(sessionService.getSession().status).toBe('round_reveal');
   });
+
+  it('revealRound is idempotent: multiple reveals do NOT compound or duplicate score deltas', async () => {
+    const { sessionService } = await import('../services/sessionService');
+    sessionService.reset();
+
+    // Open round 1 (sc1: Option C has deltas +2 TC, +3 KT, +4 UT)
+    sessionService.openRound('sc1', 30);
+    const initialGroup = sessionService.getGroup('G01')!;
+    expect(initialGroup.autonomy).toBe(10);
+    expect(initialGroup.economy).toBe(10);
+    expect(initialGroup.prestige).toBe(10);
+    expect(initialGroup.totalScore).toBe(30);
+
+    // Record decision C for G01
+    sessionService.recordDecision({
+      roundId: 'sc1',
+      groupId: 'G01',
+      chosenOption: 'C',
+      lockedBySeatId: 'seat_1',
+      allInArmed: false,
+    });
+
+    // Reveal 1st time
+    const res1 = sessionService.revealRound();
+    const g1 = sessionService.getGroup('G01')!;
+    expect(g1.autonomy).toBe(12);
+    expect(g1.economy).toBe(13);
+    expect(g1.prestige).toBe(14);
+    expect(g1.totalScore).toBe(39);
+
+    // Reveal 2nd time (e.g. GM clicks reveal after lock)
+    const res2 = sessionService.revealRound();
+    const g2 = sessionService.getGroup('G01')!;
+    expect(g2.autonomy).toBe(12);
+    expect(g2.economy).toBe(13);
+    expect(g2.prestige).toBe(14);
+    expect(g2.totalScore).toBe(39);
+
+    // Reveal 3rd time (e.g. all-in grading or re-sync)
+    const res3 = sessionService.revealRound();
+    const g3 = sessionService.getGroup('G01')!;
+    expect(g3.autonomy).toBe(12);
+    expect(g3.economy).toBe(13);
+    expect(g3.prestige).toBe(14);
+    expect(g3.totalScore).toBe(39);
+
+    // Ensure it NEVER jumped to 18 TC, 22 KT, 26 UT, 66 total!
+    expect(g3.totalScore).not.toBe(66);
+  });
+
+  it('reopening a round resets locked decisions and restores groups to round start state', async () => {
+    const { sessionService } = await import('../services/sessionService');
+    sessionService.reset();
+
+    // Round 1 start: 10, 10, 10
+    sessionService.openRound('sc1', 30);
+    sessionService.recordDecision({
+      roundId: 'sc1',
+      groupId: 'G01',
+      chosenOption: 'C',
+      lockedBySeatId: 'seat_1',
+      allInArmed: false,
+    });
+
+    // Reveal round 1: scores become 12, 13, 14
+    sessionService.revealRound();
+    expect(sessionService.getGroup('G01')!.totalScore).toBe(39);
+
+    // Reopening round 1 should restore group to 10, 10, 10 and clear locked decisions
+    sessionService.openRound('sc1', 30);
+    expect(sessionService.getGroup('G01')!.autonomy).toBe(10);
+    expect(sessionService.getGroup('G01')!.economy).toBe(10);
+    expect(sessionService.getGroup('G01')!.prestige).toBe(10);
+    expect(sessionService.getGroup('G01')!.totalScore).toBe(30);
+    expect(sessionService.getRoundDecisions('sc1').size).toBe(0);
+  });
+
+  it('registerOrGetTeam pre-assigns 3 tactical cards and properly snapshots start state', async () => {
+    const { sessionService } = await import('../services/sessionService');
+    sessionService.reset();
+
+    sessionService.openRound('sc1', 30);
+    const newTeam = sessionService.registerOrGetTeam('Đội Sao Vàng', 'G_NEW');
+    expect(newTeam.assignedCards).toBeDefined();
+    expect(newTeam.assignedCards?.length).toBe(3);
+    expect(Object.keys(newTeam.cardStatuses || {}).length).toBe(3);
+
+    // Verify late joining team resolves cleanly
+    sessionService.recordDecision({
+      roundId: 'sc1',
+      groupId: 'G_NEW',
+      chosenOption: 'C',
+      lockedBySeatId: 'seat_new',
+      allInArmed: false,
+    });
+
+    const res = sessionService.revealRound();
+    const gNew = sessionService.getGroup('G_NEW')!;
+    expect(gNew.autonomy).toBe(12);
+    expect(gNew.economy).toBe(13);
+    expect(gNew.prestige).toBe(14);
+    expect(gNew.totalScore).toBe(39);
+  });
 });

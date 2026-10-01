@@ -48,6 +48,7 @@ export class SessionService {
   private lockedDecisions: Map<string, Map<string, GroupDecision>> = new Map(); // roundId -> (groupId -> GroupDecision)
   private currentResolutions: Record<string, RoundResolution> = {};
   private pastDecisions: Record<string, Record<string, ChoiceLetter>> = {}; // groupId -> (scenarioId -> choice)
+  private roundStartStates: Map<string, Map<string, StrategicAxesState>> = new Map(); // scenarioId -> (groupId -> StrategicAxesState)
 
   constructor() {
     this.session = {
@@ -119,6 +120,25 @@ export class SessionService {
     };
     this.groups.set(gid, newGroup);
     this.pastDecisions[gid] = {};
+    // Pre-assign 3 strategic gacha cards so team state always has assignedCards
+    this.drawGachaCards(gid);
+
+    const currentSc = this.getCurrentScenario();
+    if (currentSc) {
+      let scMap = this.roundStartStates.get(currentSc.id);
+      if (!scMap) {
+        scMap = new Map();
+        this.roundStartStates.set(currentSc.id, scMap);
+      }
+      if (!scMap.has(newGroup.id)) {
+        scMap.set(newGroup.id, {
+          autonomy: newGroup.autonomy,
+          economy: newGroup.economy,
+          prestige: newGroup.prestige,
+        });
+      }
+    }
+
     return newGroup;
   }
 
@@ -178,8 +198,31 @@ export class SessionService {
     this.session.lockedAt = Date.now() + durationSeconds * 1000;
     this.session.revealedAt = undefined;
 
-    if (!this.lockedDecisions.has(targetScenario.id)) {
-      this.lockedDecisions.set(targetScenario.id, new Map());
+    // Always clear locked decisions for a fresh voting round
+    this.lockedDecisions.set(targetScenario.id, new Map());
+
+    if (!this.roundStartStates.has(targetScenario.id)) {
+      const startMap = new Map<string, StrategicAxesState>();
+      for (const g of this.groups.values()) {
+        startMap.set(g.id, {
+          autonomy: g.autonomy,
+          economy: g.economy,
+          prestige: g.prestige,
+        });
+      }
+      this.roundStartStates.set(targetScenario.id, startMap);
+    } else {
+      // Reopening an already revealed round: restore groups to the start state of this round
+      const startMap = this.roundStartStates.get(targetScenario.id)!;
+      for (const g of this.groups.values()) {
+        const snap = startMap.get(g.id);
+        if (snap) {
+          g.autonomy = snap.autonomy;
+          g.economy = snap.economy;
+          g.prestige = snap.prestige;
+          g.totalScore = snap.autonomy + snap.economy + snap.prestige;
+        }
+      }
     }
 
     globalLedger.append(
@@ -269,16 +312,26 @@ export class SessionService {
     if (!scenario) throw new Error('No active scenario to reveal');
 
     const decisionsMap = this.getRoundDecisions(scenario.id);
+    const startStatesForRound = this.roundStartStates.get(scenario.id);
 
     const groupsInput = Array.from(this.groups.values()).map((g) => {
       const decision = decisionsMap.get(g.id);
-      return {
-        groupId: g.id,
-        previousState: {
+      let startState = startStatesForRound?.get(g.id);
+      if (!startState) {
+        startState = {
           autonomy: g.autonomy,
           economy: g.economy,
           prestige: g.prestige,
-        },
+        };
+        if (!this.roundStartStates.has(scenario.id)) {
+          this.roundStartStates.set(scenario.id, new Map());
+        }
+        this.roundStartStates.get(scenario.id)!.set(g.id, { ...startState });
+      }
+
+      return {
+        groupId: g.id,
+        previousState: { ...startState },
         decision: decision
           ? {
               chosenOption: decision.chosenOption,
@@ -516,6 +569,7 @@ export class SessionService {
     };
     this.lockedDecisions.clear();
     this.currentResolutions = {};
+    this.roundStartStates.clear();
     this.initializeGroups();
   }
 
