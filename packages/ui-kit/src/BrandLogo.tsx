@@ -104,19 +104,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
   const [hasWebGL, setHasWebGL] = useState<boolean>(true);
 
   useEffect(() => {
-    // Check if WebGL is supported
     if (typeof window === 'undefined') return;
-    try {
-      const testCanvas = document.createElement('canvas');
-      const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
-      if (!gl) {
-        setHasWebGL(false);
-        return;
-      }
-    } catch {
-      setHasWebGL(false);
-      return;
-    }
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -306,7 +294,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
 
     // Gentle Bamboo Wind Flex (Organic Sine Waves)
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -314,7 +302,7 @@ export const BrandLogoMark: React.FC<BrandLogoProps> = ({
       // Throttling: Skip rendering if browser tab is hidden to save GPU & eliminate lag
       if (document.hidden) return;
 
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startTime) / 1000;
 
       // Center stalk breathes slightly
       centerStalk.rotation.z = Math.sin(elapsed * 1.2) * 0.035;

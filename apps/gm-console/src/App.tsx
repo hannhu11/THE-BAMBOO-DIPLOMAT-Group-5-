@@ -627,13 +627,13 @@ export function App() {
 
                       <div className="gm-team-axes" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <span style={{ color: '#0F3628', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <AxisIcon3D axis="tc" size={16} /> TC: {team.axes?.autonomy}
+                          <AxisIcon3D axis="tc" size={16} variant="vector" /> TC: {team.axes?.autonomy}
                         </span>
                         <span style={{ color: '#B8860B', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <AxisIcon3D axis="kt" size={16} /> KT: {team.axes?.economy}
+                          <AxisIcon3D axis="kt" size={16} variant="vector" /> KT: {team.axes?.economy}
                         </span>
                         <span style={{ color: '#1E40AF', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <AxisIcon3D axis="ut" size={16} /> UT: {team.axes?.prestige}
+                          <AxisIcon3D axis="ut" size={16} variant="vector" /> UT: {team.axes?.prestige}
                         </span>
                       </div>
                     </div>

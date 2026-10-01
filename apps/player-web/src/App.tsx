@@ -831,7 +831,7 @@ export function App() {
               <div className="axis-meter">
                 <div className="axis-meter-label">
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <AxisIcon3D axis="tc" size={22} />
+                    <AxisIcon3D axis="tc" size={26} variant="3d" />
                     <span style={{ color: '#0F3628' }}>TỰ CHỦ (TC)</span>
                   </div>
                   <div>
@@ -858,7 +858,7 @@ export function App() {
               <div className="axis-meter">
                 <div className="axis-meter-label">
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <AxisIcon3D axis="kt" size={22} />
+                    <AxisIcon3D axis="kt" size={26} variant="3d" />
                     <span style={{ color: '#B8860B' }}>KINH TẾ (KT)</span>
                   </div>
                   <div>
@@ -885,7 +885,7 @@ export function App() {
               <div className="axis-meter">
                 <div className="axis-meter-label">
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <AxisIcon3D axis="ut" size={22} />
+                    <AxisIcon3D axis="ut" size={26} variant="3d" />
                     <span style={{ color: '#1E40AF' }}>UY TÍN (UT)</span>
                   </div>
                   <div>

@@ -9,19 +9,33 @@ export interface AxisIcon3DProps {
   size?: number;
   className?: string;
   style?: React.CSSProperties;
+  variant?: 'auto' | '3d' | 'vector';
 }
 
 /**
  * 2D High-fidelity Fallback SVG for Strategic Axes
  */
-const AxisIconFallback: React.FC<{ axis: string; size: number }> = ({ axis, size }) => {
+export const AxisIconFallback: React.FC<{ axis: string; size: number; className?: string; style?: React.CSSProperties }> = ({
+  axis,
+  size,
+  className = '',
+  style = {},
+}) => {
   const isTC = axis === 'tc' || axis === 'autonomy';
   const isKT = axis === 'kt' || axis === 'economy';
 
   if (isTC) {
     // Tự Chủ (Autonomy) - Sacred Green Bamboo Medallion
     return (
-      <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Tự Chủ TC Icon">
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 100 100"
+        role="img"
+        aria-label="Tự Chủ TC Icon"
+        className={className}
+        style={{ display: 'inline-block', flexShrink: 0, ...style }}
+      >
         <circle cx="50" cy="50" r="46" fill="#0C251C" stroke="#2F7D62" strokeWidth="3" />
         <circle cx="50" cy="50" r="38" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeDasharray="4 2" />
         {/* Bamboo Stalk */}
@@ -37,7 +51,15 @@ const AxisIconFallback: React.FC<{ axis: string; size: number }> = ({ axis, size
   if (isKT) {
     // Kinh Tế (Economy) - Imperial Vietnamese Coin (Đồng tiền cổ Thông Bảo)
     return (
-      <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Kinh Tế KT Icon">
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 100 100"
+        role="img"
+        aria-label="Kinh Tế KT Icon"
+        className={className}
+        style={{ display: 'inline-block', flexShrink: 0, ...style }}
+      >
         <circle cx="50" cy="50" r="46" fill="#241B08" stroke="#D4AF37" strokeWidth="3" />
         <circle cx="50" cy="50" r="38" fill="#5C4314" stroke="#F3CA68" strokeWidth="1.5" />
         {/* Ancient square hole */}
@@ -53,7 +75,15 @@ const AxisIconFallback: React.FC<{ axis: string; size: number }> = ({ axis, size
 
   // Uy Tín (Prestige) - Sapphire Dong Son Sun Star
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Uy Tín UT Icon">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      role="img"
+      aria-label="Uy Tín UT Icon"
+      className={className}
+      style={{ display: 'inline-block', flexShrink: 0, ...style }}
+    >
       <circle cx="50" cy="50" r="46" fill="#0A1828" stroke="#3B82F6" strokeWidth="3" />
       <circle cx="50" cy="50" r="38" fill="none" stroke="#D4AF37" strokeWidth="1.5" />
       {/* 8-Point Dong Son Solar Star */}
@@ -72,6 +102,7 @@ export const AxisIcon3D: React.FC<AxisIcon3DProps> = ({
   size = 32,
   className = '',
   style = {},
+  variant = 'auto',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -82,22 +113,16 @@ export const AxisIcon3D: React.FC<AxisIcon3DProps> = ({
   const isKT = normAxis === 'kt' || normAxis === 'economy';
   const isUT = normAxis === 'ut' || normAxis === 'prestige';
 
+  // For small icons (e.g. 16px in leaderboard rows) or explicit vector mode,
+  // render the crystal-clear vector SVG without creating WebGL contexts.
+  const shouldUseVector = variant === 'vector' || (variant === 'auto' && size < 24);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (shouldUseVector) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    // Check WebGL availability
-    try {
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      if (!gl) {
-        setHasWebGL(false);
-        return;
-      }
-    } catch {
-      setHasWebGL(false);
-      return;
-    }
 
     // Three.js Scene Setup
     const scene = new THREE.Scene();
@@ -303,7 +328,7 @@ export const AxisIcon3D: React.FC<AxisIcon3DProps> = ({
 
     // GSAP Subtle Hover and Idle Tweens
     let animId: number;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -311,7 +336,7 @@ export const AxisIcon3D: React.FC<AxisIcon3DProps> = ({
       // Throttling: Skip rendering if browser tab is hidden to save GPU & eliminate lag
       if (document.hidden) return;
 
-      const t = clock.getElapsedTime();
+      const t = (performance.now() - startTime) / 1000;
 
       if (isTC) {
         // Tự Chủ: steadfast upright breathing
@@ -367,10 +392,10 @@ export const AxisIcon3D: React.FC<AxisIcon3DProps> = ({
         renderer.dispose();
       }
     };
-  }, [axis, isTC, isKT, isUT, size]);
+  }, [axis, isTC, isKT, isUT, size, shouldUseVector]);
 
-  if (!hasWebGL) {
-    return <AxisIconFallback axis={normAxis} size={size} />;
+  if (shouldUseVector || !hasWebGL) {
+    return <AxisIconFallback axis={normAxis} size={size} className={className} style={style} />;
   }
 
   return (
