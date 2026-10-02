@@ -49,6 +49,7 @@ export function App() {
   const [session, setSession] = useState<any>(null);
   const [scenario, setScenario] = useState<any>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
   const [roundDecisions, setRoundDecisions] = useState<Record<string, any>>({});
   const [remainingSec, setRemainingSec] = useState(30);
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('sc1');
@@ -84,6 +85,9 @@ export function App() {
       if (data.leaderboard) {
         setLeaderboard(data.leaderboard);
       }
+      if (data.groups) {
+        setGroups(data.groups);
+      }
       if (data.roundDecisions) {
         setRoundDecisions(data.roundDecisions);
       }
@@ -110,6 +114,7 @@ export function App() {
       setSession(data.session);
       setResolutions(data.resolutions);
       if (data.leaderboard) setLeaderboard(data.leaderboard);
+      if (data.groups) setGroups(data.groups);
     });
 
     s.on('leaderboard.updated', (lb: LeaderboardEntry[]) => {
@@ -310,7 +315,7 @@ export function App() {
   };
 
   const handleClearGroups = async () => {
-    if (!confirm('Bạn có chắc chắn muốn XÓA TOÀN BỘ NHÓM RÁC và làm sạch bảng xếp hạng trực tiếp?')) return;
+    if (!confirm('Bạn có chắc chắn muốn XÓA và làm sạch bảng xếp hạng trực tiếp?')) return;
     try {
       const res = await fetch('/api/gm/groups/clear', {
         method: 'POST',
@@ -321,7 +326,9 @@ export function App() {
       });
       if (res.ok) {
         setLeaderboard([]);
-        alert('Đã xóa toàn bộ nhóm rác! Bảng xếp hạng đã được làm sạch hoàn toàn.');
+        setGroups([]);
+        setRoundDecisions({});
+        alert('Đã xóa thành công! Bảng xếp hạng đã được làm sạch.');
       }
     } catch (err) {
       console.error(err);
@@ -454,7 +461,7 @@ export function App() {
     scenario || (scenariosList as any[]).find((s: any) => s.id === selectedScenarioId) || scenariosList[0];
 
   const lockedCount = Object.values(roundDecisions).filter((d: any) => d.isLocked).length;
-  const totalTeams = leaderboard.length || 7;
+  const totalTeams = Math.max(groups.length, leaderboard.length);
 
   // ==========================================
   // RENDER: CLASSROOM PROJECTOR SPLIT-SCREEN
@@ -835,7 +842,7 @@ export function App() {
             onClick={handleClearGroups}
             title="Xóa toàn bộ các nhóm rác và làm sạch bảng xếp hạng"
           >
-            LÀM SẠCH BXH 🗑️
+            XÓA
           </button>
 
           <button

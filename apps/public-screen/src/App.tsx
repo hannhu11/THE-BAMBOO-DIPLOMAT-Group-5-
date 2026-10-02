@@ -152,6 +152,7 @@ export function App() {
   const [presence, setPresence] = useState<any>({ onlineSeats: 0, captainReadyCount: 0 });
   const [remainingSec, setRemainingSec] = useState(45);
   const [blackSwanBanner, setBlackSwanBanner] = useState<any>(null);
+  const [roundDecisions, setRoundDecisions] = useState<Record<string, any>>({});
 
   // Compute average axes for class
   const [avgAxes, setAvgAxes] = useState({ autonomy: 50, economy: 50, prestige: 50 });
@@ -167,6 +168,9 @@ export function App() {
       setScenario(data.currentScenario);
       setLeaderboard(data.leaderboard || []);
       setPresence(data.presence || { onlineSeats: 0, captainReadyCount: 0 });
+      if (data.roundDecisions) {
+        setRoundDecisions(data.roundDecisions);
+      }
     });
 
     s.on('round.opened', (data: any) => {
@@ -174,6 +178,7 @@ export function App() {
       setScenario(data.scenario);
       setRemainingSec(data.durationSeconds || 45);
       setBlackSwanBanner(null);
+      setRoundDecisions({});
       audioEngine.playGong();
     });
 
@@ -209,6 +214,13 @@ export function App() {
     s.on('banner.pushed', (banner: any) => {
       setBlackSwanBanner(banner);
       audioEngine.playSiren();
+    });
+
+    s.on('group.decision.locked', (data: any) => {
+      setRoundDecisions((prev) => ({
+        ...prev,
+        [data.groupId]: { isLocked: true },
+      }));
     });
 
     setSocket(s);
@@ -545,8 +557,8 @@ export function App() {
                 TRẠM TÁC CHIẾN HỆ THỐNG
               </div>
               <div style={{ fontSize: 11.5, color: 'var(--color-slate-300)', lineHeight: 1.5 }}>
-                <div>Đã khóa phiếu: <b style={{ color: '#86EFAC', fontFamily: 'var(--font-mono)', fontSize: 13 }}>{leaderboard.length}/7</b> nhóm</div>
-                <div style={{ color: '#94A3B8', marginTop: 2, fontSize: 11 }}>Trực tuyến: <b>{presence.onlineSeats}/34</b> đại biểu</div>
+                <div>Đã khóa phiếu: <b style={{ color: '#86EFAC', fontFamily: 'var(--font-mono)', fontSize: 13 }}>{Object.values(roundDecisions).filter((d: any) => d.isLocked).length}/{leaderboard.length}</b> nhóm</div>
+                <div style={{ color: '#94A3B8', marginTop: 2, fontSize: 11 }}>Trực tuyến: <b>{presence.onlineSeats}</b> đại biểu</div>
                 <div style={{ color: '#64748B', marginTop: 2, fontSize: 9.5, fontFamily: 'var(--font-mono)' }}>Server 2 OCI · Đồng bộ thời gian thực</div>
               </div>
             </Panel>

@@ -26,6 +26,7 @@ export function createSocketGateway(server: HttpServer): SocketIOServer {
 
     if (seatId && groupId) {
       let group = sessionService.getGroup(groupId);
+      const isNewGroup = !group;
       if (!group) {
         group = sessionService.registerOrGetTeam(groupName || studentName || 'Đội Ngoại Giao', groupId);
       }
@@ -36,6 +37,11 @@ export function createSocketGateway(server: HttpServer): SocketIOServer {
         studentName: studentName || group.name,
         role: (role as any) || 'captain',
       });
+      if (isNewGroup) {
+        const bootstrap = sessionService.getBootstrap();
+        io.emit('leaderboard.updated', bootstrap.leaderboard);
+        io.emit('session.synced', bootstrap);
+      }
     }
 
     // Join room for session broadcast
@@ -93,8 +99,8 @@ export function createSocketGateway(server: HttpServer): SocketIOServer {
         const parsed = CaptainLockVoteSchema.parse(payload);
         const decision = voteService.captainLockVote(seatId, parsed);
 
-        // Notify all members of this group
-        io.to(`group:${decision.groupId}`).emit('group.decision.locked', decision);
+        // Notify all members of this group as well as GM and Screen
+        io.to(`group:${decision.groupId}`).to('role:gm').to('role:screen').emit('group.decision.locked', decision);
 
         // Broadcast participation update to GM and Screen
         const session = sessionService.getSession();
@@ -111,8 +117,9 @@ export function createSocketGateway(server: HttpServer): SocketIOServer {
           lockedDecisions: roundDecisions,
         });
 
-        // Check if all 7 groups have locked
-        if (roundDecisions.length === 7) {
+        // Check if all registered groups have locked
+        const allGroups = sessionService.getGroups();
+        if (allGroups.length > 0 && roundDecisions.length >= allGroups.length) {
           io.to('role:gm').emit('banner.pushed', {
             title: 'Tất cả các nhóm đã khóa vote!',
             type: 'info',
