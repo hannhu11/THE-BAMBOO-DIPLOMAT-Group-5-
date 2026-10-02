@@ -63,6 +63,11 @@ export class SessionService {
   }
 
   private initializeGroups(): void {
+    if (process.env.NODE_ENV !== 'test') {
+      // Production & Live environment: Start completely empty. Only teams created by user will join!
+      return;
+    }
+
     const groupNames = [
       'Nhóm 01 — Sen Vàng',
       'Nhóm 02 — Trúc Xanh',
@@ -94,6 +99,26 @@ export class SessionService {
         },
       });
       this.pastDecisions[gid] = {};
+    }
+  }
+
+  public clearAllGroups(): void {
+    this.groups.clear();
+    this.lockedDecisions.clear();
+    this.currentResolutions = {};
+    this.roundStartStates.clear();
+    this.pastDecisions = {};
+  }
+
+  public setGroupCards(groupId: string, cards: CardType[]): void {
+    const g = this.groups.get(groupId);
+    if (g && Array.isArray(cards) && cards.length === 3) {
+      g.assignedCards = cards;
+      g.cardStatuses = {
+        [cards[0]]: 'ready',
+        [cards[1]]: 'ready',
+        [cards[2]]: 'ready',
+      };
     }
   }
 
@@ -559,7 +584,7 @@ export class SessionService {
     };
   }
 
-  public reset(): void {
+  public reset(clearGroups?: boolean): void {
     this.session = {
       id: 'SESSION_HCM202',
       status: 'lobby',
@@ -570,7 +595,12 @@ export class SessionService {
     this.lockedDecisions.clear();
     this.currentResolutions = {};
     this.roundStartStates.clear();
-    this.initializeGroups();
+    const shouldClear = clearGroups !== undefined ? clearGroups : process.env.NODE_ENV !== 'test';
+    if (shouldClear) {
+      this.clearAllGroups();
+    } else {
+      this.initializeGroups();
+    }
   }
 
   public resetSession(): void {

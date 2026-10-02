@@ -378,7 +378,7 @@ export function App() {
         <Panel variant="elevated">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
-              BẢNG XẾP HẠNG (7 NHÓM)
+              BẢNG XẾP HẠNG TRỰC TIẾP
             </h3>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-gold-300)', background: 'rgba(243, 202, 104, 0.12)', padding: '3px 8px', borderRadius: 999, border: '1px solid rgba(243, 202, 104, 0.3)' }}>
               TRỰC TIẾP
@@ -386,73 +386,70 @@ export function App() {
           </div>
 
           <div className="leaderboard-list">
-            {leaderboard.map((item, idx) => {
-              const factionNames: Record<string, string> = {
-                G01: 'Sen Vàng',
-                G02: 'Trúc Xanh',
-                G03: 'Cương Nhu',
-                G04: 'Hòa Hiếu',
-                G05: 'Độc Lập',
-                G06: 'Tự Cường',
-                G07: 'Đa Phương',
-              };
-              const faction = factionNames[item.groupId] || item.name || item.groupId;
-              const isFirst = idx === 0;
+            {leaderboard.length > 0 ? (
+              leaderboard.map((item, idx) => {
+                const displayName = item.name || item.groupId;
+                const isFirst = idx === 0;
 
-              return (
-                <div key={item.groupId} className={`lb-row ${isFirst ? 'top' : ''}`}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontWeight: 800,
-                      fontSize: 12,
-                      color: isFirst ? '#0A1510' : idx < 3 ? '#E2E8F0' : '#94A3B8',
-                      background: isFirst
-                        ? 'linear-gradient(180deg, #F3CA68, #D97706)'
-                        : idx < 3
-                        ? 'rgba(255,255,255,0.1)'
-                        : 'transparent',
-                      padding: isFirst ? '3px 8px' : '2px 6px',
-                      borderRadius: 6,
-                      boxShadow: isFirst ? '0 0 10px rgba(243, 202, 104, 0.4)' : undefined,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: 40,
-                    }}
-                  >
-                    {isFirst ? 'TOP 1' : `0${item.rank}`}
-                  </div>
-                  <div>
-                    <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14.5, color: '#FFFFFF' }}>
-                      {item.groupId} · {faction}
+                return (
+                  <div key={item.groupId} className={`lb-row ${isFirst ? 'top' : ''}`}>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: 800,
+                        fontSize: 12,
+                        color: isFirst ? '#0A1510' : idx < 3 ? '#E2E8F0' : '#94A3B8',
+                        background: isFirst
+                          ? 'linear-gradient(180deg, #F3CA68, #D97706)'
+                          : idx < 3
+                          ? 'rgba(255,255,255,0.1)'
+                          : 'transparent',
+                        padding: isFirst ? '3px 8px' : '2px 6px',
+                        borderRadius: 6,
+                        boxShadow: isFirst ? '0 0 10px rgba(243, 202, 104, 0.4)' : undefined,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: 40,
+                      }}
+                    >
+                      {isFirst ? 'TOP 1' : `0${item.rank}`}
                     </div>
-                    <div style={{ display: 'flex', gap: 6, marginTop: 3, alignItems: 'center' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(16, 185, 129, 0.18)', border: '1px solid rgba(16, 185, 129, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#86EFAC' }}>
-                        <span style={{ fontSize: 9, opacity: 0.8 }}>TC</span> {item.axes?.autonomy ?? 50}
-                      </span>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(245, 158, 11, 0.18)', border: '1px solid rgba(245, 158, 11, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#FDE047' }}>
-                        <span style={{ fontSize: 9, opacity: 0.8 }}>KT</span> {item.axes?.economy ?? 50}
-                      </span>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(56, 189, 248, 0.18)', border: '1px solid rgba(56, 189, 248, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#7DD3FC' }}>
-                        <span style={{ fontSize: 9, opacity: 0.8 }}>UT</span> {item.axes?.prestige ?? 50}
-                      </span>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14.5, color: '#FFFFFF' }}>
+                        {displayName}
+                      </div>
+                      <div style={{ display: 'flex', gap: 6, marginTop: 3, alignItems: 'center' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(16, 185, 129, 0.18)', border: '1px solid rgba(16, 185, 129, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#86EFAC' }}>
+                          <span style={{ fontSize: 9, opacity: 0.8 }}>TC</span> {item.axes?.autonomy ?? 50}
+                        </span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(245, 158, 11, 0.18)', border: '1px solid rgba(245, 158, 11, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#FDE047' }}>
+                          <span style={{ fontSize: 9, opacity: 0.8 }}>KT</span> {item.axes?.economy ?? 50}
+                        </span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 6px', borderRadius: 4, background: 'rgba(56, 189, 248, 0.18)', border: '1px solid rgba(56, 189, 248, 0.45)', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: '#7DD3FC' }}>
+                          <span style={{ fontSize: 9, opacity: 0.8 }}>UT</span> {item.axes?.prestige ?? 50}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 20,
+                        fontWeight: 800,
+                        color: isFirst ? '#F3CA68' : '#FFFFFF',
+                        textShadow: isFirst ? '0 0 10px rgba(243, 202, 104, 0.4)' : 'none',
+                      }}
+                    >
+                      {item.score}
                     </div>
                   </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 20,
-                      fontWeight: 800,
-                      color: isFirst ? '#F3CA68' : '#FFFFFF',
-                      textShadow: isFirst ? '0 0 10px rgba(243, 202, 104, 0.4)' : 'none',
-                    }}
-                  >
-                    {item.score}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div style={{ textAlign: 'center', padding: '40px 10px', color: '#94A3B8', fontStyle: 'italic', fontSize: 13 }}>
+                Chưa có đội tham gia. Đang chờ các đội kết nối...
+              </div>
+            )}
           </div>
         </Panel>
       </main>

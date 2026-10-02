@@ -309,6 +309,25 @@ export function App() {
     }
   };
 
+  const handleClearGroups = async () => {
+    if (!confirm('Bạn có chắc chắn muốn XÓA TOÀN BỘ NHÓM RÁC và làm sạch bảng xếp hạng trực tiếp?')) return;
+    try {
+      const res = await fetch('/api/gm/groups/clear', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        setLeaderboard([]);
+        alert('Đã xóa toàn bộ nhóm rác! Bảng xếp hạng đã được làm sạch hoàn toàn.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('bamboo_gm_token');
     setToken(null);
@@ -448,7 +467,6 @@ export function App() {
           <BrandLogoMark size={40} />
           <div className="gm-title-badge">
             <span className="gm-main-title">THE BAMBOO DIPLOMAT — BẢN LĨNH NGOẠI GIAO CÂY TRE</span>
-            <span className="gm-sub-title">MÀN CHIẾU TRUNG TÂM LỚP HỌC · HỌC PHẦN HCM202</span>
           </div>
         </div>
 
@@ -809,6 +827,15 @@ export function App() {
             }
           >
             CÂU HỎI TIẾP THEO ➔
+          </button>
+
+          <button
+            type="button"
+            className="gm-control-btn warning"
+            onClick={handleClearGroups}
+            title="Xóa toàn bộ các nhóm rác và làm sạch bảng xếp hạng"
+          >
+            LÀM SẠCH BXH 🗑️
           </button>
 
           <button

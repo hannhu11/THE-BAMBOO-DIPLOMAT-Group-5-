@@ -209,4 +209,19 @@ export const gmRoutes: FastifyPluginAsync<{ io?: SocketIOServer }> = async (
 
     return reply.status(200).send({ success: true, session });
   });
+
+  fastify.post('/groups/clear', async (request, reply) => {
+    roundTimerService.cancelTimer();
+    sessionService.clearAllGroups();
+    const session = sessionService.getSession();
+    const bootstrap = sessionService.getBootstrap();
+
+    const io = getIo();
+    if (io) {
+      io.emit('session.synced', bootstrap);
+      io.emit('leaderboard.updated', []);
+    }
+
+    return reply.status(200).send({ success: true, message: 'Đã xóa toàn bộ nhóm rác', session });
+  });
 };

@@ -573,17 +573,39 @@ export function App() {
   };
 
   // Reveal All & Finish Gacha
-  const handleCompleteGacha = () => {
+  const handleCompleteGacha = (wonCards?: CardType[]) => {
     audioEngine.playStamp();
+    const finalCards =
+      wonCards && wonCards.length === 3
+        ? wonCards
+        : gachaCards.length === 3
+        ? gachaCards
+        : (['break_supply', 'di_bat_bien', 'cau_dong_ton_di'] as CardType[]);
+    setGachaCards(finalCards);
     setMyGroup((prev) => {
       if (!prev) return prev;
+      const statuses: Record<string, 'ready' | 'used'> = {};
+      finalCards.forEach((c) => {
+        if (c) statuses[c] = 'ready';
+      });
       const updated = {
         ...prev,
-        assignedCards: gachaCards.length ? gachaCards : prev.assignedCards,
+        assignedCards: finalCards,
+        cardStatuses: statuses,
       };
       localStorage.setItem('bamboo_group', JSON.stringify(updated));
       return updated;
     });
+
+    const targetGid = seat?.groupId || myGroup?.id;
+    if (targetGid) {
+      fetch('/api/session/gacha/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groupId: targetGid, cards: finalCards }),
+      }).catch(() => {});
+    }
+
     setShowGacha(false);
     window.history.pushState({ step: 'battle' }, '', '#/battle');
   };
@@ -862,7 +884,6 @@ export function App() {
           <BrandLogoMark size={36} />
           <div className="brand-badge">
             <span className="brand-title">THE BAMBOO DIPLOMAT</span>
-            <span className="brand-sub">HCM202 · GIAO DIỆN TÁC CHIẾN LAPTOP</span>
           </div>
         </div>
 

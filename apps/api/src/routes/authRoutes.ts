@@ -88,6 +88,15 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
     }
   });
 
+  fastify.post('/session/gacha/save', async (request, reply) => {
+    const body = request.body as { groupId?: string; cards?: any[] };
+    if (!body?.groupId || !Array.isArray(body.cards) || body.cards.length !== 3) {
+      return reply.status(400).send({ error: 'Dữ liệu thẻ không hợp lệ' });
+    }
+    sessionService.setGroupCards(body.groupId, body.cards);
+    return reply.status(200).send({ success: true, groupId: body.groupId, cards: body.cards });
+  });
+
   fastify.post('/gm/login', async (request, reply) => {
     const parseResult = GmLoginSchema.safeParse(request.body);
     if (!parseResult.success) {

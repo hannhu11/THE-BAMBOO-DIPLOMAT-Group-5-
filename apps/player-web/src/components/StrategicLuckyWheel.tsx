@@ -3,8 +3,8 @@ import { CardType } from '@bamboo/domain-types';
 import { TacticalCard, audioEngine } from '@bamboo/ui-kit';
 
 export interface StrategicLuckyWheelProps {
-  assignedCards: CardType[];
-  onComplete: () => void;
+  assignedCards?: CardType[];
+  onComplete: (wonCards?: CardType[]) => void;
 }
 
 interface WheelCardItem {
@@ -145,14 +145,9 @@ export const StrategicLuckyWheel: React.FC<StrategicLuckyWheelProps> = ({
   assignedCards,
   onComplete,
 }) => {
-  // Normalize cards to 3 valid cards
-  const targetCards: CardType[] = React.useMemo(() => {
-    if (assignedCards && assignedCards.length >= 3) {
-      return assignedCards.slice(0, 3);
-    }
-    // Fallback default set if empty
-    return ['break_supply', 'di_bat_bien', 'cau_dong_ton_di'];
-  }, [assignedCards]);
+  const attackPool: CardType[] = ['break_supply', 'counter_tariff', 'submarine_cable'];
+  const defensePool: CardType[] = ['di_bat_bien', 'sovereignty_shield', 'self_reliance'];
+  const utilityPool: CardType[] = ['cau_dong_ton_di', 'un_resolution', 'diplomatic_gong'];
 
   const [currentStep, setCurrentStep] = useState<number>(0); // 0: spin 1, 1: spin 2, 2: spin 3, 3: completed
   const [unlockedCards, setUnlockedCards] = useState<CardType[]>([]);
@@ -166,9 +161,9 @@ export const StrategicLuckyWheel: React.FC<StrategicLuckyWheelProps> = ({
 
   // Step information
   const stepTitles = [
-    'LƯỢT QUAY 1/3: KHAI THẺ TẤN CÔNG NGOẠI GIAO',
-    'LƯỢT QUAY 2/3: KHAI THẺ PHÒNG THỦ CHIẾN LƯỢC',
-    'LƯỢT QUAY 3/3: KHAI THẺ NGOẠI GIAO ĐA PHƯƠNG',
+    'LƯỢT QUAY 1/3: KHAI THẺ TẤN CÔNG NGOẠI GIAO (1 TRONG 3 THẺ TẤN CÔNG)',
+    'LƯỢT QUAY 2/3: KHAI THẺ PHÒNG THỦ CHIẾN LƯỢC (1 TRONG 3 THẺ PHÒNG THỦ)',
+    'LƯỢT QUAY 3/3: KHAI THẺ NGOẠI GIAO ĐA PHƯƠNG (1 TRONG 3 THẺ ĐA PHƯƠNG)',
     'BỘ 3 BẢO VẬT CHIẾN LƯỢC ĐÃ ĐƯỢC THIẾT LẬP HOÀN TẤT',
   ];
 
@@ -186,12 +181,19 @@ export const StrategicLuckyWheel: React.FC<StrategicLuckyWheelProps> = ({
     return () => clearInterval(interval);
   }, [isSpinning]);
 
-  // Handle spin for current step
+  // Handle spin for current step with genuine dynamic randomness
   const handleSpin = () => {
-    if (isSpinning || currentStep >= targetCards.length) return;
+    if (isSpinning || currentStep >= 3) return;
 
-    const fallbackId: CardType = 'break_supply';
-    const targetCardId: CardType = targetCards[currentStep] || fallbackId;
+    let targetCardId: CardType;
+    if (currentStep === 0) {
+      targetCardId = attackPool[Math.floor(Math.random() * attackPool.length)]!;
+    } else if (currentStep === 1) {
+      targetCardId = defensePool[Math.floor(Math.random() * defensePool.length)]!;
+    } else {
+      targetCardId = utilityPool[Math.floor(Math.random() * utilityPool.length)]!;
+    }
+
     const targetIdx = ALL_9_CARDS.findIndex((c) => c.id === targetCardId);
     const validIdx = targetIdx >= 0 ? targetIdx : (currentStep * 3) % 9;
 
@@ -226,14 +228,17 @@ export const StrategicLuckyWheel: React.FC<StrategicLuckyWheelProps> = ({
     }, 4800);
   };
 
-  // Quick auto-spin all remaining
+  // Quick auto-spin all remaining with genuine randomness
   const handleAutoSpinAll = () => {
     if (isSpinning) return;
     audioEngine.playGong();
-    setUnlockedCards(targetCards);
+    const rAttack = attackPool[Math.floor(Math.random() * attackPool.length)]!;
+    const rDefense = defensePool[Math.floor(Math.random() * defensePool.length)]!;
+    const rUtility = utilityPool[Math.floor(Math.random() * utilityPool.length)]!;
+    const randomSet: CardType[] = [rAttack, rDefense, rUtility];
+    setUnlockedCards(randomSet);
     setCurrentStep(3);
-    const lastCard: CardType = targetCards[targetCards.length - 1] || 'break_supply';
-    setRevealedCardModal(lastCard);
+    setRevealedCardModal(rUtility);
   };
 
   return (
@@ -494,7 +499,7 @@ export const StrategicLuckyWheel: React.FC<StrategicLuckyWheelProps> = ({
             ) : (
               <button
                 type="button"
-                onClick={onComplete}
+                onClick={() => onComplete(unlockedCards)}
                 style={{
                   width: '100%',
                   maxWidth: 360,
@@ -582,7 +587,10 @@ export const StrategicLuckyWheel: React.FC<StrategicLuckyWheelProps> = ({
             {ALL_9_CARDS.map((card) => {
               const isWon = unlockedCards.includes(card.id);
               const isTargetForCurrentStep =
-                targetCards[currentStep] === card.id && isSpinning;
+                isSpinning &&
+                ((currentStep === 0 && card.category === 'attack') ||
+                  (currentStep === 1 && card.category === 'defense') ||
+                  (currentStep === 2 && card.category === 'utility'));
 
               return (
                 <div
